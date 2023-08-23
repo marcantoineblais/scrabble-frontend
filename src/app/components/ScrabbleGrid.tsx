@@ -43,8 +43,8 @@ export default function ScrabbleGrid() {
                     }
 
                     if (i === Math.floor(selectedCell.index / 15) && j === selectedCell.index % 15) {
+                        cols[j].classList.remove("bg-orange-300")
                         cols[j].classList.add("bg-cyan-600")
-                        cols[j].classList.add("bg-orange-300")
                     }
                 }
             }
@@ -75,9 +75,6 @@ export default function ScrabbleGrid() {
                     selectedCell.index += 1
                 else if (!selectedCell.horizontal && selectedCell.index + 15 < 15 * 15)
                     selectedCell.index += 15
-                else {
-                    selectedCell.index = null
-                }
 
             } else if (input === "DELETE") {
                 gridCellValues[selectedCell.index] = ""
@@ -86,15 +83,13 @@ export default function ScrabbleGrid() {
                     selectedCell.index += 1
                 else if (!selectedCell.horizontal && selectedCell.index + 15 < 15 * 15)
                     selectedCell.index += 15
+
             } else if (input === "BACKSPACE") {
                 gridCellValues[selectedCell.index] = ""
                 if (selectedCell.horizontal && (selectedCell.index % 15) - 1 >= 0)
                     selectedCell.index -= 1
                 else if (!selectedCell.horizontal && selectedCell.index - 15 >= 0)
                     selectedCell.index -= 15
-                else {
-                    selectedCell.index = null
-                }
 
             } else if (input === " ")
                 selectedCell.horizontal = !selectedCell.horizontal

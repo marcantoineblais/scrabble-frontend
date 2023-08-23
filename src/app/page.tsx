@@ -1,11 +1,9 @@
 import ScrabbleGrid from "./components/ScrabbleGrid";
 
-export default function App() {
+export default function Page() {
     return (
-        <main>
-            <div className="container mx-auto">
-                <ScrabbleGrid />
-            </div>
-        </main>
+        <div className="container mx-auto">
+            <ScrabbleGrid />
+        </div>
     )
 }
