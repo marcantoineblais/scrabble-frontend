@@ -1,4 +1,4 @@
-import ScrabbleGrid from "../components/ScrabbleGrid";
+import ScrabbleGrid from "./components/ScrabbleGrid";
 
 export default function Page() {
     return (
