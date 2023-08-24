@@ -13,7 +13,6 @@ const config: Config = {
     extend: {
       backgroundImage: {
         'tile-texture': "url('../images/tile-texture.jpg')",
-        'board-texture': "radial-gradient(rgb(241, 245, 249) 75%, rgb(69, 26, 3))",
       },
     },
   },
