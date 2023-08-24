@@ -7,10 +7,13 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    fontSize: {
+        xs: '0.6rem',
+    },
     extend: {
       backgroundImage: {
-        'tile-texture': " linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url('../images/tile-texture.jpg')",
-        'board-texture': "radial-gradient(rgb(254, 243, 199) 75%, rgb(69, 26, 3))",
+        'tile-texture': "url('../images/tile-texture.jpg')",
+        'board-texture': "radial-gradient(rgb(241, 245, 249) 75%, rgb(69, 26, 3))",
       },
     },
   },
