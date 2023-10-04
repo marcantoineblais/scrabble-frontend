@@ -123,7 +123,7 @@ export default function ScrabbleGrid() {
         
         if (coord && row === coord[0] && col === coord[1])
             selectedCell.horizontal = !selectedCell.horizontal
-
+        
         cell.focus()
         selectedCell.coord = [row, col]
         setSelectedCell({ ...selectedCell })
@@ -198,10 +198,10 @@ export default function ScrabbleGrid() {
                 const tileBg = gridCellValues[i][j] ? "bg-tile-texture" : ""
                 row.push(
                     <input
-                        className={`w-12 h-12 select-none border-2 text-orange-50 text-center duration-200 bg-transparent ${tileBg}`}
+                        className={`w-12 h-12 select-none border-2 text-orange-50 text-center duration-200 bg-transparent caret-transparent ${tileBg}`}
                         key={j}
                         value={ gridCellValues[i][j] }
-                        readOnly
+                        onChange={() => null}
                     ></input>
                 )
             }
