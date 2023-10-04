@@ -144,8 +144,8 @@ export default function ScrabbleGrid() {
                         className={`w-12 h-12 select-none border-2 text-orange-50 text-center duration-200 bg-transparent caret-transparent ${tileBg}`}
                         key={j}
                         value={ gridCellValues[i][j] }
-                        onChange={() => null}
                         onKeyDown={(e) => updateGridValues(e)}
+                        onChange={(e) => e.preventDefault()}
                     ></input>
                 )
             }
