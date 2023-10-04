@@ -107,6 +107,11 @@ export default function ScrabbleGrid() {
             selectedCell.coord = coord
             setSelectedCell({...selectedCell})
             setGridCellValues([...gridCellValues])
+
+            if (coord) {
+                const cell: HTMLDivElement = tilesRef.current?.children[coord[0]].children[coord[1]] as HTMLDivElement
+                cell.focus()
+            }
         }
 
         highlightCells()
@@ -119,7 +124,7 @@ export default function ScrabbleGrid() {
 
     function selectCell(row: number, col: number) {
         const coord = selectedCell.coord
-        const cell: HTMLDivElement = tilesRef.current?.children[row].children[col] as HTMLDivElement;
+        const cell: HTMLDivElement = tilesRef.current?.children[row].children[col] as HTMLDivElement
         
         if (coord && row === coord[0] && col === coord[1])
             selectedCell.horizontal = !selectedCell.horizontal
