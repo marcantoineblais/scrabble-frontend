@@ -145,7 +145,7 @@ export default function ScrabbleGrid() {
                         key={j}
                         value={ gridCellValues[i][j] }
                         onChange={() => null}
-                        onKeyUp={(e) => updateGridValues(e)}
+                        onKeyDown={(e) => updateGridValues(e)}
                     ></input>
                 )
             }
