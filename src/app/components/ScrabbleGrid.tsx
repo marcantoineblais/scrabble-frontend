@@ -119,10 +119,12 @@ export default function ScrabbleGrid() {
 
     function selectCell(row: number, col: number) {
         const coord = selectedCell.coord
+        const cell: HTMLInputElement = tilesRef.current?.children[row].children[col] as HTMLInputElement;
         
         if (coord && row === coord[0] && col === coord[1])
             selectedCell.horizontal = !selectedCell.horizontal
 
+        cell.focus()
         selectedCell.coord = [row, col]
         setSelectedCell({ ...selectedCell })
     }
