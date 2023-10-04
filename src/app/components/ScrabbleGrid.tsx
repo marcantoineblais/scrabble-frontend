@@ -56,65 +56,7 @@ export default function ScrabbleGrid() {
             }
         }
 
-        function updateGridValues(e: KeyboardEvent) {
-            const input: string = e.key.toUpperCase()
-            let coord = selectedCell.coord
-            
-            if (!coord)
-                return
-
-            if (input === "ESCAPE")
-                coord = null
-            else if (input === "ARROWUP" && (coord[0] - 1) >= 0)
-                coord[0] -= 1
-
-            else if (input === "ARROWDOWN" && coord[0] + 1 < 15)
-                coord[0] += 1
-
-            else if (input === "ARROWLEFT" && coord[1] - 1 >= 0)
-                coord[1] -= 1
-
-            else if (input === "ARROWRIGHT" && coord[1] + 1 < 15)
-                coord[1] += 1
-
-            else if (input.match(/^[A-Z]{1}$/)) {
-                gridCellValues[coord[0]][coord[1]] = input
-                
-                if (selectedCell.horizontal && coord[1] + 1 < 15)
-                    coord[1] += 1
-                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
-                    coord[0] += 1
-
-            } else if (input === "DELETE") {
-                gridCellValues[coord[0]][coord[1]] = ""
-                
-                if (selectedCell.horizontal && coord[1] + 1 < 15)
-                    coord[1] += 1
-                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
-                    coord[0] += 1
-
-            } else if (input === "BACKSPACE") {
-                gridCellValues[coord[0]][coord[1]] = ""
-                
-                if (selectedCell.horizontal && coord[1] - 1 >= 0)
-                    coord[1] -= 1
-                else if (!selectedCell.horizontal && coord[0] - 1 >= 0)
-                    coord[0] -= 1
-
-            } else if (input === " ")
-                selectedCell.horizontal = !selectedCell.horizontal
-
-            selectedCell.coord = coord
-            setSelectedCell({...selectedCell})
-            setGridCellValues([...gridCellValues])
-        }
-
         highlightCells()
-        window.addEventListener("keyup", updateGridValues)
-
-        return () => {
-            window.removeEventListener("keyup", updateGridValues)
-        }
     }, [selectedCell])
 
     function selectCell(row: number, col: number) {
@@ -198,10 +140,12 @@ export default function ScrabbleGrid() {
                 const tileBg = gridCellValues[i][j] ? "bg-tile-texture" : ""
                 row.push(
                     <input
+                        type="text"
                         className={`w-12 h-12 select-none border-2 text-orange-50 text-center duration-200 bg-transparent caret-transparent ${tileBg}`}
                         key={j}
                         value={ gridCellValues[i][j] }
                         onChange={() => null}
+                        onKeyUp={(e) => updateGridValues(e)}
                     ></input>
                 )
             }
@@ -229,6 +173,59 @@ export default function ScrabbleGrid() {
         }
 
         return cols
+    }   
+
+    function updateGridValues(e: React.KeyboardEvent) {
+        const input: string = e.key.toUpperCase()
+        let coord = selectedCell.coord
+        
+        if (!coord)
+            return
+
+        if (input === "ESCAPE")
+            coord = null
+        else if (input === "ARROWUP" && (coord[0] - 1) >= 0)
+            coord[0] -= 1
+
+        else if (input === "ARROWDOWN" && coord[0] + 1 < 15)
+            coord[0] += 1
+
+        else if (input === "ARROWLEFT" && coord[1] - 1 >= 0)
+            coord[1] -= 1
+
+        else if (input === "ARROWRIGHT" && coord[1] + 1 < 15)
+            coord[1] += 1
+
+        else if (input.match(/^[A-Z]{1}$/)) {
+            gridCellValues[coord[0]][coord[1]] = input
+            
+            if (selectedCell.horizontal && coord[1] + 1 < 15)
+                coord[1] += 1
+            else if (!selectedCell.horizontal && coord[0] + 1 < 15)
+                coord[0] += 1
+
+        } else if (input === "DELETE") {
+            gridCellValues[coord[0]][coord[1]] = ""
+            
+            if (selectedCell.horizontal && coord[1] + 1 < 15)
+                coord[1] += 1
+            else if (!selectedCell.horizontal && coord[0] + 1 < 15)
+                coord[0] += 1
+
+        } else if (input === "BACKSPACE") {
+            gridCellValues[coord[0]][coord[1]] = ""
+            
+            if (selectedCell.horizontal && coord[1] - 1 >= 0)
+                coord[1] -= 1
+            else if (!selectedCell.horizontal && coord[0] - 1 >= 0)
+                coord[0] -= 1
+
+        } else if (input === " ")
+            selectedCell.horizontal = !selectedCell.horizontal
+
+        selectedCell.coord = coord
+        setSelectedCell({...selectedCell})
+        setGridCellValues([...gridCellValues])
     }
     
     return (
