@@ -198,7 +198,7 @@ export default function ScrabbleGrid() {
                 const tileBg = gridCellValues[i][j] ? "bg-tile-texture" : ""
                 row.push(
                     <div
-                        tabIndex={i * 15 + j}
+                        contentEditable
                         className={`w-12 h-12 flex justify-center items-center select-none border-2 text-orange-50 text-center duration-200 ${tileBg}`}
                         key={j}
                     >{ gridCellValues[i][j] }</div>
