@@ -10,10 +10,23 @@ export default function ScrabbleGrid() {
     const tripleLetter: number[][] = [[1, 5], [1, 9], [5, 1], [5, 5], [5, 9], [5, 13], [9, 1], [9, 5], [9, 9], [9, 13], [13, 5], [13, 9]]
     const doubleLetter: number[][] = [[0, 3], [0, 11], [2, 6], [2, 8], [3, 0], [3, 7], [3, 14], [6, 2], [6, 6], [6, 8], [6, 12], [7, 3], [7, 11], [8, 2], [8, 6], [8, 8], [8, 12], [11, 0], [11, 7], [11, 14], [12, 6], [12, 8], [14, 3], [14, 11]]
 
-    const [gridCellValues, setGridCellValues] = React.useState<string[][]>([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
+    const [gridCellValues, setGridCellValues] = React.useState<string[][]>([[]])
     const [selectedCell, setSelectedCell] = React.useState<{coord: number[]|null, horizontal: boolean}>({ coord: null, horizontal: true })
     const overlayRef = React.useRef<HTMLDivElement|null>(null)
     const tilesRef = React.useRef<HTMLDivElement|null>(null)
+
+
+    React.useEffect(() => {
+        const grid = []
+        for (let i = 0; i < 15; i++) {
+            const row = []
+            for (let j = 0; j < 15; j++) {
+                row.push("")
+            }
+            grid.push(row)
+        }
+        setGridCellValues(grid)
+    }, [])
 
     React.useEffect(() => {
         if (!overlayRef.current)
@@ -177,15 +190,17 @@ export default function ScrabbleGrid() {
 
     function drawTiles(): ReactElement[] {
         const cols: ReactElement[] = []
-        for (let i: number = 0; i < 15; i++) {
+        for (let i = 0; i < gridCellValues.length; i++) {
             const row: ReactElement[] = []
-            for (let j: number = 0; j < 15; j++) {
+            for (let j: number = 0; j < gridCellValues[i].length; j++) {
                 const tileBg = gridCellValues[i][j] ? "bg-tile-texture" : ""
                 row.push(
-                    <div
-                        className={`w-12 h-12 flex justify-center items-center select-none border-2 text-orange-50 duration-200 ${tileBg}`}
+                    <input
+                        className={`w-12 h-12 select-none border-2 text-orange-50 text-center duration-200 bg-transparent ${tileBg}`}
                         key={j}
-                    >{ gridCellValues[i][j] }</div>
+                        value={ gridCellValues[i][j] }
+                        readOnly
+                    ></input>
                 )
             }
             cols.push(<div className='flex' key={i}>{ row }</div>)
@@ -225,6 +240,7 @@ export default function ScrabbleGrid() {
                     { drawTileOverlay() }
                 </div>
             </div>
+            <button onClick={() => console.log(gridCellValues)}>View grid</button>
         </div>
     ) 
 }
