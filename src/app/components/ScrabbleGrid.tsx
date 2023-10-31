@@ -21,6 +21,7 @@ export default function ScrabbleGrid() {
         }
         return rows
     })
+    
     const [selectedCell, setSelectedCell] = React.useState<{coord: number[]|null, horizontal: boolean}>({ coord: null, horizontal: true })
     const [playerLetters, setPlayerLetters] = React.useState("")
     const overlayRef = React.useRef<HTMLDivElement|null>(null)
@@ -98,18 +99,10 @@ export default function ScrabbleGrid() {
                     coord[1] += 1
                 else if (!selectedCell.horizontal && coord[0] + 1 < 15)
                     coord[0] += 1
-                if (selectedCell.horizontal && coord[1] + 1 < 15)
-                    coord[1] += 1
-                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
-                    coord[0] += 1
 
             } else if (input === "DELETE") {
                 gridCellValues[coord[0]][coord[1]] = ""
                 
-                if (selectedCell.horizontal && coord[1] + 1 < 15)
-                    coord[1] += 1
-                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
-                    coord[0] += 1
                 if (selectedCell.horizontal && coord[1] + 1 < 15)
                     coord[1] += 1
                 else if (!selectedCell.horizontal && coord[0] + 1 < 15)
@@ -123,16 +116,10 @@ export default function ScrabbleGrid() {
                 else if (!selectedCell.horizontal && coord[0] - 1 >= 0)
                     coord[0] -= 1
                 gridCellValues[coord[0]][coord[1]] = ""
-                
-                if (selectedCell.horizontal && coord[1] - 1 >= 0)
-                    coord[1] -= 1
-                else if (!selectedCell.horizontal && coord[0] - 1 >= 0)
-                    coord[0] -= 1
 
             } else if (input === " ")
                 selectedCell.horizontal = !selectedCell.horizontal
 
-            selectedCell.coord = coord
             selectedCell.coord = coord
             setSelectedCell({...selectedCell})
             setGridCellValues([...gridCellValues])
@@ -188,8 +175,6 @@ export default function ScrabbleGrid() {
         }
         else if (tripleWord.some(([i, j]) => i === row && j === col)) {
             style = "bg-red-700 text-xs"
-            text = "MOT COMPTE TRIPLE" 
-        } else if (doubleWord.some(([i, j]) => i === row && j === col)) {
             text = "MOT COMPTE TRIPLE" 
         } else if (doubleWord.some(([i, j]) => i === row && j === col)) {
             style = "bg-red-300 text-xs"
@@ -274,9 +259,7 @@ export default function ScrabbleGrid() {
                 row.push(
                     <div
                         className="w-12 h-12 select-none cursor-pointer duration-200"
-                        className="w-12 h-12 select-none cursor-pointer duration-200"
                         key={j}
-                        onClick={() => selectCell(i, j)}
                         onClick={() => selectCell(i, j)}
                         onMouseEnter={() => showBoard(i, j)}
                     ></div>
