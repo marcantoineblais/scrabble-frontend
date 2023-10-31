@@ -12,6 +12,7 @@ export default function ScrabbleGrid() {
 
     const [gridCellValues, setGridCellValues] = React.useState<string[][]>([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
     const [selectedCell, setSelectedCell] = React.useState<{coord: number[]|null, horizontal: boolean}>({ coord: null, horizontal: true })
+    const [playerLetters, setPlayerLetters] = React.useState("")
     const overlayRef = React.useRef<HTMLDivElement|null>(null)
     const tilesRef = React.useRef<HTMLDivElement|null>(null)
 
@@ -175,6 +176,29 @@ export default function ScrabbleGrid() {
         return cols
     }
 
+    async function submitGrid() {
+        const url = "http://localhost:8080/bygrid"
+        const body = {
+            grid: gridCellValues,
+            playerLetters: playerLetters,
+            language: "french"
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+            const data = await response.json()
+            console.log(data);  
+        } catch (ex: any) {
+            console.log(ex.message);          
+        }
+    }
+
     function drawTiles(): ReactElement[] {
         const cols: ReactElement[] = []
         for (let i: number = 0; i < 15; i++) {
@@ -225,6 +249,8 @@ export default function ScrabbleGrid() {
                     { drawTileOverlay() }
                 </div>
             </div>
+            <input type="text" onChange={(e) => setPlayerLetters(e.currentTarget.value)} />
+            <button onClick={() => submitGrid()}>SEND</button>
         </div>
     ) 
 }
