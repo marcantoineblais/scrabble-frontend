@@ -16,12 +16,26 @@ export default function ScrabbleGrid() {
     const overlayRef = React.useRef<HTMLDivElement|null>(null)
     const tilesRef = React.useRef<HTMLDivElement|null>(null)
 
+
+    React.useEffect(() => {
+        const grid = []
+        for (let i = 0; i < 15; i++) {
+            const row = []
+            for (let j = 0; j < 15; j++) {
+                row.push("")
+            }
+            grid.push(row)
+        }
+        setGridCellValues(grid)
+    }, [])
+
     React.useEffect(() => {
         if (!overlayRef.current)
             return
 
         function highlightCells() {
             const rows: HTMLCollection|undefined = overlayRef.current?.children 
+            const coord = selectedCell.coord
             const coord = selectedCell.coord
             if (!rows)
                 return
@@ -32,12 +46,16 @@ export default function ScrabbleGrid() {
                     cols[j].classList.remove("bg-neutral-950/70", "bg-neutral-950/30")
 
                     if (!coord)
+                    if (!coord)
                         continue
 
                     if (i === coord[0] && j === coord[1])
+                    if (i === coord[0] && j === coord[1])
                         cols[j].classList.add("bg-neutral-950/70")
                     else if (selectedCell.horizontal && i === coord[0])
+                    else if (selectedCell.horizontal && i === coord[0])
                         cols[j].classList.add("bg-neutral-950/30")   
+                    else if (!selectedCell.horizontal && j === coord[1])
                     else if (!selectedCell.horizontal && j === coord[1])
                         cols[j].classList.add("bg-neutral-950/30")
                 }
@@ -47,7 +65,9 @@ export default function ScrabbleGrid() {
         function updateGridValues(e: KeyboardEvent) {
             const input: string = e.key.toUpperCase()
             let coord = selectedCell.coord
+            let coord = selectedCell.coord
             
+            if (!coord)
             if (!coord)
                 return
 
@@ -55,19 +75,33 @@ export default function ScrabbleGrid() {
                 coord = null
             else if (input === "ARROWUP" && (coord[0] - 1) >= 0)
                 coord[0] -= 1
+                coord = null
+            else if (input === "ARROWUP" && (coord[0] - 1) >= 0)
+                coord[0] -= 1
 
+            else if (input === "ARROWDOWN" && coord[0] + 1 < 15)
+                coord[0] += 1
             else if (input === "ARROWDOWN" && coord[0] + 1 < 15)
                 coord[0] += 1
 
             else if (input === "ARROWLEFT" && coord[1] - 1 >= 0)
                 coord[1] -= 1
+            else if (input === "ARROWLEFT" && coord[1] - 1 >= 0)
+                coord[1] -= 1
 
+            else if (input === "ARROWRIGHT" && coord[1] + 1 < 15)
+                coord[1] += 1
             else if (input === "ARROWRIGHT" && coord[1] + 1 < 15)
                 coord[1] += 1
 
             else if (input.match(/^[A-Z]{1}$/)) {
                 gridCellValues[coord[0]][coord[1]] = input
+                gridCellValues[coord[0]][coord[1]] = input
                 
+                if (selectedCell.horizontal && coord[1] + 1 < 15)
+                    coord[1] += 1
+                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
+                    coord[0] += 1
                 if (selectedCell.horizontal && coord[1] + 1 < 15)
                     coord[1] += 1
                 else if (!selectedCell.horizontal && coord[0] + 1 < 15)
@@ -75,7 +109,12 @@ export default function ScrabbleGrid() {
 
             } else if (input === "DELETE") {
                 gridCellValues[coord[0]][coord[1]] = ""
+                gridCellValues[coord[0]][coord[1]] = ""
                 
+                if (selectedCell.horizontal && coord[1] + 1 < 15)
+                    coord[1] += 1
+                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
+                    coord[0] += 1
                 if (selectedCell.horizontal && coord[1] + 1 < 15)
                     coord[1] += 1
                 else if (!selectedCell.horizontal && coord[0] + 1 < 15)
@@ -88,13 +127,25 @@ export default function ScrabbleGrid() {
                     coord[1] -= 1
                 else if (!selectedCell.horizontal && coord[0] - 1 >= 0)
                     coord[0] -= 1
+                gridCellValues[coord[0]][coord[1]] = ""
+                
+                if (selectedCell.horizontal && coord[1] - 1 >= 0)
+                    coord[1] -= 1
+                else if (!selectedCell.horizontal && coord[0] - 1 >= 0)
+                    coord[0] -= 1
 
             } else if (input === " ")
                 selectedCell.horizontal = !selectedCell.horizontal
 
             selectedCell.coord = coord
+            selectedCell.coord = coord
             setSelectedCell({...selectedCell})
             setGridCellValues([...gridCellValues])
+
+            if (coord) {
+                const cell: HTMLDivElement = tilesRef.current?.children[coord[0]].children[coord[1]] as HTMLDivElement
+                cell.focus()
+            }
         }
 
         highlightCells()
@@ -133,22 +184,29 @@ export default function ScrabbleGrid() {
     }
 
     function getBackground(row: number, col: number): [string, string] {
+    function getBackground(row: number, col: number): [string, string] {
         let style: string = ""
         let text: string = ""
 
+        if (col === 7 && row === 7) {
         if (col === 7 && row === 7) {
             text = String.fromCharCode(9733)
             style = "text-[3rem] -mt-4"
         }
         else if (tripleWord.some(([i, j]) => i === row && j === col)) {
+        else if (tripleWord.some(([i, j]) => i === row && j === col)) {
             style = "bg-red-700 text-xs"
+            text = "MOT COMPTE TRIPLE" 
+        } else if (doubleWord.some(([i, j]) => i === row && j === col)) {
             text = "MOT COMPTE TRIPLE" 
         } else if (doubleWord.some(([i, j]) => i === row && j === col)) {
             style = "bg-red-300 text-xs"
             text = "MOT COMPTE DOUBLE"  
         } else if (tripleLetter.some(([i, j]) => i === row && j === col)) {
+        } else if (tripleLetter.some(([i, j]) => i === row && j === col)) {
             style = "bg-sky-900 text-xs"
             text = "LETTRE COMPTE TRIPLE"  
+        } else if (doubleLetter.some(([i, j]) => i === row && j === col)) {
         } else if (doubleLetter.some(([i, j]) => i === row && j === col)) {
             style = "bg-sky-300 text-xs"
             text = "LETTRE COMPTE DOUBLE"  
@@ -162,6 +220,7 @@ export default function ScrabbleGrid() {
         for (let i: number = 0; i < 15; i++) {
             const row: ReactElement[] = []
             for (let j: number = 0; j < 15; j++) {
+                const [style, text]: [string, string]  = getBackground(i, j)
                 const [style, text]: [string, string]  = getBackground(i, j)
                 row.push(
                     <div
@@ -201,7 +260,7 @@ export default function ScrabbleGrid() {
 
     function drawTiles(): ReactElement[] {
         const cols: ReactElement[] = []
-        for (let i: number = 0; i < 15; i++) {
+        for (let i = 0; i < gridCellValues.length; i++) {
             const row: ReactElement[] = []
             for (let j: number = 0; j < 15; j++) {
                 const tileBg = gridCellValues[i][j] ? "bg-tile-texture" : ""
@@ -209,6 +268,7 @@ export default function ScrabbleGrid() {
                     <div
                         className={`w-12 h-12 flex justify-center items-center select-none border-2 text-orange-50 duration-200 ${tileBg}`}
                         key={j}
+                    >{ gridCellValues[i][j] }</div>
                     >{ gridCellValues[i][j] }</div>
                 )
             }
@@ -226,7 +286,9 @@ export default function ScrabbleGrid() {
                 row.push(
                     <div
                         className="w-12 h-12 select-none cursor-pointer duration-200"
+                        className="w-12 h-12 select-none cursor-pointer duration-200"
                         key={j}
+                        onClick={() => selectCell(i, j)}
                         onClick={() => selectCell(i, j)}
                         onMouseEnter={() => showBoard(i, j)}
                     ></div>
