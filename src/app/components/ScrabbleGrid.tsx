@@ -282,7 +282,11 @@ export default function ScrabbleGrid() {
                     { drawTileOverlay() }
                 </div>
             </div>
-            <input type="text" onChange={(e) => setPlayerLetters(e.currentTarget.value)} />
+            <input
+                type="text"
+                onChange={(e) => setPlayerLetters(e.currentTarget.value)}
+                onFocus={() => setSelectedCell({ coord: null, horizontal: true })}
+            />
             <button onClick={() => submitGrid()}>SEND</button>
         </div>
     ) 
