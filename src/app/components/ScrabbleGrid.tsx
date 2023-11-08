@@ -214,7 +214,11 @@ export default function ScrabbleGrid() {
         const body = {
             grid: gridCellValues,
             playerLetters: playerLetters,
-            language: "french"
+            language: "french",
+            doubleLetter: doubleLetter,
+            tripleLetter: tripleLetter,
+            doubleWord: doubleWord,
+            tripleWord: tripleWord
         }
 
         try {
