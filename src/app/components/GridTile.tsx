@@ -15,7 +15,7 @@ export default function GridTile({
         >
             <div className={`absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center ${background}`}>{bonus}</div>
             <div className={`absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center ${letter.length > 0 ? "bg-tile-texture" : ""}`}>{letter}</div>
-            <div className={`absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center ${overlayBackground} ${overlayText.length > 0 ? "bg-tile-texture opacity-100" : ""}`}>{ overlayText }</div>
+            <div className={`absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center ${overlayBackground} ${overlayText.length > 0 ? "bg-tile-texture opacity-100!important" : ""}`}>{ overlayText }</div>
         </div>
     )
 }
