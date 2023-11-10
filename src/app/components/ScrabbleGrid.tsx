@@ -2,6 +2,7 @@
 
 import type { ReactElement } from 'react'
 import React from 'react'
+import GridRow from './GridRow'
 
 export default function ScrabbleGrid() {
     
@@ -9,210 +10,98 @@ export default function ScrabbleGrid() {
     const doubleWord: number[][] = [[1, 1], [1, 13], [2, 2], [2, 12], [3, 3], [3, 11], [4, 4], [4, 10], [10, 4], [10, 10], [11, 3], [11, 11], [12, 2], [12, 12], [13, 1], [13, 13]]
     const tripleLetter: number[][] = [[1, 5], [1, 9], [5, 1], [5, 5], [5, 9], [5, 13], [9, 1], [9, 5], [9, 9], [9, 13], [13, 5], [13, 9]]
     const doubleLetter: number[][] = [[0, 3], [0, 11], [2, 6], [2, 8], [3, 0], [3, 7], [3, 14], [6, 2], [6, 6], [6, 8], [6, 12], [7, 3], [7, 11], [8, 2], [8, 6], [8, 8], [8, 12], [11, 0], [11, 7], [11, 14], [12, 6], [12, 8], [14, 3], [14, 11]]
-
-    const [gridCellValues, setGridCellValues] = React.useState<string[][]>(() => {
-        const rows = [];
-        for (let y = 0; y < 15; y++) {
-            const cols = []
-            for (let x = 0; x < 15; x++) {
-                cols.push("")
-            }
-            rows.push(cols)
-        }
-        return rows
-    })
     
-    const [selectedCell, setSelectedCell] = React.useState<{coord: number[]|null, horizontal: boolean}>({ coord: null, horizontal: true })
+    const [boardLetters, setBoardLetters] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
     const [playerLetters, setPlayerLetters] = React.useState("")
-    const overlayRef = React.useRef<HTMLDivElement|null>(null)
-    const tilesRef = React.useRef<HTMLDivElement|null>(null)
-
+    const [bonus, setBonus] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
+    const [backgrounds, setBackgrounds] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
+    const [overlays, setOverlays] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
+    const [selectedTile, setSelectedTile] = React.useState<{y: number, x: number, vertical: boolean}>({ y: -1, x: -1, vertical: false })
+    const [gridRows, setGridRows] = React.useState<React.JSX.Element[]>([])
+    
 
     React.useEffect(() => {
-        const grid = []
-        for (let i = 0; i < 15; i++) {
-            const row = []
-            for (let j = 0; j < 15; j++) {
-                row.push("")
-            }
-            grid.push(row)
-        }
-        setGridCellValues(grid)
+        const bonusTexts = bonus
+        const bonusBackgrounds = backgrounds
+
+        bonus.forEach((row, y) => {
+            row.forEach((_col, x) => {
+                if (y === 7 && x === 7) {
+                    bonusTexts[y][x] = String.fromCharCode(9733)
+                    bonusBackgrounds[y][x] = "bg-orange-300 text-[3rem] -mt-4"
+                } else if (tripleWord.some(([i, j]) => i === y && j === x)) {
+                    bonusTexts[y][x] = "MOT COMPTE TRIPLE" 
+                    bonusBackgrounds[y][x] = "bg-red-700 text-xs"
+                } else if (doubleWord.some(([i, j]) => i === y && j === x)) {
+                    bonusTexts[y][x] = "MOT COMPTE DOUBLE"  
+                    bonusBackgrounds[y][x] = "bg-red-300 text-xs"
+                } else if (tripleLetter.some(([i, j]) => i === y && j === x)) {
+                    bonusTexts[y][x] = "LETTRE COMPTE TRIPLE"  
+                    bonusBackgrounds[y][x] = "bg-sky-900 text-xs"
+                } else if (doubleLetter.some(([i, j]) => i === y && j === x)) {
+                    bonusTexts[y][x] = "LETTRE COMPTE DOUBLE"  
+                    bonusBackgrounds[y][x] = "bg-sky-300 text-xs"
+                } else {
+                    bonusTexts[y][x] = ""
+                    bonusBackgrounds[y][x] = "bg-orange-300"
+                }
+            })
+        })
+
+        setBonus(bonusTexts)
+        setBackgrounds(bonusBackgrounds)
     }, [])
 
     React.useEffect(() => {
-        if (!overlayRef.current)
-            return
+        const tileOverlay = overlays
 
-        function highlightCells() {
-            const rows: HTMLCollection|undefined = overlayRef.current?.children 
-            const coord = selectedCell.coord
-            if (!rows)
-                return
-
-            for (let i: number = 0; i < rows.length; i++) {
-                const cols: HTMLCollection = rows[i].children
-                for (let j: number = 0; j < cols.length; j++) {
-                    cols[j].classList.remove("bg-neutral-950/70", "bg-neutral-950/30")
-
-                    if (!coord)
-                    if (!coord)
-                        continue
-
-                    if (i === coord[0] && j === coord[1])
-                        cols[j].classList.add("bg-neutral-950/70")
-                    else if (selectedCell.horizontal && i === coord[0])
-                        cols[j].classList.add("bg-neutral-950/30")   
-                    else if (!selectedCell.horizontal && j === coord[1])
-                        cols[j].classList.add("bg-neutral-950/30")
-                }
-            }
-        }
-
-        function updateGridValues(e: KeyboardEvent) {
-            const input: string = e.key.toUpperCase()
-            let coord = selectedCell.coord
-            
-            if (!coord)
-                return
-
-            if (input === "ESCAPE")
-                coord = null
-            else if (input === "ARROWUP" && (coord[0] - 1) >= 0)
-                coord[0] -= 1
-            else if (input === "ARROWUP" && (coord[0] - 1) >= 0)
-                coord[0] -= 1
-
-            else if (input === "ARROWDOWN" && coord[0] + 1 < 15)
-                coord[0] += 1
-
-            else if (input === "ARROWLEFT" && coord[1] - 1 >= 0)
-                coord[1] -= 1
-
-            else if (input === "ARROWRIGHT" && coord[1] + 1 < 15)
-                coord[1] += 1
-
-            else if (input.match(/^[A-Z]{1}$/)) {
-                gridCellValues[coord[0]][coord[1]] = input
-                
-                if (selectedCell.horizontal && coord[1] + 1 < 15)
-                    coord[1] += 1
-                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
-                    coord[0] += 1
-
-            } else if (input === "DELETE") {
-                gridCellValues[coord[0]][coord[1]] = ""
-                
-                if (selectedCell.horizontal && coord[1] + 1 < 15)
-                    coord[1] += 1
-                else if (!selectedCell.horizontal && coord[0] + 1 < 15)
-                    coord[0] += 1
-
-            } else if (input === "BACKSPACE") {
-                gridCellValues[coord[0]][coord[1]] = ""
-                
-                if (selectedCell.horizontal && coord[1] - 1 >= 0)
-                    coord[1] -= 1
-                else if (!selectedCell.horizontal && coord[0] - 1 >= 0)
-                    coord[0] -= 1
-                gridCellValues[coord[0]][coord[1]] = ""
-
-            } else if (input === " ")
-                selectedCell.horizontal = !selectedCell.horizontal
-
-            selectedCell.coord = coord
-            setSelectedCell({...selectedCell})
-            setGridCellValues([...gridCellValues])
-
-            if (coord) {
-                const cell: HTMLDivElement = tilesRef.current?.children[coord[0]].children[coord[1]] as HTMLDivElement
-                cell.focus()
-            }
-        }
-
-        highlightCells()
-        window.addEventListener("keyup", updateGridValues)
-
-        return () => {
-            window.removeEventListener("keyup", updateGridValues)
-        }
-    }, [selectedCell])
-
-    function selectCell(row: number, col: number) {
-        const coord = selectedCell.coord
-        
-        if (coord && row === coord[0] && col === coord[1])
-            selectedCell.horizontal = !selectedCell.horizontal
-
-        selectedCell.coord = [row, col]
-        setSelectedCell({ ...selectedCell })
-    }
-
-    function showBoard(row: number, col: number) {
-        const rows: HTMLCollection|undefined = tilesRef.current?.children 
-
-        if (!rows)
-            return
-
-        for (let i: number = 0; i < rows.length; i++) {
-            const cols: HTMLCollection = rows[i].children
-            for (let j: number = 0; j < cols.length; j++) {
-                if (i === row && j === col)
-                    cols[j].classList.add("opacity-30")
+        overlays.forEach((row, y) => {
+            row.forEach((_el, x) => {
+                if (selectedTile.y == y && selectedTile.x == x)
+                    tileOverlay[y][x] = "bg-black opacity-75"
+                else if (selectedTile.x == x && selectedTile.vertical)
+                    tileOverlay[y][x] = "bg-black opacity-25"
+                else if (selectedTile.y == y && !selectedTile.vertical)
+                    tileOverlay[y][x] = "bg-black opacity-25"
                 else
-                    cols[j].classList.remove("opacity-30")
-            }
-        }
-    }
+                    tileOverlay[y][x] = ""
+            }) 
+        })
 
-    function getBackground(row: number, col: number): [string, string] {
-        let style: string = ""
-        let text: string = ""
+        setOverlays(tileOverlay)
+    }, [selectedTile])
 
-        if (col === 7 && row === 7) {
-            text = String.fromCharCode(9733)
-            style = "text-[3rem] -mt-4"
-        }
-        else if (tripleWord.some(([i, j]) => i === row && j === col)) {
-            style = "bg-red-700 text-xs"
-            text = "MOT COMPTE TRIPLE" 
-        } else if (doubleWord.some(([i, j]) => i === row && j === col)) {
-            style = "bg-red-300 text-xs"
-            text = "MOT COMPTE DOUBLE"  
-        } else if (tripleLetter.some(([i, j]) => i === row && j === col)) {
-            style = "bg-sky-900 text-xs"
-            text = "LETTRE COMPTE TRIPLE"  
-        } else if (doubleLetter.some(([i, j]) => i === row && j === col)) {
-            style = "bg-sky-300 text-xs"
-            text = "LETTRE COMPTE DOUBLE"  
-        }
+    React.useEffect(() => {
+        const rows = Array.from({length: 15}).map((_el, i) => {      
+            return (
+                <GridRow 
+                    key={i} 
+                    letters={boardLetters[i]} 
+                    bonus={bonus[i]} 
+                    backgrounds={backgrounds[i]} 
+                    overlays={overlays[i]} 
+                    y={i}
+                    selectBoardTile={selectBoardTile}
+                />
+            )
+        })
+    
+        setGridRows(rows)
+    }, [selectedTile, overlays])
 
-        return [style, text]
-    }
+    function selectBoardTile(y: number, x: number) {
+        let isVertical = selectedTile.vertical
+        
+        if (selectedTile.y == y && selectedTile.x == x)
+            isVertical = !isVertical
 
-    function drawGrid(): ReactElement[] {
-        const cols: ReactElement[] = []
-        for (let i: number = 0; i < 15; i++) {
-            const row: ReactElement[] = []
-            for (let j: number = 0; j < 15; j++) {
-                const [style, text]: [string, string]  = getBackground(i, j)
-                row.push(
-                    <div
-                        className={`pt-1 w-12 h-12 select-none text-center text-orange-50 ${style} `}
-                        key={j}
-                    >{ text }</div>
-                )
-            }
-            cols.push(<div className='flex' key={i}>{ row }</div>)
-        }
-
-        return cols
+        setSelectedTile({ y: y, x: x, vertical: isVertical })
     }
 
     async function submitGrid() {
         const url = "http://localhost:8080/bygrid"
         const body = {
-            grid: gridCellValues,
+            grid: boardLetters,
             playerLetters: playerLetters,
             language: "french",
             doubleLetter: doubleLetter,
@@ -235,61 +124,16 @@ export default function ScrabbleGrid() {
             console.log(ex.message);          
         }
     }
-
-    function drawTiles(): ReactElement[] {
-        const cols: ReactElement[] = []
-        for (let i = 0; i < gridCellValues.length; i++) {
-            const row: ReactElement[] = []
-            for (let j: number = 0; j < 15; j++) {
-                const tileBg = gridCellValues[i][j] ? "bg-tile-texture" : ""
-                row.push(
-                    <div
-                        className={`w-12 h-12 flex justify-center items-center select-none border-2 text-orange-50 duration-200 ${tileBg}`}
-                        key={j}
-                    >{ gridCellValues[i][j] }</div>
-                )
-            }
-            cols.push(<div className='flex' key={i}>{ row }</div>)
-        }
-
-        return cols
-    }
-
-    function drawTileOverlay(): ReactElement[] {
-        const cols: ReactElement[] = []
-        for (let i: number = 0; i < 15; i++) {
-            const row: ReactElement[] = []
-            for (let j: number = 0; j < 15; j++) {
-                row.push(
-                    <div
-                        className="w-12 h-12 select-none cursor-pointer duration-200"
-                        key={j}
-                        onClick={() => selectCell(i, j)}
-                        onMouseEnter={() => showBoard(i, j)}
-                    ></div>
-                )
-            }
-            cols.push(<div className='flex' key={i}>{ row }</div>)
-        }
-
-        return cols
-    }
     
     return (
         <div className='flex flex-col items-center justify-center p-3'>
-            <div onMouseLeave={() => showBoard(-1, -1)} className='relative border-2 border-amber-700 bg-orange-300'> 
-                { drawGrid() }
-                <div ref={tilesRef} className='absolute top-0'>
-                    { drawTiles() }
-                </div>
-                <div ref={overlayRef} className='absolute top-0'>
-                    { drawTileOverlay() }
-                </div>
+            <div className='flex flex-col items-center justify-center p-1'>
+                { gridRows }
             </div>
             <input
                 type="text"
                 onChange={(e) => setPlayerLetters(e.currentTarget.value)}
-                onFocus={() => setSelectedCell({ coord: null, horizontal: true })}
+                onFocus={() => setSelectedTile({ y: -1, x: -1, vertical: false })}
             />
             <button onClick={() => submitGrid()}>SEND</button>
         </div>
