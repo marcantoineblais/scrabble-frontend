@@ -1,26 +1,27 @@
 "use client"
 
 import React from 'react'
-import GridCell from './GridCell'
+import GridTile from './GridTile'
 
 export default function GridRow({
-    letters, bonus, backgrounds, overlays, y, selectBoardTile
+    letters, bonus, backgrounds, overlaysText, overlaysBackground, y, clickAction: tileAction, length
 }: {
-    letters: string[], bonus: string[], backgrounds: string[], overlays: string[], y: number, selectBoardTile: Function
+    letters: string[], bonus: string[], backgrounds: string[], overlaysText: string[], overlaysBackground: string[], y: number, clickAction: Function, length: number
 }) {
 
     function renderGridCells() {
-        const row = Array.from({length: 15}).map((_el, i) => {
+        const row = Array.from({length: length}).map((_el, i) => {
            return (
-                <GridCell 
+                <GridTile 
                     key={i} 
                     letter={letters[i]} 
                     bonus={bonus[i]} 
                     background={backgrounds[i]} 
-                    overlay={overlays[i]} 
+                    overlayText={overlaysText[i]} 
+                    overlayBackground={overlaysBackground[i]} 
                     x={i}
                     y={y}
-                    selectBoardTile={selectBoardTile}
+                    tileAction={tileAction}
                 />
            )
         })

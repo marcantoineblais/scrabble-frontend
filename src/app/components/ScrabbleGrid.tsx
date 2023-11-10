@@ -1,8 +1,8 @@
 "use client"
 
-import type { ReactElement } from 'react'
 import React from 'react'
 import GridRow from './GridRow'
+import Word from './Word'
 
 export default function ScrabbleGrid() {
     
@@ -13,9 +13,11 @@ export default function ScrabbleGrid() {
     
     const [boardLetters, setBoardLetters] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
     const [playerLetters, setPlayerLetters] = React.useState("")
+    const [word, setWord] = React.useState("")
     const [bonus, setBonus] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
     const [backgrounds, setBackgrounds] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
-    const [overlays, setOverlays] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
+    const [overlaysText, setOverlaysText] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
+    const [overlaysBackground, setOverlaysBackground] = React.useState(Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => "")))
     const [selectedTile, setSelectedTile] = React.useState<{y: number, x: number, vertical: boolean}>({ y: -1, x: -1, vertical: false })
     const [gridRows, setGridRows] = React.useState<React.JSX.Element[]>([])
     
@@ -34,13 +36,13 @@ export default function ScrabbleGrid() {
                     bonusBackgrounds[y][x] = "bg-red-700 text-xs"
                 } else if (doubleWord.some(([i, j]) => i === y && j === x)) {
                     bonusTexts[y][x] = "MOT COMPTE DOUBLE"  
-                    bonusBackgrounds[y][x] = "bg-red-300 text-xs"
+                    bonusBackgrounds[y][x] = "bg-red-400 text-xs"
                 } else if (tripleLetter.some(([i, j]) => i === y && j === x)) {
                     bonusTexts[y][x] = "LETTRE COMPTE TRIPLE"  
                     bonusBackgrounds[y][x] = "bg-sky-900 text-xs"
                 } else if (doubleLetter.some(([i, j]) => i === y && j === x)) {
                     bonusTexts[y][x] = "LETTRE COMPTE DOUBLE"  
-                    bonusBackgrounds[y][x] = "bg-sky-300 text-xs"
+                    bonusBackgrounds[y][x] = "bg-sky-400 text-xs"
                 } else {
                     bonusTexts[y][x] = ""
                     bonusBackgrounds[y][x] = "bg-orange-300"
@@ -53,23 +55,23 @@ export default function ScrabbleGrid() {
     }, [])
 
     React.useEffect(() => {
-        const tileOverlay = overlays
+        const tileOverlayBackground = overlaysBackground
 
-        overlays.forEach((row, y) => {
+        overlaysBackground.forEach((row, y) => {
             row.forEach((_el, x) => {
                 if (selectedTile.y == y && selectedTile.x == x)
-                    tileOverlay[y][x] = "bg-black opacity-75"
+                    tileOverlayBackground[y][x] = "bg-black opacity-75"
                 else if (selectedTile.x == x && selectedTile.vertical)
-                    tileOverlay[y][x] = "bg-black opacity-25"
+                    tileOverlayBackground[y][x] = "bg-black opacity-25"
                 else if (selectedTile.y == y && !selectedTile.vertical)
-                    tileOverlay[y][x] = "bg-black opacity-25"
+                    tileOverlayBackground[y][x] = "bg-black opacity-25"
                 else
-                    tileOverlay[y][x] = ""
+                    tileOverlayBackground[y][x] = ""
             }) 
         })
 
-        setOverlays(tileOverlay)
-    }, [selectedTile])
+        setOverlaysBackground(tileOverlayBackground)
+    }, [selectedTile, overlaysText])
 
     React.useEffect(() => {
         const rows = Array.from({length: 15}).map((_el, i) => {      
@@ -79,15 +81,38 @@ export default function ScrabbleGrid() {
                     letters={boardLetters[i]} 
                     bonus={bonus[i]} 
                     backgrounds={backgrounds[i]} 
-                    overlays={overlays[i]} 
+                    overlaysText={overlaysText[i]}
+                    overlaysBackground={overlaysBackground[i]} 
                     y={i}
-                    selectBoardTile={selectBoardTile}
+                    clickAction={selectBoardTile}
+                    length={15}
                 />
             )
         })
     
         setGridRows(rows)
-    }, [selectedTile, overlays])
+    }, [selectedTile, overlaysText])
+
+    React.useEffect(() => {  
+        if (selectedTile.y < 0 || selectedTile.x < 0)
+            return
+
+            
+        const overlayedLetters = Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => ""))
+
+        word.split("").forEach((letter, i) => {
+            if (selectedTile.vertical && selectedTile.y + i >= boardLetters.length || !selectedTile.vertical && selectedTile.x + i >= boardLetters[selectedTile.y].length)
+                return
+
+            if (selectedTile.vertical) {
+                overlayedLetters[selectedTile.y + i][selectedTile.x] = letter
+            } else {
+                overlayedLetters[selectedTile.y][selectedTile.x + i] = letter
+            }
+        })
+
+        setOverlaysText(overlayedLetters)
+    }, [word, selectedTile])
 
     function selectBoardTile(y: number, x: number) {
         let isVertical = selectedTile.vertical
@@ -96,6 +121,29 @@ export default function ScrabbleGrid() {
             isVertical = !isVertical
 
         setSelectedTile({ y: y, x: x, vertical: isVertical })
+    }
+
+    function addWordToGrid() {
+        const updatedBoardLetters = boardLetters
+
+        overlaysText.forEach((row, y) => {
+            row.forEach((letter, x) => {
+                if (letter.length > 0) {
+                    if (boardLetters[y][x].length > 0 && boardLetters[y][x] !== letter) {
+                        alert("Mot invalide") // NEED TO PREVENT WORD FROM BEEING ADDED
+                        return
+                    } else {
+                        updatedBoardLetters[y][x] = letter
+                    }
+                }
+            })
+        })
+
+        setBoardLetters(updatedBoardLetters)
+    }
+
+    function dragWord() {
+
     }
 
     async function submitGrid() {
@@ -130,11 +178,27 @@ export default function ScrabbleGrid() {
             <div className='flex flex-col items-center justify-center p-1'>
                 { gridRows }
             </div>
-            <input
-                type="text"
-                onChange={(e) => setPlayerLetters(e.currentTarget.value)}
-                onFocus={() => setSelectedTile({ y: -1, x: -1, vertical: false })}
-            />
+
+            <Word word={word} clickAction={dragWord} />
+
+            <div className='p-3 flex justify-center items-center gap-3'>
+                <h2>Ajouter un mot</h2>
+                <input
+                    type="text"
+                    onChange={(e) => setWord(e.currentTarget.value.toUpperCase())}
+                />
+                <button onClick={() => addWordToGrid()}>Submit</button>
+            </div>
+
+            <div className='flex justify-center items-center gap-3'>
+                <h2>Vos lettres</h2>
+                <input
+                    type="text"
+                    onChange={(e) => setPlayerLetters(e.currentTarget.value)}
+                    onFocus={() => setSelectedTile({ y: -1, x: -1, vertical: false })}
+                />
+            </div>
+
             <button onClick={() => submitGrid()}>SEND</button>
         </div>
     ) 
