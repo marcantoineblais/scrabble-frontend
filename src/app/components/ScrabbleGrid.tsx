@@ -31,7 +31,7 @@ export default function ScrabbleGrid() {
             row.forEach((_col, x) => {
                 if (y === 7 && x === 7) {
                     bonusTexts[y][x] = String.fromCharCode(9733)
-                    bonusBackgrounds[y][x] = "bg-orange-300 text-[3rem] -mt-4"
+                    bonusBackgrounds[y][x] = "bg-orange-300 text-[3rem] -mt-1"
                 } else if (tripleWord.some(([i, j]) => i === y && j === x)) {
                     bonusTexts[y][x] = "MOT COMPTE TRIPLE" 
                     bonusBackgrounds[y][x] = "bg-red-700 text-xs"
@@ -60,7 +60,9 @@ export default function ScrabbleGrid() {
 
         overlaysBackground.forEach((row, y) => {
             row.forEach((_el, x) => {
-                if (selectedTile.y == y && selectedTile.x == x)
+                if (overlaysText[y][x].length > 0)
+                    tileOverlayBackground[y][x] = "bg-tile-texture"
+                else if (selectedTile.y == y && selectedTile.x == x)
                     tileOverlayBackground[y][x] = "bg-black opacity-75"
                 else if (selectedTile.x == x && selectedTile.vertical)
                     tileOverlayBackground[y][x] = "bg-black opacity-25"
@@ -92,7 +94,7 @@ export default function ScrabbleGrid() {
         })
     
         setGridRows(rows)
-    }, [selectedTile, overlaysText])
+    }, [backgrounds, selectedTile, overlaysText, overlaysBackground])
 
     React.useEffect(() => {  
         const y = selectedTile.y
