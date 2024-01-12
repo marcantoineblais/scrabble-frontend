@@ -178,11 +178,16 @@ export default function ScrabbleGrid() {
     }
 
     async function submitGrid() {
-        const url = "http://localhost:8080/bygrid"
+        const url = "http://localhost:8080/grid"
         const body = {
             grid: boardLetters,
-            playerLetters: playerLetters,
-            language: "french",
+            playerLetters: {
+                letters: playerLetters,
+            },
+            language: {
+                id: 1,
+                name: "french"
+            },
             doubleLetter: doubleLetter,
             tripleLetter: tripleLetter,
             doubleWord: doubleWord,
@@ -200,7 +205,7 @@ export default function ScrabbleGrid() {
             const data = await response.json()
             console.log(data);  
         } catch (ex: any) {
-            console.log(ex.message);          
+            console.log(ex);          
         }
     }
     
