@@ -181,9 +181,7 @@ export default function ScrabbleGrid() {
         const url = "http://localhost:8080/grid"
         const body = {
             grid: boardLetters,
-            playerLetters: {
-                letters: playerLetters,
-            },
+            playerLetters: playerLetters,
             language: {
                 id: 1,
                 name: "french"
