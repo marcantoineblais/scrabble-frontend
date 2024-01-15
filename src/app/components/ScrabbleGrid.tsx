@@ -180,19 +180,21 @@ export default function ScrabbleGrid() {
     async function submitGrid() {
         const url = "http://localhost:8080/grid"
         const body = {
-            grid: boardLetters,
+            grid: JSON.stringify(boardLetters),
             playerLetters: playerLetters,
             gridType: {
                 language: {
                     id: 1,
                     name: "francais"
                 },
-                doubleLetter: doubleLetter,
-                tripleLetter: tripleLetter,
-                doubleWord: doubleWord,
-                tripleWord: tripleWord
+                doubleLetter: JSON.stringify(doubleLetter),
+                tripleLetter: JSON.stringify(tripleLetter),
+                doubleWord: JSON.stringify(doubleWord),
+                tripleWord: JSON.stringify(tripleWord)
             }
         }
+        console.log(body);
+        
 
         try {
             const response = await fetch(url, {
