@@ -182,14 +182,16 @@ export default function ScrabbleGrid() {
         const body = {
             grid: boardLetters,
             playerLetters: playerLetters,
-            language: {
-                id: 1,
-                name: "francais"
-            },
-            doubleLetter: doubleLetter,
-            tripleLetter: tripleLetter,
-            doubleWord: doubleWord,
-            tripleWord: tripleWord
+            gridType: {
+                language: {
+                    id: 1,
+                    name: "francais"
+                },
+                doubleLetter: doubleLetter,
+                tripleLetter: tripleLetter,
+                doubleWord: doubleWord,
+                tripleWord: tripleWord
+            }
         }
 
         try {
