@@ -173,16 +173,13 @@ export default function ScrabbleGrid() {
         }
     }
 
-    function dragWord() {
-
-    }
-
     async function submitGrid() {
         const url = "http://localhost:8080/grid"
         const body = {
             grid: JSON.stringify(boardLetters),
             playerLetters: playerLetters,
             gridType: {
+                id: 1,
                 language: {
                     id: 1,
                     name: "francais"
@@ -192,9 +189,7 @@ export default function ScrabbleGrid() {
                 doubleWord: JSON.stringify(doubleWord),
                 tripleWord: JSON.stringify(tripleWord)
             }
-        }
-        console.log(body);
-        
+        }        
 
         try {
             const response = await fetch(url, {
@@ -207,17 +202,15 @@ export default function ScrabbleGrid() {
             const data = await response.json()
             console.log(data);  
         } catch (ex: any) {
-            console.log(ex);          
+            console.error(ex);          
         }
     }
     
     return (
         <div className='flex flex-col items-center justify-center p-3'>
-            <div className='flex flex-col items-center justify-center p-1'>
+            <div className='flex flex-col items-center justify-center p-1' onClick={() => wordInputRef.current?.focus()}>
                 { gridRows }
             </div>
-
-            <Word word={word} clickAction={dragWord} />
 
             <div className='p-3 flex justify-center items-center gap-3'>
                 <h2>Ajouter un mot</h2>
@@ -235,6 +228,7 @@ export default function ScrabbleGrid() {
                     type="text"
                     onChange={(e) => setPlayerLetters(e.currentTarget.value)}
                     onFocus={() => setSelectedTile({ y: -1, x: -1, vertical: false })}
+                    maxLength={7}
                 />
             </div>
 
