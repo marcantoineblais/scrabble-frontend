@@ -153,24 +153,17 @@ export default function ScrabbleGrid() {
 
                 if (letter.length > 0) {
                     if (boardLetters[y][x].length > 0 && boardLetters[y][x] !== letter) {
-                        isValid = false;
-                        break
+                        alert("Mot invalide") // NEED TO PREVENT WORD FROM BEEING ADDED
+                        return
                     } else {
                         updatedBoardLetters[y][x] = letter
                     }
                 }
             }
-
-            if (!isValid)
-                break
         }
 
-        if (isValid) {
-            setBoardLetters(updatedBoardLetters)
-            setWord("")
-        } else {
-            alert("Mot invalide") // NEED TO PREVENT WORD FROM BEEING ADDED
-        }
+        setBoardLetters(updatedBoardLetters)
+        setWord("")
     }
 
     function dragWord() {
