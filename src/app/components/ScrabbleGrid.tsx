@@ -2,7 +2,6 @@
 
 import React from 'react'
 import GridRow from './GridRow'
-import Word from './Word'
 
 export default function ScrabbleGrid() {
     
@@ -21,7 +20,6 @@ export default function ScrabbleGrid() {
     const [selectedTile, setSelectedTile] = React.useState<{y: number, x: number, vertical: boolean}>({ y: -1, x: -1, vertical: false })
     const [gridRows, setGridRows] = React.useState<React.JSX.Element[]>([])
     const wordInputRef = React.useRef<HTMLInputElement|null>(null)
-    
 
     React.useEffect(() => {
         const bonusTexts = bonus.map(el => el.map(e => e))
@@ -189,9 +187,9 @@ export default function ScrabbleGrid() {
                 doubleWord: JSON.stringify(doubleWord),
                 tripleWord: JSON.stringify(tripleWord)
             }
-        }        
-
-        try {
+        }
+        
+        try {    
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -199,11 +197,14 @@ export default function ScrabbleGrid() {
                 },
                 body: JSON.stringify(body)
             })
+
             const data = await response.json()
-            console.log(data);  
-        } catch (ex: any) {
-            console.error(ex);          
+            console.log(data)
+        } catch (ex) {
+            console.error(ex)
+            return;
         }
+
     }
     
     return (
