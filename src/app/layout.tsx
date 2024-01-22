@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Scrabble cheatah',
-  description: 'Where you make your friends and family cry',
+  description: 'Créer pour faire pleurer vos amis et votre famille!',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

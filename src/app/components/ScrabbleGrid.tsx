@@ -2,7 +2,6 @@
 
 import React from 'react'
 import GridRow from './GridRow'
-import Word from './Word'
 
 export default function ScrabbleGrid() {
     
@@ -21,7 +20,6 @@ export default function ScrabbleGrid() {
     const [selectedTile, setSelectedTile] = React.useState<{y: number, x: number, vertical: boolean}>({ y: -1, x: -1, vertical: false })
     const [gridRows, setGridRows] = React.useState<React.JSX.Element[]>([])
     const wordInputRef = React.useRef<HTMLInputElement|null>(null)
-    
 
     React.useEffect(() => {
         const bonusTexts = bonus.map(el => el.map(e => e))
@@ -166,16 +164,13 @@ export default function ScrabbleGrid() {
         setWord("")
     }
 
-    function dragWord() {
-
-    }
-
     async function submitGrid() {
         const url = "http://localhost:8080/grid"
         const body = {
             grid: JSON.stringify(boardLetters),
             playerLetters: playerLetters,
             gridType: {
+                id: 1,
                 language: {
                     id: 1,
                     name: "francais"
@@ -186,10 +181,8 @@ export default function ScrabbleGrid() {
                 tripleWord: JSON.stringify(tripleWord)
             }
         }
-        console.log(body);
         
-
-        try {
+        try {    
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -197,20 +190,21 @@ export default function ScrabbleGrid() {
                 },
                 body: JSON.stringify(body)
             })
+
             const data = await response.json()
-            console.log(data);  
-        } catch (ex: any) {
-            console.log(ex);          
+            console.log(data)
+        } catch (ex) {
+            console.error(ex)
+            return;
         }
+
     }
     
     return (
         <div className='flex flex-col items-center justify-center p-3'>
-            <div className='flex flex-col items-center justify-center p-1'>
+            <div className='flex flex-col items-center justify-center p-1' onClick={() => wordInputRef.current?.focus()}>
                 { gridRows }
             </div>
-
-            <Word word={word} clickAction={dragWord} />
 
             <div className='p-3 flex justify-center items-center gap-3'>
                 <h2>Ajouter un mot</h2>
@@ -228,6 +222,7 @@ export default function ScrabbleGrid() {
                     type="text"
                     onChange={(e) => setPlayerLetters(e.currentTarget.value)}
                     onFocus={() => setSelectedTile({ y: -1, x: -1, vertical: false })}
+                    maxLength={7}
                 />
             </div>
 
