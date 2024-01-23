@@ -6,7 +6,7 @@ export default function Page() {
     return (
         <main className="h-full bg-orange-100">
             <div className="h-full container mx-auto">
-                <ScrabbleGrid />
+                <Login />
             </div>
         </main>
     )

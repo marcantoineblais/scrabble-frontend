@@ -12,16 +12,29 @@ export default function Login() {
         if (!formRef.current)
             return
 
+        const url = "http://localhost:8080/login"
         const form = formRef.current
-        const username = form.username.value
-        const password = form.password.value
+        const body = {
+            username: form.username.value,
+            password: form.password.value
+        }
 
-        const response = await fetch(form.action, {
-            method: "POST",
-            headers: {
-                
-            }
-        })
+        console.log(body);
+        
+        try {
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+            const data = await response.json()
+            console.log("Player" + data);
+        } catch (ex) {
+            console.error(ex)
+        }
     }
 
     return (
@@ -29,7 +42,7 @@ export default function Login() {
             <div className="h-full flex flex-col gap-3 px-5 py-12 justify-between">
                 <img src="/cheetah.jpg" alt="cheetah" className="flex-grow object-cover"/>
 
-                <form className="w-full" action={"/login"}>
+                <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
                     <div className="w-full flex flex-col gap-3">
                         <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur"></input>
                         <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe"></input>
