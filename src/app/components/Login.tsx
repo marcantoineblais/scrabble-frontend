@@ -4,7 +4,7 @@ import React from "react";
 import MenuList from "./MenuList";
 import WoodenButton from "./WoodenButton";
 
-export default function Login() {
+export default function Login({ setPlayer }: { setPlayer: Function}) {
 
     const formRef = React.useRef<HTMLFormElement|null>(null)
 
@@ -31,7 +31,7 @@ export default function Login() {
                 body: JSON.stringify(body)
             })
             const data = await response.json()
-            console.log(data);
+            
         } catch (ex) {
             console.error(ex)
         }
