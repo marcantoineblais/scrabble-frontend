@@ -1,10 +1,11 @@
 "use client"
 
 import React from "react";
-import MenuList from "./MenuList";
+import MenuList from "./Menu";
 import WoodenButton from "./WoodenButton";
+import { postRequest } from "../utilities/utilities";
 
-export default function Login({ setPlayer }: { setPlayer: Function}) {
+export default function Login({ setToken, setPlayer }: { setToken: Function, setPlayer: Function}) {
 
     const formRef = React.useRef<HTMLFormElement|null>(null)
 
@@ -12,26 +13,25 @@ export default function Login({ setPlayer }: { setPlayer: Function}) {
         if (!formRef.current)
             return
 
-        const url = "http://localhost:8080/login"
         const form = formRef.current
+        const rememberMe = form.rememberMe.checked
         const body = {
             username: form.username.value,
             password: form.password.value
         }
 
-        console.log(body);
-        
         try {
-
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })
-            const data = await response.json()
+            const response = await postRequest(JSON.stringify(body), "/login")
+            const loginResponse = await (response).json() as unknown as LoginResponse
+            setToken(loginResponse.token)
+            setPlayer(loginResponse.player)
             
+
+            if (rememberMe)
+                localStorage.setItem("token", loginResponse.token)
+            else
+                sessionStorage.setItem("token", loginResponse.token)
+
         } catch (ex) {
             console.error(ex)
         }
@@ -39,18 +39,16 @@ export default function Login({ setPlayer }: { setPlayer: Function}) {
 
     return (
         <MenuList title="Connexion">
-            <div className="h-full flex flex-col gap-3 px-5 py-12 justify-between">
-                <img src="/cheetah.jpg" alt="cheetah" className="flex-grow object-cover"/>
+            <img src="/cheetah.jpg" alt="cheetah" className="flex-grow object-cover"/>
 
-                <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
-                    <div className="w-full flex flex-col gap-3">
-                        <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
-                        <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
-                        <label className="w-fit flex items-center" htmlFor="rememberMe"><input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />Se souvenir de moi</label>
-                        <WoodenButton text="Envoyer" action={login}/>
-                    </div>
-                </form>
-            </div>
+            <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
+                <div className="w-full flex flex-col gap-3">
+                    <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
+                    <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
+                    <label className="w-fit flex items-center" htmlFor="rememberMe"><input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />Se souvenir de moi</label>
+                    <WoodenButton text="Envoyer" action={login}/>
+                </div>
+            </form>
         </MenuList>
     )
 }

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import GridRow from './GridRow'
+import { postRequest } from '../utilities/utilities'
 
 export default function ScrabbleGrid() {
     
@@ -165,7 +166,6 @@ export default function ScrabbleGrid() {
     }
 
     async function submitGrid() {
-        const url = "http://localhost:8080/grid"
         const body = {
             grid: JSON.stringify(boardLetters),
             playerLetters: playerLetters,
@@ -183,14 +183,7 @@ export default function ScrabbleGrid() {
         }
         
         try {    
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })
-
+            const response = await postRequest("/grid", JSON.stringify(body))
             const data = await response.json()
             console.log(data)
         } catch (ex) {
