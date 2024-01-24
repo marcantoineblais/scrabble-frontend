@@ -31,7 +31,7 @@ export default function Login() {
                 body: JSON.stringify(body)
             })
             const data = await response.json()
-            console.log("Player" + data);
+            console.log(data);
         } catch (ex) {
             console.error(ex)
         }
@@ -44,8 +44,9 @@ export default function Login() {
 
                 <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
                     <div className="w-full flex flex-col gap-3">
-                        <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur"></input>
-                        <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe"></input>
+                        <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
+                        <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
+                        <label className="w-fit flex items-center" htmlFor="rememberMe"><input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />Se souvenir de moi</label>
                         <WoodenButton text="Envoyer" action={login}/>
                     </div>
                 </form>
