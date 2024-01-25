@@ -4,6 +4,8 @@ import WoodenButton from "./WoodenButton"
 import Menu from "./Menu"
 import React from "react"
 import { getRequest } from "../utilities/utilities"
+import ScrabbleBoard from "./scrabbleBoard/ScrabbleBoard"
+import ScrabbleBoardContainer from "./scrabbleBoard/ScrabbleBoardContainer"
 
 export default function Landing(
     { player, setPlayer, setToken, setPage }: { player: Player, setPlayer: Function, setToken: Function, setPage: Function }
@@ -26,7 +28,14 @@ export default function Landing(
     }, [])
 
     function newGame() {
-        console.log(gameOptions);
+        if (!gameOptions)
+            return
+
+        setPage(
+            <ScrabbleBoardContainer>
+                <ScrabbleBoard gridType={gameOptions.gridTypes[0]}/>
+            </ScrabbleBoardContainer>
+        )
     }
 
     function resumeGame() {
