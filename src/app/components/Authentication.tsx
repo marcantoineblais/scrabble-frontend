@@ -10,7 +10,7 @@ export default function Authentication({ token, setToken, setPlayer }: {token: s
         async function authenticate() {
             try {
                 const response = await postRequest(token, "/authenticate")
-                const player = (await response.json()) as unknown as Player
+                const player: Player = await response.json()
                 setPlayer(player)   
             } catch (ex) {
                 sessionStorage.clear()

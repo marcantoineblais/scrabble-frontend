@@ -1,9 +1,8 @@
 "use client"
 
 import React, { ReactNode } from "react";
-import Landing from "./components/Landing";
-import Login from "./components/Login";
-import ScrabbleGrid from "./components/ScrabbleGrid";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
 import Authentication from "./components/Authentication";
 import LoadingScreen from "./components/LoadingScreen";
 
@@ -11,8 +10,6 @@ export default function Page() {
 
     const [token, setToken] = React.useState<string|null>(null)
     const [player, setPlayer] = React.useState<Player|null>(null)
-    const [gridTypes, setGridTypes] = React.useState<GridType|null>(null)
-    const [languages, setLanguages] = React.useState<Language|null>(null)
     const [page, setPage] = React.useState<ReactNode|null>(null)
 
     React.useEffect(() => {
@@ -35,7 +32,7 @@ export default function Page() {
     
 
     return (
-        <main className="h-full bg-orange-100">
+        <main className="h-full bg-orange-50">
             <div className="h-full container mx-auto">
                 { page }
             </div>

@@ -3,14 +3,16 @@
 import React, { MutableRefObject, ReactNode } from "react"
 import ScrabbleBoardTile from "./ScrabbleBoardTile"
 import { Bonus } from "@/app/models/Bonus"
+import { emptyRow } from "@/app/utilities/utilities"
+import ScrabbleBoardRow from "./ScrabbleBoardRow"
 
-export default function ScrabbleBoard({ gridType }: { gridType: GridType }) {
+export default function ScrabbleBoard({ gridType, width }: { gridType: GridType, width: number }) {
 
     const [bonus, setBonus] = React.useState<number[][]|null>(null)
     const [tiles, setTiles] = React.useState<ReactNode|null>(null)
 
     React.useEffect(() => {
-        const bonusOnGrid = Array.from({length: 15}).map(() => Array.from({length: 15}).map(() => Bonus.NONE))
+        const bonusOnGrid: number[][] = emptyRow(() => emptyRow(() => Bonus.NONE))
 
         gridType.doubleLetter.forEach(([y, x]) => bonusOnGrid[y][x] = Bonus.DOUBLE_LETTER)
         gridType.tripleLetter.forEach(([y, x]) => bonusOnGrid[y][x] = Bonus.TRIPLE_LETTER)
@@ -24,19 +26,17 @@ export default function ScrabbleBoard({ gridType }: { gridType: GridType }) {
     React.useEffect(() => {
         if (!bonus)
             return
-
-        const gridTiles = Array.from({length: 15}).map((_row, y) => {
-            const cols = Array.from({length: 15}).map((_col, x) => {
-                return <ScrabbleBoardTile key={x} bonus={bonus[y][x]} />
+        
+        const gridTiles: ReactNode[][] = emptyRow((y: number) => {
+            const cols: ReactNode[] = emptyRow((x: number) => {
+                return <ScrabbleBoardTile key={x} size={width / 15} bonus={bonus[y][x]} />
             })
 
-            return <div key={y} className="w-full flex flex-grow">
-                { cols }
-            </div>
+            return <ScrabbleBoardRow key={y} width={width}>{ cols }</ScrabbleBoardRow>
         })
 
         setTiles(gridTiles)
-    }, [bonus])
+    }, [bonus, width])
 
     return (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex-grow">

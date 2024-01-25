@@ -1,8 +1,8 @@
 "use client"
 
 import React from "react";
-import MenuList from "./Menu";
-import WoodenButton from "./WoodenButton";
+import MenuList from "../components/Menu";
+import WoodenButton from "../components/WoodenButton";
 import { postRequest } from "../utilities/utilities";
 
 export default function Login({ setToken, setPlayer }: { setToken: Function, setPlayer: Function}) {
@@ -22,11 +22,10 @@ export default function Login({ setToken, setPlayer }: { setToken: Function, set
 
         try {
             const response = await postRequest(JSON.stringify(body), "/login")
-            const loginResponse = await (response).json() as unknown as LoginResponse
+            const loginResponse: LoginResponse = await response.json()
             setToken(loginResponse.token)
             setPlayer(loginResponse.player)
             
-
             if (rememberMe)
                 localStorage.setItem("token", loginResponse.token)
             else

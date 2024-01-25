@@ -1,41 +1,16 @@
 "use client"
 
-import WoodenButton from "./WoodenButton"
-import Menu from "./Menu"
+import WoodenButton from "../components/WoodenButton"
+import Menu from "../components/Menu"
 import React from "react"
-import { getRequest } from "../utilities/utilities"
-import ScrabbleBoard from "./scrabbleBoard/ScrabbleBoard"
-import ScrabbleBoardContainer from "./scrabbleBoard/ScrabbleBoardContainer"
+import Game from "./Game"
 
 export default function Landing(
     { player, setPlayer, setToken, setPage }: { player: Player, setPlayer: Function, setToken: Function, setPage: Function }
 ) {
 
-    const [gameOptions, setGameOptions] = React.useState<GameOptions|null>(null)
-
-    React.useEffect(() => {
-        async function getGameOptions() {
-            try {
-                const response = await getRequest("/options")
-                const gameOptions = await response.json() as unknown as GameOptions
-                setGameOptions(gameOptions)
-            } catch (ex) {
-                console.error(ex)
-            }
-        }
-
-        getGameOptions()
-    }, [])
-
     function newGame() {
-        if (!gameOptions)
-            return
-
-        setPage(
-            <ScrabbleBoardContainer>
-                <ScrabbleBoard gridType={gameOptions.gridTypes[0]}/>
-            </ScrabbleBoardContainer>
-        )
+        setPage(<Game setPage={setPage} />)
     }
 
     function resumeGame() {
