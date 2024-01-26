@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react"
 
-export default function ScrabbleBoardRow({ children, width }: { children: ReactNode, width: number}) {
+export default function ScrabbleRow({ children, width }: { children: ReactNode, width: number}) {
 
     const rowRef = React.useRef<HTMLDivElement|null>(null)
 

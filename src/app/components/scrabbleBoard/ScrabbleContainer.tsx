@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react"
 
-export default function ScrabbleBoardContainer({ children, setWidth }: { children: ReactNode, setWidth: Function }) {
+export default function ScrabbleContainer({ children, setWidth }: { children: ReactNode, setWidth: Function }) {
 
     const containerRef = React.useRef<HTMLDivElement|null>(null)    
 

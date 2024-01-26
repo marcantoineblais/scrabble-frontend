@@ -4,7 +4,7 @@ import React, { MutableRefObject, ReactNode } from "react"
 import ScrabbleBoardTile from "./ScrabbleBoardTile"
 import { Bonus } from "@/app/models/Bonus"
 import { emptyRow } from "@/app/utilities/utilities"
-import ScrabbleBoardRow from "./ScrabbleBoardRow"
+import ScrabbleRow from "./ScrabbleRow"
 
 export default function ScrabbleBoard({ gridType, width }: { gridType: GridType, width: number }) {
 
@@ -32,14 +32,14 @@ export default function ScrabbleBoard({ gridType, width }: { gridType: GridType,
                 return <ScrabbleBoardTile key={x} size={width / 15} bonus={bonus[y][x]} />
             })
 
-            return <ScrabbleBoardRow key={y} width={width}>{ cols }</ScrabbleBoardRow>
+            return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>
         })
 
         setTiles(gridTiles)
     }, [bonus, width])
 
     return (
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex-grow">
+        <div className="absolute top-0 left-0 right-0 bottom-0">
             { tiles }
         </div>
     )
