@@ -1,4 +1,4 @@
-class GameOptions {
+export class GameOptions {
 
     private _languages: Language[];
     private _gridTypes: GridType[];

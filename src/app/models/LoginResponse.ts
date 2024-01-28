@@ -1,4 +1,6 @@
-class LoginResponse {
+import { Player } from "./Player";
+
+export class LoginResponse {
     private _token: string;
     private _player: Player;
 

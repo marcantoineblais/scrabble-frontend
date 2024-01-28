@@ -4,6 +4,7 @@ import React from "react";
 import MenuList from "../components/Menu";
 import WoodenButton from "../components/WoodenButton";
 import { postRequest } from "../utilities/utilities";
+import { LoginResponse } from "../models/LoginResponse";
 
 export default function Login({ setToken, setPlayer }: { setToken: Function, setPlayer: Function}) {
 
@@ -37,7 +38,7 @@ export default function Login({ setToken, setPlayer }: { setToken: Function, set
     }
 
     return (
-        <MenuList title="Connexion">
+        <>
             <img src="/cheetah.jpg" alt="cheetah" className="flex-grow object-cover"/>
 
             <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
@@ -48,6 +49,6 @@ export default function Login({ setToken, setPlayer }: { setToken: Function, set
                     <WoodenButton text="Envoyer" action={login}/>
                 </div>
             </form>
-        </MenuList>
+        </>
     )
 }

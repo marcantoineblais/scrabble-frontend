@@ -1,16 +1,14 @@
 "use client"
 
 import WoodenButton from "../components/WoodenButton"
-import Menu from "../components/Menu"
 import React from "react"
-import Game from "./Game"
 
 export default function Landing(
-    { player, setPlayer, setToken, setPage }: { player: Player, setPlayer: Function, setToken: Function, setPage: Function }
+    { setPlayer, setToken, setPage }: { setPlayer: Function, setToken: Function, setPage: Function }
 ) {
 
     function newGame() {
-        setPage(<Game setPage={setPage} />)
+        setPage("gridSelection")
     }
 
     function resumeGame() {
@@ -29,7 +27,7 @@ export default function Landing(
     }
 
     return (
-        <Menu title="Scrabble Cheetah">
+        <>
             <img src="/cheetah.jpg" alt="cheetah" className="flex-grow object-cover"/>
             <div className="flex flex-col gap-3">
                 <WoodenButton text="Nouvelle Partie" action={newGame} />
@@ -37,6 +35,6 @@ export default function Landing(
                 <WoodenButton text="Options" action={options} />
                 <WoodenButton text="Se déconnecter" action={logout} />
             </div>
-        </Menu>
+        </>
     )
 }

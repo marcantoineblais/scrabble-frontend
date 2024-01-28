@@ -1,4 +1,6 @@
-class Player {
+import { Grid } from "./Grid";
+
+export class Player {
     
     private _username: string;
     private _grids: Grid[];

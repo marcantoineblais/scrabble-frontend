@@ -5,6 +5,8 @@ import ScrabbleContainer from "../components/scrabbleBoard/ScrabbleContainer"
 import ScrabbleBoard from "../components/scrabbleBoard/ScrabbleBoard"
 import { emptyRow, getRequest } from "../utilities/utilities"
 import ScrabbleLetters from "../components/scrabbleBoard/ScrabbleLetters"
+import { GameOptions } from "../models/GameOptions"
+import { Player } from "../models/Player"
 
 export default function Game({ player, setPage }: { player: Player, setPage: Function }) {
 

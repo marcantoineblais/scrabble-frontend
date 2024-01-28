@@ -1,4 +1,4 @@
-class Language {
+export class Language {
     private _id: number;
     private _name: string;
 

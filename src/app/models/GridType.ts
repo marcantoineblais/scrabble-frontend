@@ -1,14 +1,12 @@
-class GridType {
+export class GridType {
     private _id: number;
-    private _language: Language;
     private _doubleLetter: number[][];
     private _tripleLetter: number[][];
     private _doubleWord: number[][];
     private _tripleWord: number[][];
 
-	constructor(id: number, language: Language, doubleLetter: number[][], tripleLetter: number[][], doubleWord: number[][], tripleWord: number[][]) {
+	constructor(id: number, doubleLetter: number[][], tripleLetter: number[][], doubleWord: number[][], tripleWord: number[][]) {
 		this._id = id;
-		this._language = language;
 		this._doubleLetter = doubleLetter;
 		this._tripleLetter = tripleLetter;
 		this._doubleWord = doubleWord;
@@ -21,14 +19,6 @@ class GridType {
      */
 	public get id(): number {
 		return this._id;
-	}
-
-    /**
-     * Getter language
-     * @return {Language}
-     */
-	public get language(): Language {
-		return this._language;
 	}
 
     /**
@@ -69,14 +59,6 @@ class GridType {
      */
 	public set id(value: number) {
 		this._id = value;
-	}
-
-    /**
-     * Setter language
-     * @param {Language} value
-     */
-	public set language(value: Language) {
-		this._language = value;
 	}
 
     /**
