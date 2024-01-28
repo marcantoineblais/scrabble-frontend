@@ -43,6 +43,7 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
             
             const languageOptions = gameOptions.languages.map((language: Language, index: number) => {
                 const capitalisedName = language.name.substring(0, 1).toUpperCase() + language.name.substring(1)
+                
                 return <option key={index} value={index}>{ capitalisedName }</option>
             })
 

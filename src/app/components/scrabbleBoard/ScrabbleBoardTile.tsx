@@ -16,8 +16,12 @@ export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus
         const tile = tileRef.current
         tile.style.width = size + "px"
         tile.style.height = size + "px"
-        tile.style.fontSize = size / 4 + "px"
         tile.style.lineHeight = (size / 4) + 2 + "px"
+
+        if (bonus === Bonus.CENTER)
+            tile.style.fontSize = size + "px"
+        else
+            tile.style.fontSize = size / 4 + "px"
     }, [size])
 
     React.useEffect(() => {
@@ -49,6 +53,8 @@ export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus
 
             default:
                 setBackground("bg-orange-300")
+                setText("")
+                break
         }
     }, [bonus])
 
