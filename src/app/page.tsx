@@ -12,44 +12,33 @@ import { Grid } from "./models/Grid";
 
 export default function Page() {
 
-    const [token, setToken] = React.useState<string>("")
     const [player, setPlayer] = React.useState<Player|null>(null)
     const [currentGrid, setCurrentGrid] = React.useState<Grid|null>(null)
     const [page, setPage] = React.useState<string>("")
     const [title, setTitle] = React.useState<string>("")
     const [children, setChildren] = React.useState<ReactNode|null>(null)
 
-    React.useEffect(() => {
-        setToken(localStorage.getItem("token") || sessionStorage.getItem("token") || "")
-    }, [])
-
-    React.useEffect(() => {
-        if (player == null && token)
-            setPage("authentication")
-        
-        else if (player == null)
+    React.useEffect(() => {        
+        if (player == null)
             setPage("login")
         
-        else if (player)
+        else
             setPage("landing")
-
-        else 
-            <LoadingScreen />
-    }, [token, player])
+    }, [player])
     
     React.useEffect(() => {
         switch (page) {
             case "authentication":
-                setChildren(<Authentication setPlayer={setPlayer} token={token} setToken={setToken}/>)
+                setChildren(<Authentication setPlayer={setPlayer} />)
                 setTitle("")
 
             case "login":
-                setChildren(<Login setToken={setToken} setPlayer={setPlayer} />)
+                setChildren(<Login setPlayer={setPlayer} />)
                 setTitle("Connexion")
                 break;
             
             case "landing":
-                setChildren(<Landing setPage={setPage} setPlayer={setPlayer} setToken={setToken} />)
+                setChildren(<Landing setPage={setPage} setPlayer={setPlayer} />)
                 setTitle("Accueil")
                 break
             
@@ -59,7 +48,7 @@ export default function Page() {
                 break
 
             default:
-                setChildren(<LoadingScreen />)
+                setChildren(<LoadingScreen visible={true} />)
                 setTitle("")
                 break
         }
@@ -68,9 +57,8 @@ export default function Page() {
     return (
         <main className="h-full bg-orange-50">
             <div className="h-full container mx-auto">
-                <Menu title={title}>
-                    { children }
-                </Menu>
+                <Authentication setPlayer={setPlayer} />
+                <Menu title={title}>{ children }</Menu>
             </div>
         </main>
     )

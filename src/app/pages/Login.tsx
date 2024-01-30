@@ -1,12 +1,12 @@
 "use client"
 
 import React from "react";
-import MenuList from "../components/Menu";
 import WoodenButton from "../components/WoodenButton";
 import { postRequest } from "../utilities/utilities";
-import { LoginResponse } from "../models/LoginResponse";
+import { Player } from "../models/Player";
+import { LoginRequest } from "../models/LoginRequest";
 
-export default function Login({ setToken, setPlayer }: { setToken: Function, setPlayer: Function}) {
+export default function Login({ setPlayer }: { setPlayer: Function}) {
 
     const formRef = React.useRef<HTMLFormElement|null>(null)
 
@@ -15,23 +15,28 @@ export default function Login({ setToken, setPlayer }: { setToken: Function, set
             return
 
         const form = formRef.current
+        const username = form.username.value
+        const password = form.password.value
         const rememberMe = form.rememberMe.checked
-        const body = {
-            username: form.username.value,
-            password: form.password.value
+
+        if (!username || !password) {
+            alert("Tous les champs sont requis")
+            return
         }
 
-        try {
-            const response = await postRequest(JSON.stringify(body), "/login")
-            const loginResponse: LoginResponse = await response.json()
-            setToken(loginResponse.token)
-            setPlayer(loginResponse.player)
-            
-            if (rememberMe)
-                localStorage.setItem("token", loginResponse.token)
-            else
-                sessionStorage.setItem("token", loginResponse.token)
+        const loginRequest: LoginRequest = new LoginRequest(
+            username,
+            password,
+            rememberMe
+        )
 
+        try {
+            const response = await postRequest(JSON.stringify(loginRequest), "/login")
+            
+            if (response.ok) {
+                const player: Player = await response.json()
+                setPlayer(player)                
+            }
         } catch (ex) {
             console.error(ex)
         }

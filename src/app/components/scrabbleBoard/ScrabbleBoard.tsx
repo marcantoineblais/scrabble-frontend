@@ -5,6 +5,7 @@ import ScrabbleBoardTile from "./ScrabbleBoardTile"
 import { Bonus } from "@/app/models/Bonus"
 import { emptyRow } from "@/app/utilities/utilities"
 import ScrabbleRow from "./ScrabbleRow"
+import { GridType } from "@/app/models/GridType"
 
 export default function ScrabbleBoard({ gridType, width }: { gridType: GridType, width: number }) {
 

@@ -26,7 +26,7 @@ export default function ScrabbleContainer({ children, setWidth }: { children: Re
     }, [setWidth])
 
     return (
-        <div ref={containerRef} className="w-full relative border-2 flex justify-center items-center">
+        <div ref={containerRef} className="w-full relative flex justify-center items-center">
             { children }
         </div>
     )

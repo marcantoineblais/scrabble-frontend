@@ -1,30 +1,34 @@
 "use client"
 
 import React from "react"
-import { postRequest } from "../utilities/utilities"
+import { getRequest } from "../utilities/utilities"
 import LoadingScreen from "./LoadingScreen"
 import { Player } from "../models/Player"
 
-export default function Authentication({ token, setToken, setPlayer }: {token: string, setToken: Function, setPlayer: Function }) {
+export default function Authentication({ setPlayer }: { setPlayer: Function }) {
+
+    const [attempted, setAttempted] = React.useState<boolean>(false)
 
     React.useEffect(() => {
         async function authenticate() {
             try {
-                const response = await postRequest(token, "/authenticate")
-                const player: Player = await response.json()
-                setPlayer(player)   
+                const response = await getRequest("/authenticate")
+
+                if (response.ok) {
+                    const player: Player = await response.json()
+                    setPlayer(player)
+                }
             } catch (ex) {
-                sessionStorage.clear()
-                localStorage.clear()
-                setToken(null)
                 console.error(ex)
+            } finally {
+                setAttempted(true)
             }
         }
 
         authenticate()
-    }, [setPlayer, token])
+    }, [setPlayer])
 
     return (
-        <LoadingScreen />
+        <LoadingScreen visible={!attempted}/>
     )
 }

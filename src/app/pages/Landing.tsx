@@ -2,9 +2,10 @@
 
 import WoodenButton from "../components/WoodenButton"
 import React from "react"
+import { getRequest } from "../utilities/utilities"
 
 export default function Landing(
-    { setPlayer, setToken, setPage }: { setPlayer: Function, setToken: Function, setPage: Function }
+    { setPlayer, setPage }: { setPlayer: Function, setPage: Function }
 ) {
 
     function newGame() {
@@ -19,11 +20,16 @@ export default function Landing(
 
     }
 
-    function logout() {
-        sessionStorage.clear()
-        localStorage.clear()
-        setPlayer(null)
-        setToken(null)
+    async function logout() {
+        try {
+            const response = await getRequest("/logout")
+            
+            if (response.ok)
+                setPlayer(null)
+        } catch (ex) {
+            console.error(ex)
+            setPlayer(null)
+        }
     }
 
     return (

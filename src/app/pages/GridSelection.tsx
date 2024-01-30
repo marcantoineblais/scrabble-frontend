@@ -1,15 +1,16 @@
 "use client"
 
 import React, { ReactNode } from "react"
-import { emptyRow, getRequest } from "../utilities/utilities"
+import { getRequest, postRequest } from "../utilities/utilities"
 import ScrabbleContainer from "../components/scrabbleBoard/ScrabbleContainer"
 import ScrabbleBoard from "../components/scrabbleBoard/ScrabbleBoard"
 import WoodenButton from "../components/WoodenButton"
 import Arrow from "../components/Arrow"
-import { Grid } from "../models/Grid"
-import { Language } from "../models/Language"
-import { GameOptions } from "../models/GameOptions"
-import { GridType } from "../models/GridType"
+import { GameOptions } from "@/app/models/GameOptions"
+import { GridType } from "@/app/models/GridType"
+import { Language } from "@/app/models/Language"
+import { GameOption } from "@/app/models/GameOption"
+import { Grid } from "@/app/models/Grid"
 
 export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentGrid: Function, setPage: Function }) {
 
@@ -17,7 +18,6 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
     const [gridType, setGridType] = React.useState<GridType|null>(null)
     const [gridTypeIndex, setGridTypeIndex] = React.useState<number>(0)
     const [language, setLanguage] = React.useState<Language|null>(null)
-    const [languageIndex, setLanguageIndex] = React.useState<number>(0)
     const [name, setName] = React.useState<string>("")
     const [options, setOptions] = React.useState<ReactNode[]>([])
     const [width, setWidth] = React.useState<number>(0)
@@ -40,7 +40,7 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
         React.useEffect(() => {
             if (!gameOptions)
                 return
-            
+                
             const languageOptions = gameOptions.languages.map((language: Language, index: number) => {
                 const capitalisedName = language.name.substring(0, 1).toUpperCase() + language.name.substring(1)
                 
@@ -54,26 +54,37 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
         if (!gameOptions)
             return
 
-        setGridType(gameOptions.gridTypes[gridTypeIndex])
-        setLanguage(gameOptions.languages[languageIndex])
-    }, [gameOptions, gridTypeIndex, languageIndex])
+        setGridType(gameOptions.gridTypes[0])
+        setLanguage(gameOptions.languages[0])
+    }, [gameOptions])
 
     function previousGridType() {
-        if (gridTypeIndex > 0)
+        if (!gameOptions)
+            return 
+
+        if (gridTypeIndex > 0) {
             setGridTypeIndex(gridTypeIndex - 1)
+            setGridType(gameOptions.gridTypes[gridTypeIndex - 1])
+        }
     }
     
     function nextGridType() {
         if (!gameOptions)
             return
 
-        if (gridTypeIndex < gameOptions.gridTypes.length - 1)
+        if (gridTypeIndex < gameOptions.gridTypes.length - 1) {
             setGridTypeIndex(gridTypeIndex + 1)
+            setGridType(gameOptions.gridTypes[gridTypeIndex + 1])
+        }
     }
 
     function changeLanguageId(e: React.SyntheticEvent<HTMLSelectElement>) {
+        if (!gameOptions)
+            return 
+
         try {
-            setLanguageIndex(parseInt(e.currentTarget.value))
+            const index: number = parseInt(e.currentTarget.value)
+            setLanguage(gameOptions.languages[index])
         } catch (ex) {
             console.error(ex)
         }
@@ -84,20 +95,28 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
     }
 
     async function submitGrid() {
-        if (!name || !gridType || !language)
+        if (!name || !gridType || !language) {
+            alert("Tous les champs sont obligatoires")
             return
+        }
 
-        const grid: Grid = new Grid(
-            null,
-            name,
-            emptyRow(() => emptyRow(() => "")),
-            "",
+        const gameOption: GameOption = new GameOption(
             gridType,
             language,
-            null
+            name
         )
+        
+        try {
+            const response = await postRequest(JSON.stringify(gameOption), "/grid/new")
 
-        console.log(grid);
+            if (response.ok) {
+                const grid: Grid = await response.json()
+                setCurrentGrid(grid);
+                console.log(grid);
+            }
+        } catch (ex) {
+            console.error(ex)
+        }
     }
 
     return (

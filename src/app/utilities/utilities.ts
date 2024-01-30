@@ -3,6 +3,7 @@ export async function postRequest(body: string, path: string): Promise<any> {
 
     return await fetch(url + path, {
         method: "POST",
+        credentials: 'include',
         headers: {
             "Content-Type": "application/json"
         },
@@ -13,7 +14,13 @@ export async function postRequest(body: string, path: string): Promise<any> {
 export async function getRequest(path: string): Promise<any> {
     const url = "http://localhost:8080"
 
-    return await fetch(url + path)
+    return await fetch(url + path, {
+        method: "GET",
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
 }
 
 export function emptyRow<T>(func: Function): T[] {
