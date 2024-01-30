@@ -111,8 +111,8 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
 
             if (response.ok) {
                 const grid: Grid = await response.json()
-                setCurrentGrid(grid);
-                console.log(grid);
+                setCurrentGrid(grid)
+                setPage("game")
             }
         } catch (ex) {
             console.error(ex)

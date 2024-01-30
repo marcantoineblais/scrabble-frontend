@@ -3,43 +3,17 @@
 import React from "react"
 import ScrabbleContainer from "../components/scrabbleBoard/ScrabbleContainer"
 import ScrabbleBoard from "../components/scrabbleBoard/ScrabbleBoard"
-import { emptyRow, getRequest } from "../utilities/utilities"
 import ScrabbleLetters from "../components/scrabbleBoard/ScrabbleLetters"
-import { GameOptions } from "../models/GameOptions"
-import { Player } from "../models/Player"
+import { Grid } from "../models/Grid"
 
-export default function Game({ player, setPage }: { player: Player, setPage: Function }) {
+export default function Game({ grid, setPage }: { grid: Grid|null, setPage: Function }) {
 
-    const [grid, setGrid] = React.useState<string[][]|null>(null)
-    const [gameOptions, setGameOptions] = React.useState<GameOptions|null>(null)
     const [width, setWidth] = React.useState<number>(0)
-
-    React.useEffect(() => {
-        async function getGameOptions() {
-            try {
-                const response = await getRequest("/options")
-                const gameOptions: GameOptions = await response.json()
-                setGameOptions(gameOptions)
-            } catch (ex) {
-                console.error(ex)
-            }
-        }
-
-        getGameOptions()
-    }, [])
-
-    React.useEffect(() => {
-        if (!gameOptions)
-            return
-
-        const grid: string[][] = emptyRow(() => emptyRow(() => ""))
-        setGrid(grid)
-    }, [gameOptions])
 
     return (
         <ScrabbleContainer setWidth={setWidth}>
-            { gameOptions ? <ScrabbleBoard width={width} gridType={gameOptions.gridTypes[0]} /> : null }
-            { grid ? <ScrabbleLetters grid={grid} width={width}/> : null }
+            { grid ? <ScrabbleBoard width={width} gridType={grid.gridType} /> : null }
+            { grid ? <ScrabbleLetters grid={grid.grid} width={width}/> : null }
         </ScrabbleContainer>
     )
 }

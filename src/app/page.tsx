@@ -9,6 +9,7 @@ import Menu from "./components/Menu";
 import GridSelection from "./pages/GridSelection";
 import { Player } from "./models/Player";
 import { Grid } from "./models/Grid";
+import Game from "./pages/Game";
 
 export default function Page() {
 
@@ -45,6 +46,11 @@ export default function Page() {
             case "gridSelection":
                 setChildren(<GridSelection setCurrentGrid={setCurrentGrid} setPage={setPage} />)
                 setTitle("Options")
+                break
+
+            case "game":
+                setChildren(<Game setPage={setPage} grid={currentGrid} />)
+                setTitle("Scrabble Cheetah")
                 break
 
             default:
