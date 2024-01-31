@@ -11,6 +11,7 @@ import { GridType } from "@/app/models/GridType"
 import { Language } from "@/app/models/Language"
 import { GameOption } from "@/app/models/GameOption"
 import { Grid } from "@/app/models/Grid"
+import FormInput from "../components/FormInput"
 
 export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentGrid: Function, setPage: Function }) {
 
@@ -134,12 +135,11 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
                 </div>
             </div>
 
-            <div className="w-full">
-                <h2 className="font-bold">Choisir la langue de jeu :</h2>
+            <FormInput name="Choisir la langue de jeu :">
                 <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
                     { options }
                 </select>
-            </div>
+            </FormInput>
 
             <div className="w-full flex-grow">
                 <h2 className="font-bold">Donner un nom à votre grille de jeu : </h2>

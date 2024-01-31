@@ -50,7 +50,7 @@ export default function Page() {
 
             case "game":
                 if (currentGrid) {
-                    setChildren(<Game setPage={setPage} grid={currentGrid} />)
+                    setChildren(<Game setPage={setPage} currentGrid={currentGrid} setCurrentGrid={setCurrentGrid} />)
                     setTitle("Scrabble Cheetah")
                 } else {
                     setPage("landing")
@@ -63,7 +63,7 @@ export default function Page() {
                 setTitle("")
                 break
         }
-    }, [page])
+    }, [page, currentGrid])
 
     return (
         <main className="h-full bg-orange-50">

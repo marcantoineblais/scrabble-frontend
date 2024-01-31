@@ -7,7 +7,7 @@ import ScrabbleOverlayTile from "./ScrabbleOverlayTile"
 
 export default function ScrabbleOverlay(
     { width, selectedTile, selectedVertical, grid, selectTile }: 
-    { width: number, selectedTile: number[], selectedVertical: boolean, grid: string[][], selectTile: Function }
+    { width: number, selectedTile: number[]|null, selectedVertical: boolean, grid: string[][], selectTile: Function }
 ) {
 
     const [overlayGrid, setOverlayGrid] = React.useState<number[][]|null>(null)
@@ -21,11 +21,11 @@ export default function ScrabbleOverlay(
                 if (!overlays[y])
                     overlays[y] = []
 
-                if (y == selectedTile[0] && x == selectedTile[1])
+                if (selectedTile && y == selectedTile[0] && x == selectedTile[1])
                     overlays[y][x] = Overlay.SELECTED
-                else if (selectedVertical && x == selectedTile[1])
+                else if (selectedTile && selectedVertical && x == selectedTile[1])
                     overlays[y][x] = Overlay.LINE
-                else if (!selectedVertical && y == selectedTile[0])
+                else if (selectedTile && !selectedVertical && y == selectedTile[0])
                     overlays[y][x] = Overlay.LINE
                 else
                     overlays[y][x] = Overlay.NONE
