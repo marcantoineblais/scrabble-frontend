@@ -1,7 +1,7 @@
 "use client"
 
 import React, { ReactNode } from "react"
-import { getRequest, postRequest } from "../utilities/utilities"
+import { emptyRow, getRequest, postRequest } from "../utilities/utilities"
 import ScrabbleContainer from "../components/scrabbleBoard/ScrabbleContainer"
 import ScrabbleBoard from "../components/scrabbleBoard/ScrabbleBoard"
 import WoodenButton from "../components/WoodenButton"
@@ -21,6 +21,7 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
     const [name, setName] = React.useState<string>("")
     const [options, setOptions] = React.useState<ReactNode[]>([])
     const [width, setWidth] = React.useState<number>(0)
+    const [emptyGrid] = React.useState<string[][]>(emptyRow(() => emptyRow(() => "")))
     
     React.useEffect(() => {
         async function getGameOptions() {
@@ -124,7 +125,7 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
             <div>
                 <h2 className="font-bold">Choisir le type de grille de jeu :</h2>
                 <ScrabbleContainer setWidth={setWidth}>
-                    { gridType ? <ScrabbleBoard width={width} gridType={gridType}/> : null }
+                    { gridType ? <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType}/> : null }
                 </ScrabbleContainer>
 
                 <div className="flex justify-between">

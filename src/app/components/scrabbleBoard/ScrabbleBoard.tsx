@@ -7,7 +7,10 @@ import { emptyRow } from "@/app/utilities/utilities"
 import ScrabbleRow from "./ScrabbleRow"
 import { GridType } from "@/app/models/GridType"
 
-export default function ScrabbleBoard({ gridType, width }: { gridType: GridType, width: number }) {
+export default function ScrabbleBoard(
+    { grid, gridType, width }:
+    { grid: string[][], gridType: GridType, width: number }
+) {
 
     const [bonus, setBonus] = React.useState<number[][]|null>(null)
     const [tiles, setTiles] = React.useState<ReactNode|null>(null)
@@ -28,8 +31,8 @@ export default function ScrabbleBoard({ gridType, width }: { gridType: GridType,
         if (!bonus)
             return
         
-        const gridTiles: ReactNode[][] = emptyRow((y: number) => {
-            const cols: ReactNode[] = emptyRow((x: number) => {
+        const gridTiles: ReactNode[] = grid.map((row: string[], y: number) => {
+            const cols: ReactNode[] = row.map((_col: string, x: number) => {
                 return <ScrabbleBoardTile key={x} size={width / 15} bonus={bonus[y][x]} />
             })
 

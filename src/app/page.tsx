@@ -40,7 +40,7 @@ export default function Page() {
             
             case "landing":
                 setChildren(<Landing setPage={setPage} setPlayer={setPlayer} />)
-                setTitle("Accueil")
+                setTitle("Scrabble Cheetah")
                 break
             
             case "gridSelection":
@@ -49,8 +49,13 @@ export default function Page() {
                 break
 
             case "game":
-                setChildren(<Game setPage={setPage} grid={currentGrid} />)
-                setTitle("Scrabble Cheetah")
+                if (currentGrid) {
+                    setChildren(<Game setPage={setPage} grid={currentGrid} />)
+                    setTitle("Scrabble Cheetah")
+                } else {
+                    setPage("landing")
+                    setTitle("Scrabble Cheetah")
+                }
                 break
 
             default:
