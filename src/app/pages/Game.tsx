@@ -9,6 +9,7 @@ import ScrabbleOverlay from "../components/scrabbleBoard/ScrabbleOverlay"
 import { Entry } from "../models/Entry"
 import WoodenButton from "../components/WoodenButton"
 import FormInput from "../components/FormInput"
+import Arrow from "../components/Arrow"
 
 export default function Game({ currentGrid, setPage, setCurrentGrid }: { currentGrid: Grid, setPage: Function, setCurrentGrid: Function }) {
 
@@ -32,12 +33,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                     const chars: string[] = entry.word.split("")
                     let index = y
 
-                    if (chars.every(char => {
-                        const spaceFree: boolean = updatedGrid[index][x].length === 0 || updatedGrid[index][x] === char
-                        index++
-                        return spaceFree
-                    }))
-                       chars.forEach(char => updatedGrid[y++][x] = char)
+                    chars.forEach(char => updatedGrid[y++][x] = char)
                 }
             } else {
                 const y = entry.y
@@ -46,13 +42,8 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                 if (entry.word.length + x  - 1 < updatedGrid.length) {
                     const chars: string[] = entry.word.split("")
                     let index = x
-
-                    if (chars.every(char => {
-                        const spaceFree: boolean = updatedGrid[y][index].length === 0 || updatedGrid[y][index] === char
-                        index++
-                        return spaceFree
-                    }))
-                       chars.forEach(char => updatedGrid[y][x++] = char)
+                    
+                    chars.forEach(char => updatedGrid[y][x++] = char)
                 }
             }
         })
@@ -73,8 +64,24 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             selectedVertical,
             false 
         )
+        const chars = newEntry.word.split("")
+        const y = newEntry.y
+        const x = newEntry.x
 
-        setEntries([...entriesList, newEntry])
+        if (
+            newEntry.vertical && 
+            chars.length + y - 1 < currentGrid.grid.length &&
+            chars.every((char, i) => !currentGrid.grid[y + i][x] || currentGrid.grid[y + i][x] === char)
+        )
+            setEntries([...entriesList, newEntry])
+        else if (
+            !newEntry.vertical &&
+            chars.length + x - 1 < currentGrid.grid[y].length &&
+            chars.every((char, i) => !currentGrid.grid[y][x + i] || currentGrid.grid[y][x + i] === char)
+        )
+            setEntries([...entriesList, newEntry])
+        else
+            setEntries([...entriesList])
     }, [wordToPlace, selectedTile, selectedVertical])
 
     function selectTile([y, x]: number[]) {
@@ -116,21 +123,25 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
 
     return (
         <>
-            <ScrabbleContainer setWidth={setWidth}>
-                <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
-                <ScrabbleLetters grid={currentGrid.grid} width={width}/>
-                <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={currentGrid.grid} selectTile={selectTile}/>
-            </ScrabbleContainer>
-            
-            <FormInput name="Entrez un mot à placer :">
-                <input onChange={() => updateWordToPlace()} ref={wordTextBoxRef} className="w-full py-1 px-3" />
-                <WoodenButton text="Placer le mot" action={() => placeWord()} />
-            </FormInput>
+            <div className="flex flex-col gap-7">
+                <ScrabbleContainer setWidth={setWidth}>
+                    <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
+                    <ScrabbleLetters grid={currentGrid.grid} width={width}/>
+                    <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={currentGrid.grid} selectTile={selectTile}/>
+                </ScrabbleContainer>
+                
+                <FormInput name="Entrez un mot à placer :">
+                    <input onChange={() => updateWordToPlace()} ref={wordTextBoxRef} className="w-full py-1 px-3" />
+                    <WoodenButton text="Placer le mot" action={() => placeWord()} />
+                </FormInput>
 
-            <FormInput name="Entrez vos lettres :">
-                <input onChange={() => updatePlayerLetters()} ref={lettersTextBoxRef} className="w-full py-1 px-3" />
-                <WoodenButton text="Trouver les solutions" action={() => console.log('click')} />
-            </FormInput>
+                <FormInput name="Entrez vos lettres :">
+                    <input onChange={() => updatePlayerLetters()} ref={lettersTextBoxRef} className="w-full py-1 px-3" />
+                    <WoodenButton text="Trouver les solutions" action={() => console.log('click')} />
+                </FormInput>
+            </div>
+
+            <WoodenButton text="Menu principal" action={() => setPage("landing")} />
         </>
     )
 }
