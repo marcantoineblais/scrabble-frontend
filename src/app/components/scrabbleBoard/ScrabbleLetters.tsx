@@ -9,9 +9,6 @@ export default function ScrabbleLetters({ grid, width }: { grid: string[][], wid
     const [tiles, setTiles] = React.useState<ReactNode|null>(null)
 
     React.useEffect(() => {
-        if (!grid)
-            return
-        
         const gridTiles = grid.map((row, y) => {
             const cols = row.map((col, x) => {
                 return <ScrabbleLetterTile key={x} size={width / 15} letter={col} />

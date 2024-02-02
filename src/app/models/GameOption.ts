@@ -7,9 +7,9 @@ export class GameOption {
     public language: Language;
     public name: string;
 
-	constructor($gridType: GridType, $language: Language, $name: string) {
-		this.gridType = $gridType;
-		this.language = $language;
-		this.name = $name;
+	constructor(gridType: GridType, language: Language, name: string) {
+		this.gridType = gridType;
+		this.language = language;
+		this.name = name;
 	}
 }

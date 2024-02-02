@@ -12,13 +12,13 @@ export class Grid {
     public language: Language;
     public player: Player;
 
-	constructor($id: number, $name: string, $grid: string[][], $playerLetters: string, $gridType: GridType, $language: Language, $player: Player) {
-		this.id = $id;
-		this.name = $name;
-		this.grid = $grid;
-		this.playerLetters = $playerLetters;
-		this.gridType = $gridType;
-		this.language = $language;
-		this.player = $player;
+	constructor(id: number, name: string, grid: string[][], playerLetters: string, gridType: GridType, language: Language, player: Player) {
+		this.id = id;
+		this.name = name;
+		this.grid = grid;
+		this.playerLetters = playerLetters;
+		this.gridType = gridType;
+		this.language = language;
+		this.player = player;
 	}
 }

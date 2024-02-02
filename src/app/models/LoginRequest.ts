@@ -4,9 +4,9 @@ export class LoginRequest {
     public password: string;
     public rememberMe: boolean;
 
-	constructor($username: string, $password: string, $rememberMe: boolean) {
-		this.username = $username;
-		this.password = $password;
-		this.rememberMe = $rememberMe;
+	constructor(username: string, password: string, rememberMe: boolean) {
+		this.username = username;
+		this.password = password;
+		this.rememberMe = rememberMe;
 	}
 }

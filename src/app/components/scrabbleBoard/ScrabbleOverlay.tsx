@@ -14,13 +14,12 @@ export default function ScrabbleOverlay(
     const [tiles, setTiles] = React.useState<ReactNode|null>(null)
 
     React.useEffect(() => {
-        const overlays: number[][] = [[]]
+        const overlays: number[][] = []
 
         grid.forEach((row, y) => {
-            row.forEach((_col, x) => {
-                if (!overlays[y])
-                    overlays[y] = []
+            overlays[y] = []
 
+            row.forEach((_col, x) => {
                 if (selectedTile && y == selectedTile[0] && x == selectedTile[1])
                     overlays[y][x] = Overlay.SELECTED
                 else if (selectedTile && selectedVertical && x == selectedTile[1])
