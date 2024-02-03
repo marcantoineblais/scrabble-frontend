@@ -135,19 +135,22 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
                 </div>
             </div>
 
-            <FormInput name="Choisir la langue de jeu :">
-                <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
-                    { options }
-                </select>
-            </FormInput>
+            <div className="h-full px-5 flex flex-col gap-5">
+                <FormInput name="Choisir la langue de jeu :">
+                    <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
+                        { options }
+                    </select>
+                </FormInput>
 
-            <div className="w-full flex-grow">
-                <h2 className="font-bold">Donner un nom à votre grille de jeu : </h2>
-                <input onChange={(e) => changeName(e)} className="w-full py-1 px-3" />
+                <div className="w-full flex flex-col gap-5">
+                    <h2 className="font-bold">Donner un nom à votre grille de jeu : </h2>
+                    <input onChange={(e) => changeName(e)} className="w-full py-1 px-3" />
+                    <WoodenButton text="Débuter la partie" action={submitGrid} />
+                </div>
+
             </div>
 
-            <div className="flex flex-col gap-3">
-                <WoodenButton text="Débuter la partie" action={submitGrid} />
+            <div className="px-5 flex flex-col">
                 <WoodenButton text="Retour" action={() => setPage("landing")} />
             </div>
         </div>

@@ -4,16 +4,14 @@ export class Entry {
     public y: number;
     public x: number;
     public vertical: boolean;
-    public placed: boolean;
     public conflict: boolean;
 
     
-	constructor(word: string, y: number, x: number, vertical: boolean, placed: boolean) {
+	constructor(word: string, y: number, x: number, vertical: boolean) {
         this.word = word;
         this.y = y;
         this.x = x;
         this.vertical = vertical;
-        this.placed = placed;
         this.conflict = false;
 	}
 
@@ -33,7 +31,7 @@ export class Entry {
 
     public isSelected([y, x]: number[], vertical: boolean): boolean {
         return (
-            this.placed && this.vertical === vertical &&
+            this.vertical === vertical &&
             this.y <= y && y <= this.lastY() &&
             this.x <= x && x <= this.lastX()   
         );

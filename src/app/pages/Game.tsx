@@ -17,6 +17,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     const [selectedTile, setSelectedTile] = React.useState<number[]|null>(null)
     const [selectedVertical, setSelectedVertical] = React.useState<boolean>(false)
     const [selectedEntry, setSelectedEntry] = React.useState<Entry|undefined>(undefined)
+    const [newEntry, setNewEntry] = React.useState<Entry|null>(null)
     const [entries, setEntries] = React.useState<Entry[]>([])
     const [wordToPlace, setWordToPlace] = React.useState<string>("")
     const [playerLetters, setPlayerLetters] = React.useState<string>("")
@@ -35,31 +36,30 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         if (!selectedTile)
             return
 
-        const entriesList: Entry[] = entries.filter(e => e.placed)
         const grid: string[][] = currentGrid.grid
-        const newEntry = new Entry(
-            wordToPlace, selectedTile[0], selectedTile[1], selectedVertical, false 
-        )
+        let entry: Entry
+        
+        entry = new Entry(
+            wordToPlace, selectedTile[0], selectedTile[1], selectedVertical
+            )
             
         if (
-            newEntry.lastY() >= grid.length ||
-            newEntry.lastX() >= grid[0].length ||
-            entriesList.some(entry => entry.isLetterConflict(newEntry))
+            entry.lastY() >= grid.length ||
+            entry.lastX() >= grid[0].length ||
+            entries.some(e => e.isLetterConflict(entry))
         )
-            newEntry.conflict = true
-
-        setEntries([...entriesList, newEntry])
-
+            entry.conflict = true
+        else 
+            entry.conflict = false
+        
+        setNewEntry(entry)
     }, [wordToPlace, selectedTile, selectedVertical])
 
     React.useEffect(() => {
         if (!selectedTile)
             return 
 
-        const entry: Entry|undefined = entries.find(e => e.isSelected(selectedTile, selectedVertical))
-
-        if (entry)
-            setSelectedEntry(entry)
+        setSelectedEntry(entries.find(e => e.isSelected(selectedTile, selectedVertical)))
         
     }, [selectedTile, selectedVertical])
 
@@ -88,14 +88,17 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     }
 
     function placeWord() {
-        if (!wordTextBoxRef.current)
+        if (!wordTextBoxRef.current || !newEntry)
             return
 
-        const entriesNotPlaced: Entry[] = entries.filter(e => !e.placed)
-        const textbox = wordTextBoxRef.current
+        if (newEntry.conflict) {
+            alert("Impossible de placer le mot ici.")
+            return
+        }
 
-        entriesNotPlaced.forEach(entry => entry.placed = true)
-        setEntries([...entries])
+        const textbox = wordTextBoxRef.current
+        setEntries([...entries, newEntry])
+        setNewEntry(null)
         setWordToPlace("")
         textbox.value = ""
     }
@@ -105,7 +108,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             <div className="mt-5 flex flex-col gap-7">
                 <ScrabbleContainer setWidth={setWidth}>
                     <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
-                    <ScrabbleLetters grid={currentGrid.grid} entries={entries} width={width}/>
+                    <ScrabbleLetters grid={currentGrid.grid} newEntry={newEntry} selectedEntry={selectedEntry} width={width}/>
                     <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={currentGrid.grid} selectTile={selectTile}/>
                 </ScrabbleContainer>
                 
@@ -121,8 +124,9 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                     </FormInput>
                 </div>
             </div>
-
-            <WoodenButton text="Menu principal" action={() => setPage("landing")} />
+            <div className="px-5 w-full flex flex-col">
+                <WoodenButton text="Menu principal" action={() => setPage("landing")} />
+            </div>
         </>
     )
 }

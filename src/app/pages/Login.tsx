@@ -43,17 +43,24 @@ export default function Login({ setPlayer }: { setPlayer: Function}) {
     }
 
     return (
-        <>
-            <img src="/cheetah.jpg" alt="cheetah" className="flex-grow object-cover"/>
+        <div className="h-full px-5 mt-5 flex flex-col justify-between">
+            <div className="flex flex-col gap-5">
+                <img src="/cheetah.jpg" alt="cheetah" className="object-contain"/>
 
-            <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
-                <div className="w-full flex flex-col gap-3">
-                    <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
-                    <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
-                    <label className="w-fit flex items-center" htmlFor="rememberMe"><input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />Se souvenir de moi</label>
-                    <WoodenButton text="Envoyer" action={login}/>
-                </div>
-            </form>
-        </>
+                <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
+                    <div className="w-full flex flex-col gap-3">
+                        <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
+                        <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
+                        <label className="w-fit flex items-center" htmlFor="rememberMe"><input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />Se souvenir de moi</label>
+                        <WoodenButton text="Envoyer" action={login}/>
+                    </div>
+                </form>
+            </div>
+
+            <div className="w-full flex flex-col">
+                <p>Vous n'avez pas de compte?</p>
+                <WoodenButton text="S'inscrire" action={() => console.log("inscription")}/>
+            </div>
+        </div>
     )
 }

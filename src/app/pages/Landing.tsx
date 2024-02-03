@@ -33,14 +33,18 @@ export default function Landing(
     }
 
     return (
-        <>
-            <img src="/cheetah.jpg" alt="cheetah" className="flex-grow object-cover"/>
-            <div className="flex flex-col gap-3">
-                <WoodenButton text="Nouvelle Partie" action={newGame} />
-                <WoodenButton text="Reprendre Partie" action={resumeGame} />
-                <WoodenButton text="Options" action={options} />
+        <div className="h-full mt-5 px-5 flex flex-col justify-between">
+            <div className="flex flex-col gap-5">
+                <img src="/cheetah.jpg" alt="cheetah" className="object-contain"/>
+                <div className="mt-5 flex flex-col gap-3">
+                    <WoodenButton text="Nouvelle Partie" action={newGame} />
+                    <WoodenButton text="Reprendre Partie" action={resumeGame} />
+                    <WoodenButton text="Options" action={options} />
+                </div>
+            </div>
+            <div className="w-full flex flex-col">
                 <WoodenButton text="Se déconnecter" action={logout} />
             </div>
-        </>
+        </div>
     )
 }
