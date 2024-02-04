@@ -65,16 +65,16 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
 
     // CHANGE THE SELECTED ENTRY WHEN THE EDIT MENU IS OPEN
     React.useEffect(() => {
-        if (!selectedTile || !editWordTextBoxRef.current || wordEditMode)
+        if (!selectedTile || !editWordTextBoxRef.current)
             return 
 
         const textbox = editWordTextBoxRef.current
 
-        if (openDrawerId === 2) {
+        if (openDrawerId === 2 && !wordEditMode) {
             const entry = entries.find(e => e.isSelected(selectedTile, selectedVertical)) || null
             setSelectedEntry(entry)
             textbox.value = entry ? entry.word.toUpperCase() : ""
-        } else {            
+        } else if (openDrawerId !==2 && wordEditMode) {            
             setWordEditMode(false)
         }
         
@@ -90,6 +90,9 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             setWordToPlace(textbox.value)
             setEntries(entries.filter(e => !e.equals(selectedEntry)))
         } else {
+            setWordToPlace("")
+            setSelectedEntry(null)
+            setNewEntry(null)
             setEntries([...entries, selectedEntry])
         }
             
