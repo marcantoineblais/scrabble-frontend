@@ -61,7 +61,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         
         setNewEntry(entry)
 
-    }, [wordToPlace, selectedTile, selectedVertical, openDrawerId, wordEditMode])
+    }, [wordToPlace, selectedTile, selectedVertical, openDrawerId])
 
     // CHANGE THE SELECTED ENTRY WHEN THE EDIT MENU IS OPEN
     React.useEffect(() => {
@@ -74,14 +74,14 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             const entry = entries.find(e => e.isSelected(selectedTile, selectedVertical)) || null
             setSelectedEntry(entry)
             textbox.value = entry ? entry.word.toUpperCase() : ""
-        } else if (openDrawerId !==2 && wordEditMode) {            
+        } else if (openDrawerId !==2) {     
             setWordEditMode(false)
         }
         
-    }, [selectedTile, selectedVertical, openDrawerId, wordEditMode])
+    }, [selectedTile, selectedVertical, openDrawerId, wordEditMode, entries])
 
     // REMOVE THE SELECTED ENTRY FROM THE GRID WHILE EDITING, KEEP THE BACKGROUND COLOR FOR REFERENCE
-    React.useEffect(() => {
+    React.useEffect(() => {        
         if (!selectedEntry || !editWordTextBoxRef.current)
             return
         
@@ -91,12 +91,12 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             setEntries(entries.filter(e => !e.equals(selectedEntry)))
         } else {
             setWordToPlace("")
-            setSelectedEntry(null)
             setNewEntry(null)
+            setSelectedEntry(null)
             setEntries([...entries, selectedEntry])
         }
             
-    }, [wordEditMode])
+    }, [wordEditMode, openDrawerId])
 
     function selectTile([y, x]: number[]) {
         if (selectedTile && selectedTile[0] == y && selectedTile[1] == x)
@@ -181,6 +181,24 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             setOpenDrawerId(id)
     }
 
+    function editOrAcceptButtons() {
+        if (wordEditMode) {
+            return ( 
+                <>
+                    <WoodenButton text="Accepter" action={() => placeWord()} /> 
+                    <WoodenButton text="Annuler" action={() => toggleWordEditMode()} /> 
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <WoodenButton text="Modifier" action={() => toggleWordEditMode()} />
+                    <WoodenButton text="Effacer" action={() => eraseEntry()} />
+                </>
+            )
+        }
+    }
+
     return (
         <>
             <div className="mt-5 flex flex-col gap-7">
@@ -207,20 +225,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                                 className="w-full py-1 px-3" 
                             />
                         </FormInput>
-                        <div className="w-full flex gap-1">
-                        { 
-                            wordEditMode ?
-                                <>
-                                    <WoodenButton text="Accepter" action={() => placeWord()} /> 
-                                    <WoodenButton text="Annuler" action={() => toggleWordEditMode()} /> 
-                                </>
-                            :
-                                <>
-                                    <WoodenButton text="Modifier" action={() => toggleWordEditMode()} />
-                                    <WoodenButton text="Effacer" action={() => eraseEntry()} />
-                                </>
-                            }
-                        </div> 
+                        <div className="w-full flex gap-1">{ editOrAcceptButtons() }</div> 
                     </Drawer>
 
                     <Drawer title="Trouver les solutions" id={3} open={openDrawerId === 3} openDrawer={openDrawer}>
@@ -231,7 +236,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                     </Drawer>
                 </div>
             </div>
-            <div className="px-5 w-full flex flex-col">
+            <div className="px-5">
                 <WoodenButton text="Menu principal" action={() => setPage("landing")} />
             </div>
         </>
