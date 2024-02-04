@@ -130,27 +130,26 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
                 </ScrabbleContainer>
 
                 <div className="flex justify-between">
-                    <div onClick={() => previousGridType()} className="w-1/12"><Arrow reversed={true} /></div>
-                    <div onClick={() => nextGridType()} className="w-1/12"><Arrow reversed={false} /></div>
+                    <Arrow action={() => previousGridType()} reversed={true} className="w-1/12" />
+                    <Arrow action={() => nextGridType()} reversed={false} className="w-1/12" />
                 </div>
             </div>
 
-            <div className="h-full px-5 flex flex-col gap-5">
+            <div className="h-full px-5 flex flex-col gap-7">
                 <FormInput name="Choisir la langue de jeu :">
                     <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
                         { options }
                     </select>
                 </FormInput>
 
-                <div className="w-full flex flex-col gap-5">
-                    <h2 className="font-bold">Donner un nom à votre grille de jeu : </h2>
+                <FormInput name="Donner un nom à votre grille de jeu :">
                     <input onChange={(e) => changeName(e)} className="w-full py-1 px-3" />
-                    <WoodenButton text="Débuter la partie" action={submitGrid} />
-                </div>
-
+                </FormInput>
+                
+                <WoodenButton text="Débuter la partie" action={submitGrid} />
             </div>
 
-            <div className="px-5 flex flex-col">
+            <div className="px-5">
                 <WoodenButton text="Retour" action={() => setPage("landing")} />
             </div>
         </div>

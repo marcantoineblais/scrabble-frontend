@@ -52,7 +52,9 @@ export default function Login({ setPlayer }: { setPlayer: Function}) {
                         <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
                         <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
                         <label className="w-fit flex items-center" htmlFor="rememberMe"><input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />Se souvenir de moi</label>
-                        <WoodenButton text="Envoyer" action={login}/>
+                        <div className="w-full mt-5 flex flex-col"> 
+                            <WoodenButton text="Se connecter" action={login}/>
+                        </div>
                     </div>
                 </form>
             </div>

@@ -66,4 +66,12 @@ export class Entry {
         else if (!this.vertical && this.lastX() < grid.length)
             chars.forEach(char => grid[y][x++] = char)
     }
+
+    public equals(entry: Entry): boolean {
+        return (
+            this.vertical === entry.vertical &&
+            this.x === entry.x &&
+            this.y === entry.y
+        )
+    }
 }

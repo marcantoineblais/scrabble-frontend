@@ -43,7 +43,7 @@ export default function ScrabbleBoard(
     }, [bonus, width])
 
     return (
-        <div className="absolute top-0 left-0 right-0 bottom-0">
+        <div className="absolute inset-0">
             { tiles }
         </div>
     )
