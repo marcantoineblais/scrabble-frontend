@@ -10,6 +10,8 @@ import { Entry } from "../models/Entry"
 import WoodenButton from "../components/WoodenButton"
 import FormInput from "../components/FormInput"
 import Drawer from "../components/Drawer"
+import { postRequest } from "../utilities/utilities"
+import LoadingScreen from "../components/LoadingScreen"
 
 export default function Game({ currentGrid, setPage, setCurrentGrid }: { currentGrid: Grid, setPage: Function, setCurrentGrid: Function }) {
 
@@ -23,6 +25,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     const [playerLetters, setPlayerLetters] = React.useState<string>("")
     const [openDrawerId, setOpenDrawerId] = React.useState<number|null>(null)
     const [wordEditMode, setWordEditMode] = React.useState<boolean>(false)
+    const [loadingScreen, setLoadingScreen] = React.useState<boolean>(false)
     const newWordTextBoxRef = React.useRef<HTMLInputElement|null>(null)
     const editWordTextBoxRef = React.useRef<HTMLInputElement|null>(null)
     const lettersTextBoxRef = React.useRef<HTMLInputElement|null>(null)
@@ -135,6 +138,8 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             return
 
         const textbox = lettersTextBoxRef.current
+        textbox.value = textbox.value.toUpperCase()
+        currentGrid.playerLetters = textbox.value
         setPlayerLetters(textbox.value)
     }
 
@@ -181,6 +186,24 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             setOpenDrawerId(id)
     }
 
+    async function submitGrid() {
+        if (!playerLetters) {
+            alert("Veuillez entrer au moins une lettre")
+            return
+        }
+
+        setLoadingScreen(true)
+        try {
+            const response = await postRequest(JSON.stringify(currentGrid), "/grid/solve")
+            const data = await response.json()
+            console.log(data);
+            
+        } catch (ex) {
+            console.error(ex)
+        }
+        setLoadingScreen(false)
+    }
+
     function editOrAcceptButtons() {
         if (wordEditMode) {
             return ( 
@@ -202,6 +225,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     return (
         <>
             <div className="mt-5 flex flex-col gap-7">
+                <LoadingScreen visible={loadingScreen} />
                 <ScrabbleContainer setWidth={setWidth}>
                     <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
                     <ScrabbleLetters grid={currentGrid.grid} newEntry={newEntry} selectedEntry={selectedEntry} width={width}/>
@@ -211,7 +235,12 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                 <div className="px-5 flex flex-col gap-10">
                     <Drawer title="Ajouter un mot" id={1} open={openDrawerId === 1} openDrawer={openDrawer}>
                         <FormInput name="Entrez un mot à placer :">
-                            <input onChange={() => updateWordToPlace()} ref={newWordTextBoxRef} className="w-full py-1 px-3" />
+                            <input 
+                                onChange={() => updateWordToPlace()} 
+                                ref={newWordTextBoxRef} 
+                                className="w-full py-1 px-3" 
+                                maxLength={15}
+                            />
                         </FormInput>
                         <WoodenButton text="Placer le mot" action={() => placeWord()} />
                     </Drawer>
@@ -222,7 +251,8 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                                 onChange={() => editSelectedWordLetters()}
                                 ref={editWordTextBoxRef}
                                 readOnly={!wordEditMode}
-                                className="w-full py-1 px-3" 
+                                className="w-full py-1 px-3"
+                                maxLength={15} 
                             />
                         </FormInput>
                         <div className="w-full flex gap-1">{ editOrAcceptButtons() }</div> 
@@ -230,9 +260,14 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
 
                     <Drawer title="Trouver les solutions" id={3} open={openDrawerId === 3} openDrawer={openDrawer}>
                         <FormInput name="Entrez vos lettres :">
-                            <input onChange={() => updatePlayerLetters()} ref={lettersTextBoxRef} className="w-full py-1 px-3" />
+                            <input 
+                                onChange={() => updatePlayerLetters()} 
+                                ref={lettersTextBoxRef} 
+                                className="w-full py-1 px-3" 
+                                maxLength={7}
+                            />
                         </FormInput>
-                        <WoodenButton text="Trouver les solutions" action={() => console.log('click')} />
+                        <WoodenButton text="Trouver les solutions" action={() => submitGrid()} />
                     </Drawer>
                 </div>
             </div>

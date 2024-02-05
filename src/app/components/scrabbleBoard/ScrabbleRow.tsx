@@ -12,7 +12,6 @@ export default function ScrabbleRow({ children, width }: { children: ReactNode, 
 
         const row = rowRef.current
         row.style.width = width + "px"
-        row.style.height = width / 15 + "px"
     }, [width])
 
     return (

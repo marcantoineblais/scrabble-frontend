@@ -33,7 +33,7 @@ export default function ScrabbleBoard(
         
         const gridTiles: ReactNode[] = grid.map((row: string[], y: number) => {
             const cols: ReactNode[] = row.map((_col: string, x: number) => {
-                return <ScrabbleBoardTile key={x} size={width / 15} bonus={bonus[y][x]} />
+                return <ScrabbleBoardTile key={x} size={width / grid.length} bonus={bonus[y][x]} />
             })
 
             return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>

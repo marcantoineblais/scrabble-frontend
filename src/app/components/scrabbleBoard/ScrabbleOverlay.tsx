@@ -40,7 +40,7 @@ export default function ScrabbleOverlay(
         
         const gridTiles: ReactNode[] = grid.map((row: string[], y: number) => {
             const cols: ReactNode[] = row.map((_col: string, x: number) => {
-                return <ScrabbleOverlayTile key={x} size={width / 15} overlay={overlayGrid[y][x]} coords={[y, x]} selectTile={selectTile} />
+                return <ScrabbleOverlayTile key={x} size={width / grid.length} overlay={overlayGrid[y][x]} coords={[y, x]} selectTile={selectTile} />
             })
 
             return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>
