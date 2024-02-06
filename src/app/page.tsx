@@ -10,6 +10,7 @@ import GridSelection from "./pages/GridSelection";
 import { Player } from "./models/Player";
 import { Grid } from "./models/Grid";
 import Game from "./pages/Game";
+import ConditionalDiv from "./components/ConditionalDiv";
 
 export default function Page() {
 
@@ -59,7 +60,7 @@ export default function Page() {
                 break
 
             default:
-                setChildren(<LoadingScreen visible={true} />)
+                setChildren(null)
                 setTitle("")
                 break
         }
@@ -67,6 +68,7 @@ export default function Page() {
 
     return (
         <main className="h-full bg-orange-50">
+            <ConditionalDiv visible={!children}><LoadingScreen /></ConditionalDiv>
             <div className="h-full container mx-auto">
                 <Authentication setPlayer={setPlayer} />
                 <Menu title={title}>{ children }</Menu>

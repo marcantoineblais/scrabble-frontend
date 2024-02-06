@@ -12,6 +12,9 @@ import FormInput from "../components/FormInput"
 import Drawer from "../components/Drawer"
 import { postRequest } from "../utilities/utilities"
 import LoadingScreen from "../components/LoadingScreen"
+import ConditionalDiv from "../components/ConditionalDiv"
+import SolutionsBrowser from "../components/SolutionsBrowser"
+import { Solution } from "../models/Solution"
 
 export default function Game({ currentGrid, setPage, setCurrentGrid }: { currentGrid: Grid, setPage: Function, setCurrentGrid: Function }) {
 
@@ -21,6 +24,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     const [selectedEntry, setSelectedEntry] = React.useState<Entry|null>(null)
     const [newEntry, setNewEntry] = React.useState<Entry|null>(null)
     const [entries, setEntries] = React.useState<Entry[]>([])
+    const [solutions, setSolutions] = React.useState<Solution[]>([])
     const [wordToPlace, setWordToPlace] = React.useState<string>("")
     const [playerLetters, setPlayerLetters] = React.useState<string>("")
     const [openDrawerId, setOpenDrawerId] = React.useState<number|null>(null)
@@ -160,6 +164,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         setEntries([...entries, newEntry])
         setWordEditMode(false)
         setWordToPlace("")
+        setSolutions([])
         textbox1.value = ""
         textbox2.value = ""
     }
@@ -196,7 +201,12 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         try {
             const response = await postRequest(JSON.stringify(currentGrid), "/grid/solve")
             const data = await response.json()
-            console.log(data);
+            const solutionsList: Solution[] = []
+            data.forEach((obj: any) => {
+                const entry: Entry = new Entry(obj.entry.word, obj.y, obj.x, obj.vertical)
+                solutionsList.push(new Solution(entry, obj.points))
+                setSolutions(solutionsList)
+            })
             
         } catch (ex) {
             console.error(ex)
@@ -204,35 +214,18 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         setLoadingScreen(false)
     }
 
-    function editOrAcceptButtons() {
-        if (wordEditMode) {
-            return ( 
-                <>
-                    <WoodenButton text="Accepter" action={() => placeWord()} /> 
-                    <WoodenButton text="Annuler" action={() => toggleWordEditMode()} /> 
-                </>
-            )
-        } else {
-            return (
-                <>
-                    <WoodenButton text="Modifier" action={() => toggleWordEditMode()} />
-                    <WoodenButton text="Effacer" action={() => eraseEntry()} />
-                </>
-            )
-        }
-    }
-
     return (
         <>
             <div className="mt-5 flex flex-col gap-7">
-                <LoadingScreen visible={loadingScreen} />
+                <ConditionalDiv className="h-0" visible={loadingScreen}><LoadingScreen /></ConditionalDiv> 
+
                 <ScrabbleContainer setWidth={setWidth}>
                     <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
                     <ScrabbleLetters grid={currentGrid.grid} newEntry={newEntry} selectedEntry={selectedEntry} width={width}/>
                     <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={currentGrid.grid} selectTile={selectTile}/>
                 </ScrabbleContainer>
                 
-                <div className="px-5 flex flex-col gap-10">
+                <ConditionalDiv className="px-5 flex flex-col gap-10" visible={!solutions.length}>    
                     <Drawer title="Ajouter un mot" id={1} open={openDrawerId === 1} openDrawer={openDrawer}>
                         <FormInput name="Entrez un mot à placer :">
                             <input 
@@ -255,7 +248,14 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                                 maxLength={15} 
                             />
                         </FormInput>
-                        <div className="w-full flex gap-1">{ editOrAcceptButtons() }</div> 
+                        <ConditionalDiv className="w-full flex gap-1" visible={!wordEditMode}>
+                            <WoodenButton text="Modifier" action={() => toggleWordEditMode()} />
+                            <WoodenButton text="Effacer" action={() => eraseEntry()} />
+                        </ConditionalDiv> 
+                        <ConditionalDiv className="w-full flex gap-1" visible={wordEditMode}>
+                            <WoodenButton text="Accepter" action={() => placeWord()} /> 
+                            <WoodenButton text="Annuler" action={() => toggleWordEditMode()} /> 
+                        </ConditionalDiv> 
                     </Drawer>
 
                     <Drawer title="Trouver les solutions" id={3} open={openDrawerId === 3} openDrawer={openDrawer}>
@@ -268,8 +268,17 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                             />
                         </FormInput>
                         <WoodenButton text="Trouver les solutions" action={() => submitGrid()} />
-                    </Drawer>
-                </div>
+                    </Drawer>            
+                </ConditionalDiv>
+
+                <ConditionalDiv className="px-5" visible={solutions.length > 1}>
+                    <SolutionsBrowser
+                        solutions={solutions} 
+                        setSolutions={setSolutions} 
+                        setNewEntry={setNewEntry} 
+                        placeWord={placeWord} 
+                    />
+                </ConditionalDiv>               
             </div>
             <div className="px-5">
                 <WoodenButton text="Menu principal" action={() => setPage("landing")} />
