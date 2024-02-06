@@ -22,10 +22,12 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     const [selectedTile, setSelectedTile] = React.useState<number[]|null>(null)
     const [selectedVertical, setSelectedVertical] = React.useState<boolean>(false)
     const [selectedEntry, setSelectedEntry] = React.useState<Entry|null>(null)
+    const [selectedSolution, setSelectedSolution] = React.useState<Entry|null>(null)
     const [newEntry, setNewEntry] = React.useState<Entry|null>(null)
     const [entries, setEntries] = React.useState<Entry[]>([])
     const [solutions, setSolutions] = React.useState<Solution[]>([])
-    const [wordToPlace, setWordToPlace] = React.useState<string>("")
+    const [newWord, setNewWord] = React.useState<string>("")
+    const [editedWord, setEditedWord] = React.useState<string>("")
     const [playerLetters, setPlayerLetters] = React.useState<string>("")
     const [openDrawerId, setOpenDrawerId] = React.useState<number|null>(null)
     const [wordEditMode, setWordEditMode] = React.useState<boolean>(false)
@@ -50,11 +52,11 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
 
         const grid: string[][] = currentGrid.grid
         let entry: Entry|null
-
+        
         if (openDrawerId === 1)
-            entry = new Entry(wordToPlace, selectedTile[0], selectedTile[1], selectedVertical)
+            entry = new Entry(newWord, selectedTile[0], selectedTile[1], selectedVertical)
         else if (openDrawerId === 2 && selectedEntry && wordEditMode)
-            entry = new Entry(wordToPlace, selectedTile[0], selectedTile[1], selectedVertical)
+            entry = new Entry(editedWord, selectedTile[0], selectedTile[1], selectedVertical)
         else 
             entry = null
 
@@ -68,7 +70,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         
         setNewEntry(entry)
 
-    }, [wordToPlace, selectedTile, selectedVertical, openDrawerId])
+    }, [newWord, editedWord, selectedTile, selectedVertical, openDrawerId, entries])
 
     // CHANGE THE SELECTED ENTRY WHEN THE EDIT MENU IS OPEN
     React.useEffect(() => {
@@ -89,15 +91,14 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
 
     // REMOVE THE SELECTED ENTRY FROM THE GRID WHILE EDITING, KEEP THE BACKGROUND COLOR FOR REFERENCE
     React.useEffect(() => {        
-        if (!selectedEntry || !editWordTextBoxRef.current)
+        if (!selectedEntry)
             return
         
         if (wordEditMode) {
-            const textbox = editWordTextBoxRef.current
-            setWordToPlace(textbox.value)
+            setEditedWord(selectedEntry.word)
             setEntries(entries.filter(e => !e.equals(selectedEntry)))
         } else {
-            setWordToPlace("")
+            setEditedWord("")
             setNewEntry(null)
             setSelectedEntry(null)
             setEntries([...entries, selectedEntry])
@@ -112,13 +113,13 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             setSelectedTile([y, x])
     }
 
-    function updateWordToPlace() {
+    function updateNewWord() {
         if (!newWordTextBoxRef.current)
             return
 
         const textbox = newWordTextBoxRef.current
         textbox.value = textbox.value.toUpperCase()
-        setWordToPlace(textbox.value)
+        setNewWord(textbox.value)
     }
 
     function editSelectedWordLetters() {
@@ -127,7 +128,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
 
         const textbox = editWordTextBoxRef.current
         textbox.value = textbox.value.toUpperCase()
-        setWordToPlace(textbox.value)
+        setEditedWord(textbox.value)
     }
 
     function toggleWordEditMode() {
@@ -148,7 +149,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     }
 
     function placeWord() {
-        if (!newWordTextBoxRef.current || !editWordTextBoxRef.current || !newEntry)
+        if (!newEntry)
             return
 
         if (newEntry.conflict || !newEntry.word.length) {
@@ -156,31 +157,28 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             return
         }
 
-        const textbox1 = newWordTextBoxRef.current
-        const textbox2 = editWordTextBoxRef.current
-
         setSelectedEntry(null)
         setNewEntry(null)
         setEntries([...entries, newEntry])
         setWordEditMode(false)
-        setWordToPlace("")
-        setSolutions([])
-        textbox1.value = ""
-        textbox2.value = ""
+
+        if (openDrawerId === 1) {
+            resetTextbox(newWordTextBoxRef)
+            setNewWord("")
+        } else {
+            resetTextbox(editWordTextBoxRef)
+            setEditedWord("")
+        }
     }
 
     function eraseEntry() {
-        if (!selectedEntry || !editWordTextBoxRef.current)
+        if (!selectedEntry)
             return
 
         if (confirm("Voulez-vous effacer le mot " + selectedEntry.word + " ?")) {
-            const textbox = editWordTextBoxRef.current
-
             setSelectedEntry(null)
             setEntries(entries.filter(e => !e.equals(selectedEntry)))
-            setWordToPlace("")
-            setWordEditMode(false)
-            textbox.value = ""
+            resetTextbox(editWordTextBoxRef)
         }
     }
 
@@ -189,6 +187,24 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             setOpenDrawerId(null)
         else
             setOpenDrawerId(id)
+    }
+
+    function acceptSolution() {
+        if (!entries || !selectedSolution)
+            return 
+
+        setSelectedSolution(null)
+        setEntries([...entries, selectedSolution])
+        setWordEditMode(false)
+        setSolutions([])
+        resetTextbox(lettersTextBoxRef)
+    }
+
+    function resetTextbox(textbox: React.MutableRefObject<HTMLInputElement | null>) {
+        if (!textbox.current)
+            return 
+
+        textbox.current.value = ""
     }
 
     async function submitGrid() {
@@ -217,19 +233,22 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     return (
         <>
             <div className="mt-5 flex flex-col gap-7">
-                <ConditionalDiv className="h-0" visible={loadingScreen}><LoadingScreen /></ConditionalDiv> 
+                <LoadingScreen visible={loadingScreen} /> 
 
-                <ScrabbleContainer setWidth={setWidth}>
-                    <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
-                    <ScrabbleLetters grid={currentGrid.grid} newEntry={newEntry} selectedEntry={selectedEntry} width={width}/>
-                    <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={currentGrid.grid} selectTile={selectTile}/>
-                </ScrabbleContainer>
+                <div>
+                    <h2 className="font-bold">{ currentGrid.name.toUpperCase() }</h2>
+                    <ScrabbleContainer setWidth={setWidth}>
+                        <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
+                        <ScrabbleLetters grid={currentGrid.grid} newEntry={newEntry} selectedEntry={selectedEntry} selectedSolution={selectedSolution} width={width}/>
+                        <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={currentGrid.grid} selectTile={selectTile}/>
+                    </ScrabbleContainer>
+                </div>
                 
                 <ConditionalDiv className="px-5 flex flex-col gap-10" visible={!solutions.length}>    
                     <Drawer title="Ajouter un mot" id={1} open={openDrawerId === 1} openDrawer={openDrawer}>
                         <FormInput name="Entrez un mot à placer :">
                             <input 
-                                onChange={() => updateWordToPlace()} 
+                                onChange={() => updateNewWord()} 
                                 ref={newWordTextBoxRef} 
                                 className="w-full py-1 px-3" 
                                 maxLength={15}
@@ -275,8 +294,8 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                     <SolutionsBrowser
                         solutions={solutions} 
                         setSolutions={setSolutions} 
-                        setNewEntry={setNewEntry} 
-                        placeWord={placeWord} 
+                        setSelectedSolution={setSelectedSolution} 
+                        acceptSolution={acceptSolution}
                     />
                 </ConditionalDiv>               
             </div>

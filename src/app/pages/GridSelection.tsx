@@ -126,7 +126,7 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
             <div>
                 <h2 className="font-bold">Choisir le type de grille de jeu :</h2>
                 <ScrabbleContainer setWidth={setWidth}>
-                    { gridType ? <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType}/> : null }
+                    { gridType ? <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType} /> : null }
                 </ScrabbleContainer>
 
                 <div className="flex justify-between">

@@ -2,7 +2,10 @@
 
 import React from "react"
 
-export default function ScrabbleLetterTile({ size, letter, conflict, selected }: { size: number, letter: string, conflict: boolean, selected: boolean }) {
+export default function ScrabbleLetterTile(
+    { size, letter, conflict, selected, solution }:
+    { size: number, letter: string, conflict: boolean, selected: boolean, solution: boolean }
+) {
 
     const [background, setBackground] = React.useState("")
     const tileRef = React.useRef<HTMLDivElement|null>(null)
@@ -20,13 +23,15 @@ export default function ScrabbleLetterTile({ size, letter, conflict, selected }:
     React.useEffect(() => {
         if (conflict)
             setBackground("bg-red-700 opacity-75")
+        else if (solution)
+            setBackground("bg-teal-700")
         else if (selected)
             setBackground("bg-neutral-700")
         else if (letter)
             setBackground("bg-tile-texture")
         else
             setBackground("")
-    }, [letter, conflict, selected])
+    }, [letter, conflict, selected, solution])
 
     return (
         <div 

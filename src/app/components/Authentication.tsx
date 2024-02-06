@@ -4,7 +4,6 @@ import React from "react"
 import { getRequest } from "../utilities/utilities"
 import LoadingScreen from "./LoadingScreen"
 import { Player } from "../models/Player"
-import ConditionalDiv from "./ConditionalDiv"
 
 export default function Authentication({ setPlayer }: { setPlayer: Function }) {
 
@@ -30,8 +29,6 @@ export default function Authentication({ setPlayer }: { setPlayer: Function }) {
     }, [setPlayer])
 
     return (
-        <ConditionalDiv visible={!attempted}>
-            <LoadingScreen/>
-        </ConditionalDiv>
+        <LoadingScreen visible={!attempted} />
     )
 }

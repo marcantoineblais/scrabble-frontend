@@ -68,7 +68,7 @@ export default function Page() {
 
     return (
         <main className="h-full bg-orange-50">
-            <ConditionalDiv visible={!children}><LoadingScreen /></ConditionalDiv>
+            <LoadingScreen visible={!children} />
             <div className="h-full container mx-auto">
                 <Authentication setPlayer={setPlayer} />
                 <Menu title={title}>{ children }</Menu>

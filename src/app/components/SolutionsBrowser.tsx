@@ -5,8 +5,8 @@ import { Solution } from "../models/Solution";
 import WoodenButton from "./WoodenButton";
 
 export default function SolutionsBrowser(
-    { solutions, setNewEntry, placeWord, setSolutions }:
-    { solutions: Solution[], setNewEntry: Function, placeWord: Function, setSolutions: Function }
+    { solutions, setSelectedSolution, acceptSolution, setSolutions }:
+    { solutions: Solution[], setSelectedSolution: Function, acceptSolution: Function, setSolutions: Function }
 ) {
 
     const [index, setIndex] = React.useState<number>(0)
@@ -20,7 +20,7 @@ export default function SolutionsBrowser(
         const solution: Solution = solutions[index]
         setWord(solution.entry.word)
         setPoints(solution.points)
-        setNewEntry(solution.entry)
+        setSelectedSolution(solution.entry)
     }, [solutions, index])
 
     function nextSolution() {
@@ -39,18 +39,20 @@ export default function SolutionsBrowser(
     }
 
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-10">
             <h2 className="font-bold underline">Meilleures solutions ({index + 1} sur {solutions.length}) :</h2>
-            <div className="flex justify-between">
-                <Arrow className="w-1/12" reversed={true} action={() => previousSolution()} />
-                <span className="text-xl font-bold">{ word }</span>
-                <Arrow className="w-1/12" reversed={false} action={() => nextSolution()} />
-            </div>
-            <div className="flex justify-center">               
-                <span className="">{points} points</span>
+            <div className="flex flex-col gap-3">
+                <div className="flex justify-between">
+                    <Arrow className="w-1/12" reversed={true} action={() => previousSolution()} />
+                    <span className="text-xl font-bold">{ word }</span>
+                    <Arrow className="w-1/12" reversed={false} action={() => nextSolution()} />
+                </div>
+                <div className="flex justify-center">               
+                    <span className="">{points} points</span>
+                </div>
             </div>
             <div className="flex gap-3">
-                <WoodenButton text="Accepter" action={() => placeWord()} />
+                <WoodenButton text="Accepter" action={() => acceptSolution()} />
                 <WoodenButton text="Refuser" action={() => ignoreSolutions()} />
             </div>
 
