@@ -47,13 +47,13 @@ export class Entry {
         })
     }
 
-    public letterAtCoord([y, x]: number[]): string|undefined {
+    public letterAtCoord([y, x]: number[]): string|null {
         if (this.vertical && this.x === x)
-            return this.word.charAt(y - this.y)
+            return this.word.charAt(y - this.y) || null
         else if (!this.vertical && this.y === y)
-            return this.word.charAt(x - this.x)
+            return this.word.charAt(x - this.x) || null
         else 
-            return undefined
+            return null
     }
 
     public writeWordOnGrid(grid: string[][]): void {

@@ -5,13 +5,17 @@ import { Solution } from "../models/Solution";
 import WoodenButton from "./WoodenButton";
 
 export default function SolutionsBrowser(
-    { solutions, setSelectedSolution, acceptSolution, setSolutions }:
-    { solutions: Solution[], setSelectedSolution: Function, acceptSolution: Function, setSolutions: Function }
+    { solutions, setSelectedSolution, acceptSolution, ignoreSolutions }:
+    { solutions: Solution[], setSelectedSolution: Function, acceptSolution: Function, ignoreSolutions: Function }
 ) {
 
     const [index, setIndex] = React.useState<number>(0)
     const [word, setWord] = React.useState<string>("")
     const [points, setPoints] = React.useState<number|null>(null)
+
+    React.useEffect(() => {
+        setIndex(0)
+    }, [solutions])
 
     React.useEffect(() => {
         if (!solutions.length)
@@ -33,19 +37,14 @@ export default function SolutionsBrowser(
             setIndex(index - 1)
     }
 
-    function ignoreSolutions() {
-        if (confirm("Voulez-vous vraiment refuser toutes les solutions proposées?"))
-            setSolutions(null)
-    }
-
     return (
         <div className="flex flex-col gap-10">
             <h2 className="font-bold underline">Meilleures solutions ({index + 1} sur {solutions.length}) :</h2>
             <div className="flex flex-col gap-3">
                 <div className="flex justify-between">
-                    <Arrow className="w-1/12" reversed={true} action={() => previousSolution()} />
+                    <Arrow className="w-[2rem]" reversed={true} action={() => previousSolution()} />
                     <span className="text-xl font-bold">{ word }</span>
-                    <Arrow className="w-1/12" reversed={false} action={() => nextSolution()} />
+                    <Arrow className="w-[2rem]" reversed={false} action={() => nextSolution()} />
                 </div>
                 <div className="flex justify-center">               
                     <span className="">{points} points</span>

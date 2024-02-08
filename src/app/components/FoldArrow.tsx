@@ -4,7 +4,7 @@ import React from "react"
 
 export default function FoldArrow({ className, rotated }: { className: string, rotated: boolean }) {
 
-    const arrowRef = React.useRef<SVGSVGElement|null>(null)
+    const arrowRef = React.useRef<HTMLDivElement|null>(null)
 
     React.useEffect(() => {
         if (!arrowRef.current)
@@ -19,8 +19,8 @@ export default function FoldArrow({ className, rotated }: { className: string, r
     }, [rotated])
 
     return (
-        <div className={className} >
-            <svg ref={arrowRef} className="duration-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+        <div ref={arrowRef} className={className + " duration-500"} >
+            <svg className="rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
                 <rect fill="currentColor" x="26.01" y="198.84" width="252" height="39.88" rx="4.17" transform="translate(-89.02 105.31) rotate(-30)"/>
                 <rect fill="currentColor" x="221.99" y="198.84" width="252" height="39.88" rx="4.17" transform="translate(539.97 582.25) rotate(-150)"/>
                 <rect fill="currentColor" x="62.29" y="269.95" width="214.14" height="39.88" rx="4.17" transform="matrix(0.87, -0.5, 0.5, 0.87, -122.26, 123.52)"/>

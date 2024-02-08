@@ -20,19 +20,15 @@ export default function ScrabbleLetters(
                 let selected = false
                 let solution = false
                 
-                if (newEntry && newEntry.letterAtCoord([y, x])) {
-                    letter = newEntry.letterAtCoord([y, x]) || ""
-                    conflict = newEntry.conflict
-                } 
-
-                if (selectedEntry && selectedEntry.letterAtCoord([y, x])) {
-                    letter = selectedEntry.letterAtCoord([y, x]) || ""
-                    selected = true
-                }
-                
                 if (selectedSolution && selectedSolution.letterAtCoord([y, x])) {
                     letter = selectedSolution.letterAtCoord([y, x]) || ""
                     solution = true
+                } else if (newEntry && newEntry.letterAtCoord([y, x])) {
+                    letter = newEntry.letterAtCoord([y, x]) || ""
+                    conflict = newEntry.conflict
+                } else if (selectedEntry && selectedEntry.letterAtCoord([y, x])) {
+                    letter = selectedEntry.letterAtCoord([y, x]) || ""
+                    selected = true
                 }
 
                 return <ScrabbleLetterTile key={x} size={width / grid.length} letter={letter} conflict={conflict} selected={selected} solution={solution} />

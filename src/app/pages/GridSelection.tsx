@@ -130,8 +130,8 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
                 </ScrabbleContainer>
 
                 <div className="flex justify-between">
-                    <Arrow action={() => previousGridType()} reversed={true} className="w-1/12" />
-                    <Arrow action={() => nextGridType()} reversed={false} className="w-1/12" />
+                    <Arrow action={() => previousGridType()} reversed={true} className="w-[2rem]" />
+                    <Arrow action={() => nextGridType()} reversed={false} className="w-[2rem]" />
                 </div>
             </div>
 

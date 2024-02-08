@@ -39,8 +39,39 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     // WRITE THE ENTRIES ON THE GRID AND UPDATE THE GRID
     React.useEffect(() => {
         const updatedGrid: string[][] = currentGrid.grid.map(row => row.map(_col => ""))
-        
         entries.forEach(entry => entry.writeWordOnGrid(updatedGrid))
+
+        entries.splice(0, entries.length)
+        updatedGrid.forEach((row, y) => {
+            row.forEach((letter, x) => {
+                if (letter) {
+                    if (x === 0 || !updatedGrid[y][x - 1]) {
+                        let word: string = ""
+                        let i = x
+                        while (i < updatedGrid[y].length && updatedGrid[y][i]) {
+                            word += updatedGrid[y][i++]
+                        }
+
+                        if (word.length > 1) {
+                            entries.push(new Entry(word, y, x, false))
+                        }
+                    }
+
+                    if (y === 0 || !updatedGrid[y - 1][x]) {
+                        let word: string = ""
+                        let i = y
+                        while (i < updatedGrid.length && updatedGrid[i][x]) {
+                            word += updatedGrid[i++][x]
+                        }
+
+                        if (word.length > 1) {
+                            entries.push(new Entry(word, y, x, true))
+                        }
+                    }
+                }
+            })
+        })
+
         currentGrid.grid = updatedGrid
         setCurrentGrid({...currentGrid})
     }, [entries])
@@ -200,7 +231,14 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         resetTextbox(lettersTextBoxRef)
     }
 
-    function resetTextbox(textbox: React.MutableRefObject<HTMLInputElement | null>) {
+    function ignoreSolutions() {
+        if (confirm("Voulez-vous vraiment refuser toutes les solutions proposées?")) {
+            setSelectedSolution(null)
+            setSolutions([])
+        }
+    }
+
+    function resetTextbox(textbox: React.MutableRefObject<HTMLInputElement|null>) {
         if (!textbox.current)
             return 
 
@@ -293,7 +331,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                 <ConditionalDiv className="px-5" visible={solutions.length > 1}>
                     <SolutionsBrowser
                         solutions={solutions} 
-                        setSolutions={setSolutions} 
+                        ignoreSolutions={ignoreSolutions} 
                         setSelectedSolution={setSelectedSolution} 
                         acceptSolution={acceptSolution}
                     />
