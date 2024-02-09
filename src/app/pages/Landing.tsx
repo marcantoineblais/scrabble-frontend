@@ -3,9 +3,12 @@
 import WoodenButton from "../components/WoodenButton"
 import React from "react"
 import { getRequest } from "../utilities/utilities"
+import { Grid } from "../models/Grid"
+import ConditionalDiv from "../components/ConditionalDiv"
 
 export default function Landing(
-    { setPlayer, setPage }: { setPlayer: Function, setPage: Function }
+    { grids, setCurrentGrid, setPlayer, setPage }:
+    { grids: Grid[], setCurrentGrid: Function, setPlayer: Function, setPage: Function }
 ) {
 
     function newGame() {
@@ -13,22 +16,30 @@ export default function Landing(
     }
 
     function resumeGame() {
-
+        setPage("savedGames")
     }
 
-    function options() {
+    function deleteGame() {
+        setPage("deleteGames")
+    }
 
+    function continueGame() {
+        setCurrentGrid(grids[0])
+        setPage("game")
     }
 
     async function logout() {
         try {
             const response = await getRequest("/logout")
             
-            if (response.ok)
+            if (response.ok) {
                 setPlayer(null)
+                setPage("")
+            }
         } catch (ex) {
             console.error(ex)
             setPlayer(null)
+            setPage("")
         }
     }
 
@@ -37,9 +48,14 @@ export default function Landing(
             <div className="flex flex-col gap-5">
                 <img src="/cheetah.jpg" alt="cheetah" className="object-contain"/>
                 <div className="mt-5 flex flex-col gap-3">
+                    <ConditionalDiv visible={grids.length > 0}>
+                        <WoodenButton text="Continuer" action={continueGame} />
+                    </ConditionalDiv>
                     <WoodenButton text="Nouvelle Partie" action={newGame} />
-                    <WoodenButton text="Reprendre Partie" action={resumeGame} />
-                    <WoodenButton text="Options" action={options} />
+                    <ConditionalDiv className="flex flex-col gap-3" visible={grids.length > 0}>
+                        <WoodenButton text="Reprendre Partie" action={resumeGame} />
+                        <WoodenButton text="Supprimer Partie" action={deleteGame} />
+                    </ConditionalDiv>
                 </div>
             </div>
             <div className="w-full flex flex-col">

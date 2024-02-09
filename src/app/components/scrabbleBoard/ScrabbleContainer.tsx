@@ -12,7 +12,12 @@ export default function ScrabbleContainer({ children, setWidth }: { children: Re
                 return
     
             const container = containerRef.current
-            const width = container.clientWidth
+            let width = container.clientWidth
+
+            if (container.clientHeight > 64 && width > container.clientHeight)
+                width = container.clientHeight
+
+            container.style.width = width + "px"
             container.style.height = width + "px"
             setWidth(width)
         }
@@ -26,7 +31,7 @@ export default function ScrabbleContainer({ children, setWidth }: { children: Re
     }, [setWidth])
 
     return (
-        <div ref={containerRef} className="w-full relative flex justify-center items-center">
+        <div ref={containerRef} className="w-full h-full relative">
             { children }
         </div>
     )

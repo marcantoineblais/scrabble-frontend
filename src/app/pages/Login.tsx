@@ -6,7 +6,7 @@ import { postRequest } from "../utilities/utilities";
 import { Player } from "../models/Player";
 import { LoginRequest } from "../models/LoginRequest";
 
-export default function Login({ setPlayer }: { setPlayer: Function}) {
+export default function Login({ setPlayer, setPage }: { setPlayer: Function, setPage: Function }) {
 
     const formRef = React.useRef<HTMLFormElement|null>(null)
 
@@ -35,7 +35,8 @@ export default function Login({ setPlayer }: { setPlayer: Function}) {
             
             if (response.ok) {
                 const player: Player = await response.json()
-                setPlayer(player)                
+                setPlayer(player)
+                setPage("landing")                
             }
         } catch (ex) {
             console.error(ex)

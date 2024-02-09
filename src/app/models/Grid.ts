@@ -12,7 +12,15 @@ export class Grid {
     public language: Language;
     public player: Player;
 
-	constructor(id: number, name: string, grid: string[][], playerLetters: string, gridType: GridType, language: Language, player: Player) {
+	constructor(
+        id: number = 0, 
+        name: string = "", 
+        grid: string[][] = [[]], 
+        playerLetters: string = "", 
+        gridType: GridType = new GridType(), 
+        language: Language = new Language(), 
+        player: Player = new Player()
+    ) {
 		this.id = id;
 		this.name = name;
 		this.grid = grid;

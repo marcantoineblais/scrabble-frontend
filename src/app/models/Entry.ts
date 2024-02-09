@@ -29,6 +29,19 @@ export class Entry {
         return this.y + this.word.length - 1;
     }
 
+    public coords(): number[][] {
+        const coords: number[][] = [];
+        let i = 0;
+        let j = 0;
+
+        while (this.x + i <= this.lastX() && this.y + j <= this.lastY()) {
+            coords.push([this.y + j, this.x + i]);
+            this.vertical ? j++ : i++;
+        }
+
+        return coords;
+    }
+
     public isSelected([y, x]: number[], vertical: boolean): boolean {
         return (
             this.vertical === vertical &&
@@ -37,23 +50,44 @@ export class Entry {
         );
     }
 
-    public isLetterConflict(entry: Entry): boolean {
-        return this.word.split("").some((char, i) => {   
+    public letterConflicts(entry: Entry): number[][] {
+        const coords: number[][] = []
+
+        this.word.split("").forEach((char, i) => {   
             const y = this.vertical ? this.y + i : this.y;
             const x = this.vertical ? this.x : this.x + i;
             const letterAtCoord = entry.letterAtCoord([y, x]);
-            
-            return (letterAtCoord && letterAtCoord !== char)
+
+            if (letterAtCoord && letterAtCoord !== char)
+                coords.push([y, x])
         })
+
+        return coords
     }
 
     public letterAtCoord([y, x]: number[]): string|null {
         if (this.vertical && this.x === x)
-            return this.word.charAt(y - this.y) || null
+            return this.word.charAt(y - this.y) || null;
         else if (!this.vertical && this.y === y)
-            return this.word.charAt(x - this.x) || null
+            return this.word.charAt(x - this.x) || null;
         else 
-            return null
+            return null;
+    }
+
+    public eraseLetterArCoord([y, x]: number[]): void {
+        const letters: string[] = this.word.split("")
+        
+        if (this.x === x && this.y === y) {
+            letters.splice(0, 1);
+            this.vertical ? this.y += 1 : this.x += 1
+        } else if (this.lastX() === x && this.lastY() === y) {
+            letters.splice(-1, 1);
+        }
+        
+        if (letters.length < 2)
+            this.word = "";
+        else
+            this.word = letters.join("");
     }
 
     public writeWordOnGrid(grid: string[][]): void {

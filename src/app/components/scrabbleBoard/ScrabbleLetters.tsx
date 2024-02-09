@@ -6,8 +6,8 @@ import ScrabbleLetterTile from "./ScrabbleLetterTile"
 import { Entry } from "@/app/models/Entry"
 
 export default function ScrabbleLetters(
-    { grid, newEntry, selectedEntry, selectedSolution, width }:
-    { grid: string[][], newEntry: Entry|null, selectedEntry: Entry|null, selectedSolution: Entry|null, width: number }
+    { grid, width, newEntry = null, selectedEntry = null, selectedSolution= null }:
+    { grid: string[][], width: number, newEntry?: Entry|null, selectedEntry?: Entry|null, selectedSolution?: Entry|null }
 ) {
 
     const [tiles, setTiles] = React.useState<ReactNode|null>(null)
@@ -27,7 +27,6 @@ export default function ScrabbleLetters(
                     letter = newEntry.letterAtCoord([y, x]) || ""
                     conflict = newEntry.conflict
                 } else if (selectedEntry && selectedEntry.letterAtCoord([y, x])) {
-                    letter = selectedEntry.letterAtCoord([y, x]) || ""
                     selected = true
                 }
 

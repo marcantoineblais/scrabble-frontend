@@ -27,7 +27,7 @@ export default function ScrabbleLetterTile(
             setBackground("bg-teal-700")
         else if (selected)
             setBackground("bg-neutral-700")
-        else if (letter)
+        else if (letter && letter)
             setBackground("bg-tile-texture")
         else
             setBackground("")

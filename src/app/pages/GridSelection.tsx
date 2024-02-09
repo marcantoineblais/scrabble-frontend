@@ -12,8 +12,12 @@ import { Language } from "@/app/models/Language"
 import { GameOption } from "@/app/models/GameOption"
 import { Grid } from "@/app/models/Grid"
 import FormInput from "../components/FormInput"
+import { Player } from "../models/Player"
 
-export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentGrid: Function, setPage: Function }) {
+export default function GridSelection(
+    { setCurrentGrid, setPage, setPlayer }:
+    { setCurrentGrid: Function, setPage: Function, setPlayer: Function }
+) {
 
     const [gameOptions, setGameOptions] = React.useState<GameOptions|null>(null)
     const [gridType, setGridType] = React.useState<GridType|null>(null)
@@ -44,7 +48,7 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
                 return
                 
             const languageOptions = gameOptions.languages.map((language: Language, index: number) => {
-                const capitalisedName = language.name.substring(0, 1).toUpperCase() + language.name.substring(1)
+                const capitalisedName = language.name.substring(0, 1).toUpperCase() + language.name.substring(1).toLowerCase()
                 
                 return <option key={index} value={index}>{ capitalisedName }</option>
             })
@@ -112,10 +116,17 @@ export default function GridSelection({ setCurrentGrid, setPage }: { setCurrentG
             const response = await postRequest(JSON.stringify(gameOption), "/grid/new")
 
             if (response.ok) {
-                const grid: Grid = await response.json()
+                const player: Player = await response.json() as Player
+                const grid: Grid = player.grids[0]
+                
+                setPlayer(player)
                 setCurrentGrid(grid)
                 setPage("game")
+            } else if (response.status === 507) {
+                alert("Limite de sauvegardes atteites. Veuillez supprimer une partie puis réessayez.")
+                setPage("landing")
             }
+            
         } catch (ex) {
             console.error(ex)
         }

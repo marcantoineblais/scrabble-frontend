@@ -15,8 +15,12 @@ import LoadingScreen from "../components/LoadingScreen"
 import ConditionalDiv from "../components/ConditionalDiv"
 import SolutionsBrowser from "../components/SolutionsBrowser"
 import { Solution } from "../models/Solution"
+import { Player } from "../models/Player"
 
-export default function Game({ currentGrid, setPage, setCurrentGrid }: { currentGrid: Grid, setPage: Function, setCurrentGrid: Function }) {
+export default function Game(
+    { currentGrid, setPage, setCurrentGrid, setPlayer }: 
+    { currentGrid: Grid, setPage: Function, setCurrentGrid: Function, setPlayer: Function }
+) {
 
     const [width, setWidth] = React.useState<number>(0)
     const [selectedTile, setSelectedTile] = React.useState<number[]|null>(null)
@@ -29,27 +33,25 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
     const [newWord, setNewWord] = React.useState<string>("")
     const [editedWord, setEditedWord] = React.useState<string>("")
     const [playerLetters, setPlayerLetters] = React.useState<string>("")
-    const [openDrawerId, setOpenDrawerId] = React.useState<number|null>(null)
+    const [openDrawerId, setOpenDrawerId] = React.useState<number|null>(1)
     const [wordEditMode, setWordEditMode] = React.useState<boolean>(false)
     const [loadingScreen, setLoadingScreen] = React.useState<boolean>(false)
     const newWordTextBoxRef = React.useRef<HTMLInputElement|null>(null)
     const editWordTextBoxRef = React.useRef<HTMLInputElement|null>(null)
     const lettersTextBoxRef = React.useRef<HTMLInputElement|null>(null)
 
-    // WRITE THE ENTRIES ON THE GRID AND UPDATE THE GRID
+    // READ ENTRIES FROM GRID
     React.useEffect(() => {
-        const updatedGrid: string[][] = currentGrid.grid.map(row => row.map(_col => ""))
-        entries.forEach(entry => entry.writeWordOnGrid(updatedGrid))
+        const grid: string[][] = currentGrid.grid
 
-        entries.splice(0, entries.length)
-        updatedGrid.forEach((row, y) => {
+        grid.forEach((row, y) => {
             row.forEach((letter, x) => {
-                if (letter) {
-                    if (x === 0 || !updatedGrid[y][x - 1]) {
+                if (letter && letter != " ") {
+                    if (x === 0 || !grid[y][x - 1]) {
                         let word: string = ""
                         let i = x
-                        while (i < updatedGrid[y].length && updatedGrid[y][i]) {
-                            word += updatedGrid[y][i++]
+                        while (i < grid[y].length && grid[y][i]) {
+                            word += grid[y][i++]
                         }
 
                         if (word.length > 1) {
@@ -57,11 +59,11 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                         }
                     }
 
-                    if (y === 0 || !updatedGrid[y - 1][x]) {
+                    if (y === 0 || !grid[y - 1][x]) {
                         let word: string = ""
                         let i = y
-                        while (i < updatedGrid.length && updatedGrid[i][x]) {
-                            word += updatedGrid[i++][x]
+                        while (i < grid.length && grid[i][x]) {
+                            word += currentGrid.grid[i++][x]
                         }
 
                         if (word.length > 1) {
@@ -70,10 +72,21 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                     }
                 }
             })
-        })
+        })        
+    }, [currentGrid])
+
+    // WRITE THE ENTRIES ON THE GRID AND UPDATE THE GRID
+    React.useEffect(() => {        
+        let updatedGrid: string[][] = currentGrid.grid.map(row => row.map(_col => ""))
+        
+        entries.forEach(entry => entry.writeWordOnGrid(updatedGrid))
+        entries.splice(0, entries.length)
 
         currentGrid.grid = updatedGrid
+        currentGrid.playerLetters = playerLetters
         setCurrentGrid({...currentGrid})
+        
+        saveGrid()
     }, [entries])
 
     // SELECT THE NEW ENTRY TO DISPLAY ON GRID, TURNS RED WHEN CANNOT BE PLACED
@@ -92,11 +105,16 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             entry = null
 
         if (entry) {
-            entry.conflict = (
-                entry.lastY() >= grid.length ||
-                entry.lastX() >= grid[0].length ||
-                entries.some(e => e.isLetterConflict(entry))
-            )
+            if (entry.lastY() >= grid.length || entry.lastX() >= grid[0].length)
+                entry.conflict = true
+            else {
+                const conflicts: number[][] = entries.map(e => e.letterConflicts(entry)).flat()
+
+                if (selectedEntry)
+                    entry.conflict = !conflicts.every(([y, x]) => selectedEntry.isSelected([y, x], selectedEntry.vertical))   
+                else
+                    entry.conflict = conflicts.length > 0
+            }
         }
         
         setNewEntry(entry)
@@ -207,7 +225,12 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             return
 
         if (confirm("Voulez-vous effacer le mot " + selectedEntry.word + " ?")) {
+            const coords = selectedEntry.coords()
+
             setSelectedEntry(null)
+            entries.forEach(entry => {
+                coords.forEach(([y, x]) => entry.eraseLetterArCoord([y, x]))
+            })
             setEntries(entries.filter(e => !e.equals(selectedEntry)))
             resetTextbox(editWordTextBoxRef)
         }
@@ -245,6 +268,21 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
         textbox.current.value = ""
     }
 
+    async function saveGrid() {
+        try {
+            const response = await postRequest(JSON.stringify(currentGrid), "/grid")
+
+            if (response.ok) {
+                const player: Player = await response.json()                
+                setPlayer({...player})
+            } else {
+                console.warn("Could not update player data")
+            }
+        } catch (ex) {
+            console.error(ex)
+        }
+    }
+
     async function submitGrid() {
         if (!playerLetters) {
             alert("Veuillez entrer au moins une lettre")
@@ -266,15 +304,18 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
             console.error(ex)
         }
         setLoadingScreen(false)
-    }
+    }    
 
     return (
         <>
-            <div className="mt-5 flex flex-col gap-7">
+            <div className="mt-5 pb-3 flex flex-col gap-7 overflow-hidden">
                 <LoadingScreen visible={loadingScreen} /> 
 
                 <div>
-                    <h2 className="font-bold">{ currentGrid.name.toUpperCase() }</h2>
+                    <div className="flex justify-between">
+                        <h2 className="font-bold">{ currentGrid.name }</h2>
+                        <h2 className="font-bold">{ currentGrid.language.name }</h2>
+                    </div>
                     <ScrabbleContainer setWidth={setWidth}>
                         <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
                         <ScrabbleLetters grid={currentGrid.grid} newEntry={newEntry} selectedEntry={selectedEntry} selectedSolution={selectedSolution} width={width}/>
@@ -282,7 +323,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                     </ScrabbleContainer>
                 </div>
                 
-                <ConditionalDiv className="px-5 flex flex-col gap-10" visible={!solutions.length}>    
+                <ConditionalDiv className="px-5 flex flex-col gap-10 overflow-y-auto" visible={!solutions.length}>    
                     <Drawer title="Ajouter un mot" id={1} open={openDrawerId === 1} openDrawer={openDrawer}>
                         <FormInput name="Entrez un mot à placer :">
                             <input 
@@ -338,7 +379,7 @@ export default function Game({ currentGrid, setPage, setCurrentGrid }: { current
                 </ConditionalDiv>               
             </div>
             <div className="px-5">
-                <WoodenButton text="Menu principal" action={() => setPage("landing")} />
+                <WoodenButton text="Retour" action={() => setPage("landing")} />
             </div>
         </>
     )

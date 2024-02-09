@@ -7,10 +7,10 @@ import Authentication from "./components/Authentication";
 import LoadingScreen from "./components/LoadingScreen";
 import Menu from "./components/Menu";
 import GridSelection from "./pages/GridSelection";
+import Game from "./pages/Game";
+import SavedGames from "./pages/SavedGames";
 import { Player } from "./models/Player";
 import { Grid } from "./models/Grid";
-import Game from "./pages/Game";
-import ConditionalDiv from "./components/ConditionalDiv";
 
 export default function Page() {
 
@@ -21,56 +21,53 @@ export default function Page() {
     const [children, setChildren] = React.useState<ReactNode|null>(null)
 
     React.useEffect(() => {        
-        if (player == null)
-            setPage("login")
-        
-        else
+        if (player)
             setPage("landing")
-    }, [player])
+    }, [])
     
     React.useEffect(() => {
         switch (page) {
             case "authentication":
                 setChildren(<Authentication setPlayer={setPlayer} />)
                 setTitle("")
-
-            case "login":
-                setChildren(<Login setPlayer={setPlayer} />)
-                setTitle("Connexion")
-                break;
             
             case "landing":
-                setChildren(<Landing setPage={setPage} setPlayer={setPlayer} />)
+                setChildren(<Landing grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
                 setTitle("Scrabble Cheetah")
                 break
             
             case "gridSelection":
-                setChildren(<GridSelection setCurrentGrid={setCurrentGrid} setPage={setPage} />)
-                setTitle("Options")
+                setChildren(<GridSelection setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
+                setTitle("Grille de Jeu")
+                break
+
+            case "savedGames":
+                setChildren(<SavedGames grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer}/>)
+                setTitle("Parties Sauvegardées")
+                break
+            
+            case "deleteGames":
+                setChildren(<SavedGames grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} deleteMode={true} />)
+                setTitle("Parties Sauvegardées")
                 break
 
             case "game":
-                if (currentGrid) {
-                    setChildren(<Game setPage={setPage} currentGrid={currentGrid} setCurrentGrid={setCurrentGrid} />)
-                    setTitle("Scrabble Cheetah")
-                } else {
-                    setPage("landing")
-                    setTitle("Scrabble Cheetah")
-                }
+                setChildren(<Game setPage={setPage} currentGrid={currentGrid || new Grid() } setCurrentGrid={setCurrentGrid} setPlayer={setPlayer}/>)
+                setTitle("Scrabble Cheetah")
                 break
 
             default:
-                setChildren(null)
-                setTitle("")
-                break
+                setChildren(<Login setPlayer={setPlayer} setPage={setPage} />)
+                setTitle("Connexion")
+                break;
         }
-    }, [page, currentGrid])
+    }, [page, currentGrid, player])
 
     return (
         <main className="h-full bg-orange-50">
             <LoadingScreen visible={!children} />
-            <div className="h-full container mx-auto">
-                <Authentication setPlayer={setPlayer} />
+            <Authentication setPlayer={setPlayer} />
+            <div className="h-full container mx-auto overflow-hidden">
                 <Menu title={title}>{ children }</Menu>
             </div>
         </main>

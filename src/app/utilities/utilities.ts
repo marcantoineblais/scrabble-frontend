@@ -1,6 +1,6 @@
-export async function postRequest(body: string, path: string): Promise<any> {
-    const url = "http://localhost:8080"
+const url = "http://localhost:8080"
 
+export async function postRequest(body: string, path: string): Promise<any> {
     return await fetch(url + path, {
         method: "POST",
         credentials: 'include',
@@ -12,8 +12,6 @@ export async function postRequest(body: string, path: string): Promise<any> {
 }
 
 export async function getRequest(path: string): Promise<any> {
-    const url = "http://localhost:8080"
-
     return await fetch(url + path, {
         method: "GET",
         credentials: 'include',
@@ -22,6 +20,18 @@ export async function getRequest(path: string): Promise<any> {
         }
     })
 }
+
+export async function deleteRequest(body: string, path: string): Promise<any> {
+    return await fetch(url + path, {
+        method: "DELETE",
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: body
+    })
+}
+
 
 export function emptyRow<T>(func: Function): T[] {
     const row: T[] = []

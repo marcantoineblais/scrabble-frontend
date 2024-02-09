@@ -6,7 +6,13 @@ export class GridType {
     public doubleWord: number[][];
     public tripleWord: number[][];
 
-	constructor(id: number, doubleLetter: number[][], tripleLetter: number[][], doubleWord: number[][], tripleWord: number[][]) {
+	constructor(
+        id: number = 0, 
+        doubleLetter: number[][] = [[]], 
+        tripleLetter: number[][] = [[]], 
+        doubleWord: number[][] = [[]], 
+        tripleWord: number[][] = [[]]
+    ) {
 		this.id = id;
 		this.doubleLetter = doubleLetter;
 		this.tripleLetter = tripleLetter;
