@@ -1,4 +1,4 @@
-const url = "http://localhost:8080"
+const url = "https://scrabble.marchome.xyz/api"
 
 export async function postRequest(body: string, path: string): Promise<any> {
     return await fetch(url + path, {
