@@ -5,7 +5,7 @@ import { getRequest } from "../utilities/utilities"
 import LoadingScreen from "./LoadingScreen"
 import { Player } from "../models/Player"
 
-export default function Authentication({ setPlayer }: { setPlayer: Function }) {
+export default function Authentication({ setPlayer, setPage }: { setPlayer: Function, setPage: Function }) {
 
     const [attempted, setAttempted] = React.useState<boolean>(false)
 
@@ -17,6 +17,7 @@ export default function Authentication({ setPlayer }: { setPlayer: Function }) {
                 if (response.ok) {
                     const player: Player = await response.json()
                     setPlayer(player)
+                    setPage("landing")
                 }
             } catch (ex) {
                 console.error(ex)
@@ -26,7 +27,7 @@ export default function Authentication({ setPlayer }: { setPlayer: Function }) {
         }
 
         authenticate()
-    }, [setPlayer])
+    }, [setPlayer, setPage])
 
     return (
         <LoadingScreen visible={!attempted} />

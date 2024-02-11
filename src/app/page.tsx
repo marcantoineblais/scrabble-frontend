@@ -19,16 +19,11 @@ export default function Page() {
     const [page, setPage] = React.useState<string>("")
     const [title, setTitle] = React.useState<string>("")
     const [children, setChildren] = React.useState<ReactNode|null>(null)
-
-    React.useEffect(() => {        
-        if (player)
-            setPage("landing")
-    }, [])
     
     React.useEffect(() => {
         switch (page) {
             case "authentication":
-                setChildren(<Authentication setPlayer={setPlayer} />)
+                setChildren(<Authentication setPage={setPage} setPlayer={setPlayer} />)
                 setTitle("")
             
             case "landing":
@@ -52,7 +47,7 @@ export default function Page() {
                 break
 
             case "game":
-                setChildren(<Game setPage={setPage} currentGrid={currentGrid || new Grid() } setCurrentGrid={setCurrentGrid} setPlayer={setPlayer}/>)
+                setChildren(<Game setPage={setPage} currentGrid={currentGrid || new Grid()} setPlayer={setPlayer} />)
                 setTitle("Scrabble Cheetah")
                 break
 
@@ -66,7 +61,7 @@ export default function Page() {
     return (
         <main className="h-full bg-orange-50">
             <LoadingScreen visible={!children} />
-            <Authentication setPlayer={setPlayer} />
+            <Authentication setPlayer={setPlayer} setPage={setPage} />
             <div className="h-full container mx-auto overflow-hidden">
                 <Menu title={title}>{ children }</Menu>
             </div>

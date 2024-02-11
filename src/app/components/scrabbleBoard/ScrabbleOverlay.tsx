@@ -32,7 +32,7 @@ export default function ScrabbleOverlay(
         })
 
         setOverlayGrid(overlays)
-    }, [selectedTile, selectedVertical])
+    }, [selectedTile, selectedVertical, grid])
 
     React.useEffect(() => {
         if (!overlayGrid)
@@ -47,7 +47,7 @@ export default function ScrabbleOverlay(
         })
 
         setTiles(gridTiles)
-    }, [overlayGrid, width])
+    }, [overlayGrid, width, grid, selectTile])
 
     return (
         <div className="absolute inset-0">

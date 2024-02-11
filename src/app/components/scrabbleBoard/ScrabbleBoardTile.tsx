@@ -22,7 +22,7 @@ export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus
             tile.style.fontSize = size + "px"
         else
             tile.style.fontSize = size / 4 + "px"
-    }, [size])
+    }, [size, bonus])
 
     React.useEffect(() => {
         switch(bonus) {

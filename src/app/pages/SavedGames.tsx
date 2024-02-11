@@ -17,7 +17,6 @@ export default function SavedGames(
     const [loading, setLoading] = React.useState<boolean>(false)
 
     React.useEffect(() => {
-        
         function selectGame(grid: Grid) {
             setCurrentGrid(grid)
             setPage("game")

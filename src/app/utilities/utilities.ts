@@ -1,7 +1,8 @@
-const url = "https://scrabble.marchome.xyz/api"
+import { APIURL } from "../../../application-secrets"
+
 
 export async function postRequest(body: string, path: string): Promise<any> {
-    return await fetch(url + path, {
+    return await fetch(APIURL + path, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -12,7 +13,7 @@ export async function postRequest(body: string, path: string): Promise<any> {
 }
 
 export async function getRequest(path: string): Promise<any> {
-    return await fetch(url + path, {
+    return await fetch(APIURL + path, {
         method: "GET",
         credentials: 'include',
         headers: {
@@ -22,7 +23,7 @@ export async function getRequest(path: string): Promise<any> {
 }
 
 export async function deleteRequest(body: string, path: string): Promise<any> {
-    return await fetch(url + path, {
+    return await fetch(APIURL + path, {
         method: "DELETE",
         credentials: 'include',
         headers: {

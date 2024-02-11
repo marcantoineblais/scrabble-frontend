@@ -40,7 +40,7 @@ export default function ScrabbleBoard(
         })
 
         setTiles(gridTiles)
-    }, [bonus, width])
+    }, [bonus, width, grid])
 
     return (
         <div className="absolute inset-0">

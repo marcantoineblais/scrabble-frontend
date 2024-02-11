@@ -25,7 +25,7 @@ export default function SolutionsBrowser(
         setWord(solution.entry.word)
         setPoints(solution.points)
         setSelectedSolution(solution.entry)
-    }, [solutions, index])
+    }, [solutions, index, setSelectedSolution])
 
     function nextSolution() {
         if (index < solutions.length - 1)

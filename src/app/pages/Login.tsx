@@ -61,7 +61,7 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
             </div>
 
             <div className="w-full flex flex-col">
-                <p>Vous n'avez pas de compte?</p>
+                <p>Vous n&apos;avez pas de compte?</p>
                 <WoodenButton text="S'inscrire" action={() => console.log("inscription")}/>
             </div>
         </div>
