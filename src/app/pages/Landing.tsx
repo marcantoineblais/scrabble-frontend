@@ -5,6 +5,7 @@ import React from "react"
 import { getRequest } from "../utilities/utilities"
 import { Grid } from "../models/Grid"
 import ConditionalDiv from "../components/ConditionalDiv"
+import CheetahLogo from "../components/CheetahLogo"
 
 export default function Landing(
     { grids, setCurrentGrid, setPlayer, setPage }:
@@ -46,7 +47,7 @@ export default function Landing(
     return (
         <div className="h-full mt-5 px-5 flex flex-col justify-between">
             <div className="flex flex-col gap-5">
-                <img src="/cheetah.jpg" alt="cheetah" className="object-contain"/>
+                <CheetahLogo className="text-emerald-900"/>
                 <div className="mt-5 flex flex-col gap-3">
                     <ConditionalDiv visible={grids.length > 0}>
                         <WoodenButton text="Continuer" action={continueGame} />

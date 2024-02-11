@@ -5,6 +5,7 @@ import WoodenButton from "../components/WoodenButton";
 import { postRequest } from "../utilities/utilities";
 import { Player } from "../models/Player";
 import { LoginRequest } from "../models/LoginRequest";
+import CheetahLogo from "../components/CheetahLogo";
 
 export default function Login({ setPlayer, setPage }: { setPlayer: Function, setPage: Function }) {
 
@@ -46,7 +47,7 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
     return (
         <div className="h-full px-5 mt-5 flex flex-col justify-between">
             <div className="flex flex-col gap-5">
-                <img src="/cheetah.jpg" alt="cheetah" className="object-contain"/>
+                <CheetahLogo className="text-emerald-900" />
 
                 <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
                     <div className="w-full flex flex-col gap-3">
