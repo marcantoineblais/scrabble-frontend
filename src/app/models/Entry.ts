@@ -50,17 +50,19 @@ export class Entry {
         );
     }
 
-    public letterConflicts(entry: Entry): number[][] {
+    public letterConflicts(entry: Entry|null): number[][] {
         const coords: number[][] = []
 
-        this.word.split("").forEach((char, i) => {   
-            const y = this.vertical ? this.y + i : this.y;
-            const x = this.vertical ? this.x : this.x + i;
-            const letterAtCoord = entry.letterAtCoord([y, x]);
+        if (entry) {
+            this.word.split("").forEach((char, i) => {   
+                const y = this.vertical ? this.y + i : this.y;
+                const x = this.vertical ? this.x : this.x + i;
+                const letterAtCoord = entry.letterAtCoord([y, x]);
 
-            if (letterAtCoord && letterAtCoord !== char)
-                coords.push([y, x])
-        })
+                if (letterAtCoord && letterAtCoord !== char)
+                    coords.push([y, x])
+            })
+        }
 
         return coords
     }
