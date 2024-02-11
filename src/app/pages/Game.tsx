@@ -315,7 +315,7 @@ export default function Game(
 
     return (
         <>
-            <div className="mt-5 pb-3 flex flex-col gap-7 overflow-hidden">
+            <div className="mt-5 pb-3 flex flex-col gap-7">
                 <LoadingScreen visible={loadingScreen} /> 
 
                 <div>
@@ -330,7 +330,7 @@ export default function Game(
                     </ScrabbleContainer>
                 </div>
                 
-                <ConditionalDiv className="px-5 flex flex-col gap-10 overflow-y-auto" visible={!solutions.length}>    
+                <ConditionalDiv className="px-5 flex flex-col gap-10" visible={!solutions.length}>    
                     <Drawer title="Ajouter un mot" id={1} open={openDrawerId === 1} openDrawer={openDrawer}>
                         <FormInput name="Entrez un mot à placer :">
                             <input 

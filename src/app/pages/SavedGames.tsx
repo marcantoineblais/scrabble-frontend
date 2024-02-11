@@ -52,11 +52,11 @@ export default function SavedGames(
 
 
     return (
-        <div className="h-full px-5 flex flex-col justify-between overflow-hidden">
+        <div className="h-full px-5 flex flex-col justify-between">
             <LoadingScreen visible={loading} />
-            <div className="mt-10 pb-5 flex flex-col overflow-hidden">
+            <div className="mt-10 pb-5 flex flex-col">
                 <h2 className="font-bold">Sélectionner une partie :</h2>
-                <div className="w-full grow flex flex-col gap-5 overflow-y-auto">
+                <div className="w-full grow flex flex-col gap-5">
                     { games }
                 </div>
             </div>
