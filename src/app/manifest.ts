@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
         description: 'La meilleure place pour tricher au Scrabble!',
         start_url: '/',
         display: 'standalone',
-        background_color: '#F3F4F6',
-        theme_color: '#006699',
+        background_color: '#FFF7ED',
+        theme_color: '#064E3B',
         icons: [],
     }
 }
