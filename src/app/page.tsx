@@ -62,7 +62,7 @@ export default function Page() {
         <main className="h-full bg-orange-50">
             <LoadingScreen visible={!children} />
             <Authentication setPlayer={setPlayer} setPage={setPage} />
-            <div className="h-full container mx-auto">
+            <div className="h-full container max-w-screen-lg mx-auto">
                 <Menu title={title}>{ children }</Menu>
             </div>
         </main>
