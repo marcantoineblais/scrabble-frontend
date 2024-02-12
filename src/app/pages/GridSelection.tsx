@@ -133,7 +133,7 @@ export default function GridSelection(
     }
 
     return (
-        <div className="mt-5 w-full h-full flex flex-col gap-5">
+        <div className="pt-5 w-full grow flex flex-col gap-5">
             <div>
                 <h2 className="font-bold">Choisir le type de grille de jeu :</h2>
                 <ScrabbleContainer setWidth={setWidth}>

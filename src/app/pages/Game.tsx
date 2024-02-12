@@ -314,8 +314,8 @@ export default function Game(
     }    
 
     return (
-        <>
-            <div className="mt-5 pb-3 flex flex-col gap-7">
+        <div className="grow flex flex-col justify-between">
+            <div className="pt-5 pb-3 flex flex-col gap-7">
                 <LoadingScreen visible={loadingScreen} /> 
 
                 <div>
@@ -388,6 +388,6 @@ export default function Game(
             <div className="px-5">
                 <WoodenButton text="Retour" action={() => setPage("landing")} />
             </div>
-        </>
+        </div>
     )
 }

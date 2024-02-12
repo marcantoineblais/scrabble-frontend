@@ -59,10 +59,9 @@ export default function Page() {
     }, [page, currentGrid, player])
 
     return (
-        <main className="h-full min-h-full bg-orange-50">
-            <LoadingScreen visible={!children} />
+        <main className="min-h-full flex bg-orange-50">
             <Authentication setPlayer={setPlayer} setPage={setPage} />
-            <div className="h-full container max-w-screen-md mx-auto">
+            <div className="grow flex py-3 container max-w-screen-md mx-auto">
                 <Menu title={title}>{ children }</Menu>
             </div>
         </main>

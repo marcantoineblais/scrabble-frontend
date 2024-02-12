@@ -45,7 +45,7 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
     }
 
     return (
-        <div className="h-full px-5 mt-5 flex flex-col justify-between">
+        <div className="h-full px-5 flex flex-col justify-between gap-7">
             <div className="flex flex-col gap-5">
                 <CheetahLogo className="text-emerald-900" />
 
