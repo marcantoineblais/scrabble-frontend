@@ -59,10 +59,10 @@ export default function Page() {
     }, [page, currentGrid, player])
 
     return (
-        <main className="h-full bg-orange-50">
+        <main className="min-h-full bg-orange-50">
             <LoadingScreen visible={!children} />
             <Authentication setPlayer={setPlayer} setPage={setPage} />
-            <div className="h-full container max-w-screen-lg mx-auto">
+            <div className="min-h-full container max-w-screen-md mx-auto">
                 <Menu title={title}>{ children }</Menu>
             </div>
         </main>
