@@ -1,5 +1,4 @@
 import React from "react";
-import { Entry } from "../models/Entry";
 import Arrow from "./Arrow";
 import { Solution } from "../models/Solution";
 import WoodenButton from "./WoodenButton";
@@ -22,9 +21,10 @@ export default function SolutionsBrowser(
             return
         
         const solution: Solution = solutions[index]
+        
         setWord(solution.entry.word)
         setPoints(solution.points)
-        setSelectedSolution(solution.entry)
+        setSelectedSolution(solution)
     }, [solutions, index, setSelectedSolution])
 
     function nextSolution() {

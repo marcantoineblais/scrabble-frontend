@@ -3,8 +3,8 @@
 import React from "react"
 
 export default function ScrabbleLetterTile(
-    { size, letter, conflict, selected, solution }:
-    { size: number, letter: string, conflict: boolean, selected: boolean, solution: boolean }
+    { size, letter, conflict, selected, solution, blank }:
+    { size: number, letter: string, conflict: boolean, selected: boolean, solution: boolean, blank: boolean }
 ) {
 
     const [background, setBackground] = React.useState("")
@@ -27,7 +27,7 @@ export default function ScrabbleLetterTile(
             setBackground("bg-teal-700")
         else if (selected)
             setBackground("bg-neutral-700")
-        else if (letter && letter)
+        else if (letter)
             setBackground("bg-tile-texture")
         else
             setBackground("")
@@ -38,7 +38,7 @@ export default function ScrabbleLetterTile(
             ref={tileRef}
             className={`w-full h-full flex justify-center items-center text-center border text-white overflow-hidden ${background}`}
         >
-            { letter }
+            { blank ? "(" + letter + ")" : letter }
         </div>
     )
 }

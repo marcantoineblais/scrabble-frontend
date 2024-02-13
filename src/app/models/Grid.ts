@@ -19,7 +19,7 @@ export class Grid {
         grid: string[][] = [[]], 
         playerLetters: string = "", 
         gridType: GridType = new GridType(), 
-        blankTiles = [],
+        blankTiles: number[][] = [],
         language: Language = new Language(), 
         player: Player = new Player()
     ) {

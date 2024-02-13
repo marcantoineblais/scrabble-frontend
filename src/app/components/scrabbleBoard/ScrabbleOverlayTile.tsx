@@ -4,8 +4,8 @@ import { Overlay } from "@/app/models/Overlay"
 import React from "react"
 
 export default function ScrabbleOverlayTile(
-    { size, overlay, coords, selectTile }:
-    { size: number, overlay: number, coords: number[], selectTile: Function }
+    { size, overlay, coords, selectOrToggleTile }:
+    { size: number, overlay: number, coords: number[], selectOrToggleTile: Function }
 ) {
 
     const [background, setBackground] = React.useState("")
@@ -40,7 +40,7 @@ export default function ScrabbleOverlayTile(
         <div 
             ref={tileRef}
             className={`w-full h-full ${background}`}
-            onClick={() => selectTile(coords)}
+            onMouseDown={() => selectOrToggleTile(coords)}
         ></div>
     )
 }

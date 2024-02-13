@@ -5,7 +5,7 @@ export default function ConditionalDiv(
     { children: ReactNode, className?: string, visible: boolean }
 ) {
 
-    const [display, setDisplay] = React.useState<string>("")
+    const [display, setDisplay] = React.useState<string>("invisible")
     
     React.useEffect(() => {
         if (visible)

@@ -41,7 +41,7 @@ export default function SavedGameCard(
             <div ref={containerRef} className="w-full h-full">
                 <ScrabbleContainer setWidth={setWidth}>
                     <ScrabbleBoard grid={grid.grid} gridType={grid.gridType} width={width}/>
-                    <ScrabbleLetters grid={grid.grid} width={width} />
+                    <ScrabbleLetters grid={grid.grid} width={width} blankTiles={grid.blankTiles} />
                 </ScrabbleContainer>
             </div>
         </div>

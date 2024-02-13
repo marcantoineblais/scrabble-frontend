@@ -10,4 +10,10 @@ export class Solution {
         this.points = points;
         this.blankTiles = blankTiles;
     }
+
+    isLetterBlank([y, x]: number[]): boolean {
+        const index = this.entry.vertical ? y - this.entry.y : x - this.entry.x;
+
+        return this.blankTiles.some((tile: number) => tile === index)
+    }
 }
