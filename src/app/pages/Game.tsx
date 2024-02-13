@@ -197,6 +197,7 @@ export default function Game(
                 updatedList.push([y, x])
 
             setBlankTiles(updatedList)
+            navigator.vibrate(100)
             window.removeEventListener("mouseup", cancelTimeout)
             window.removeEventListener("touchend", cancelTimeout)
         }, 200)
