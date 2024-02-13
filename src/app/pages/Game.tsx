@@ -81,12 +81,29 @@ export default function Game(
         if (updatedBlankTiles.length !== blankTiles.length)
             setBlankTiles(updatedBlankTiles)
         
-        saveGrid()
     }, [grid, currentGrid])
 
-    React.useEffect(() => {
+    React.useEffect(() => {       
+        async function saveGrid() {
+            currentGrid.grid = grid
+            currentGrid.playerLetters = playerLetters
+            currentGrid.blankTiles = blankTiles        
+
+            try {
+                const response = await postRequest(JSON.stringify(currentGrid), "/grid")
+                if (response.ok) {
+                    const player: Player = await response.json()
+                    setPlayer(player)
+                } else {
+                    console.warn("Could not update player data")
+                }
+            } catch (ex) {
+                console.error(ex)
+            }
+        }
+
         saveGrid()
-    }, [blankTiles])
+    }, [blankTiles, grid, currentGrid])
 
     // WRITE THE ENTRIES ON THE GRID AND UPDATE THE GRID
     React.useEffect(() => {        
@@ -160,24 +177,6 @@ export default function Game(
         }
             
     }, [wordEditMode, openDrawerId])
-
-    async function saveGrid() {
-        currentGrid.grid = grid
-        currentGrid.playerLetters = playerLetters
-        currentGrid.blankTiles = blankTiles        
-
-        try {
-            const response = await postRequest(JSON.stringify(currentGrid), "/grid")
-            if (response.ok) {
-                const player: Player = await response.json()
-                setPlayer(player)
-            } else {
-                console.warn("Could not update player data")
-            }
-        } catch (ex) {
-            console.error(ex)
-        }
-    }
 
     function selectTile([y, x]: number[]) {
         if (selectedTile && selectedTile[0] == y && selectedTile[1] == x)
@@ -303,7 +302,6 @@ export default function Game(
             blankTiles.push([y, x])
         })
 
-        saveGrid()
         setSelectedSolution(null)
         setEntries([...entries, selectedSolution.entry])
         setBlankTiles([...blankTiles])
