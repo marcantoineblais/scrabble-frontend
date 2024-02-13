@@ -9,6 +9,7 @@ export class Grid {
     public grid: string[][];
     public playerLetters: string;
     public gridType: GridType;
+    public blankTiles: number[][];
     public language: Language;
     public player: Player;
 
@@ -18,6 +19,7 @@ export class Grid {
         grid: string[][] = [[]], 
         playerLetters: string = "", 
         gridType: GridType = new GridType(), 
+        blankTiles = [],
         language: Language = new Language(), 
         player: Player = new Player()
     ) {
@@ -26,6 +28,7 @@ export class Grid {
 		this.grid = grid;
 		this.playerLetters = playerLetters;
 		this.gridType = gridType;
+        this.blankTiles = blankTiles;
 		this.language = language;
 		this.player = player;
 	}

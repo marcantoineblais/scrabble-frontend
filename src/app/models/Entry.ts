@@ -5,14 +5,16 @@ export class Entry {
     public x: number;
     public vertical: boolean;
     public conflict: boolean;
+    public blankLetters: number[];
 
     
-	constructor(word: string, y: number, x: number, vertical: boolean) {
+	constructor(word: string, y: number, x: number, vertical: boolean, blankLetters: number[] = []) {
         this.word = word;
         this.y = y;
         this.x = x;
         this.vertical = vertical;
         this.conflict = false;
+        this.blankLetters = blankLetters;
 	}
 
     public lastX(): number {
