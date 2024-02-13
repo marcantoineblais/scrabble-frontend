@@ -198,15 +198,18 @@ export default function Game(
 
             setBlankTiles(updatedList)
             window.removeEventListener("mouseup", cancelTimeout)
+            window.removeEventListener("touchend", cancelTimeout)
         }, 200)
 
         const cancelTimeout = () => {
             clearTimeout(timer)
             selectTile([y, x])
             window.removeEventListener("mouseup", cancelTimeout)
+            window.removeEventListener("touchend", cancelTimeout)
         }
 
         window.addEventListener("mouseup", cancelTimeout)
+        window.addEventListener("touchend", cancelTimeout)
     }
 
     function updateNewWord() {

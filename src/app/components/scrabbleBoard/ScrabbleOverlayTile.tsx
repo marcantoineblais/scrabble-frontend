@@ -41,6 +41,7 @@ export default function ScrabbleOverlayTile(
             ref={tileRef}
             className={`w-full h-full ${background}`}
             onMouseDown={() => selectOrToggleTile(coords)}
+            onTouchStart={() => selectOrToggleTile(coords)}
         ></div>
     )
 }
