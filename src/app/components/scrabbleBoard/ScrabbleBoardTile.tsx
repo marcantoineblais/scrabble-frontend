@@ -16,29 +16,29 @@ export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus
         const tile = tileRef.current
         tile.style.width = size + "px"
         tile.style.height = size + "px"
-        tile.style.lineHeight = (size / 4) + 2 + "px"
+        tile.style.lineHeight = size * 0.28 + "px"
 
         if (bonus === Bonus.CENTER)
             tile.style.fontSize = size + "px"
         else
-            tile.style.fontSize = size / 4 + "px"
+            tile.style.fontSize = size * 0.22 + "px"
     }, [size, bonus])
 
     React.useEffect(() => {
         switch(bonus) {
             case Bonus.DOUBLE_LETTER:
                 setText("Lettre Compte Double")
-                setBackground("bg-sky-400")
+                setBackground("bg-green-700")
                 break
 
             case Bonus.TRIPLE_LETTER:
                 setText("Lettre Compte Triple")
-                setBackground("bg-sky-900")
+                setBackground("bg-sky-700")
                 break
 
             case Bonus.DOUBLE_WORD:
                 setText("Mot Compte Double")
-                setBackground("bg-red-400")
+                setBackground("bg-orange-500")
                 break
 
             case Bonus.TRIPLE_WORD:
@@ -61,7 +61,7 @@ export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus
     return (
         <div 
             ref={tileRef}
-            className={`w-full h-full flex justify-center items-center border text-center text-slate-100 overflow-hidden ${background}`}
+            className={`w-full h-full flex justify-center items-center border text-center bg- text-slate-100 overflow-hidden ${background}`}
         >
             { text }
         </div>
