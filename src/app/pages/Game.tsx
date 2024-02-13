@@ -299,6 +299,7 @@ export default function Game(
             blankTiles.push([y, x])
         })
 
+        saveGrid()
         setSelectedSolution(null)
         setEntries([...entries, selectedSolution.entry])
         setBlankTiles([...blankTiles])
