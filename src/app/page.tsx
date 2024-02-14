@@ -11,6 +11,7 @@ import Game from "./pages/Game";
 import SavedGames from "./pages/SavedGames";
 import { Player } from "./models/Player";
 import { Grid } from "./models/Grid";
+import SignIn from "./pages/SignIn";
 
 export default function Page() {
 
@@ -25,6 +26,11 @@ export default function Page() {
             case "authentication":
                 setChildren(<Authentication setPage={setPage} setPlayer={setPlayer} />)
                 setTitle("")
+
+            case "signIn":
+                setChildren(<SignIn setPage={setPage} />)
+                setTitle("Inscription")
+                break
             
             case "landing":
                 setChildren(<Landing grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)

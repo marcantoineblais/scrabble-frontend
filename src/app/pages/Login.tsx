@@ -38,32 +38,37 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
                 const player: Player = await response.json()
                 setPlayer(player)
                 setPage("landing")                
+            } else {
+                alert("Nom d'utilisateur ou mot de passe incorrect.")
             }
         } catch (ex) {
             console.error(ex)
         }
     }
 
+    function signIn() {
+        setPage("signIn")
+    }
+
     return (
-        <div className="h-full px-5 flex flex-col justify-between gap-7">
+        <div className="grow px-5 flex flex-col justify-between gap-7">
             <div className="flex flex-col gap-5">
                 <CheetahLogo className="text-emerald-900" />
 
-                <form ref={formRef} className="w-full" onSubmit={(e) => e.preventDefault()}>
-                    <div className="w-full flex flex-col gap-3">
-                        <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
-                        <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
-                        <label className="w-fit flex items-center" htmlFor="rememberMe"><input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />Se souvenir de moi</label>
-                        <div className="w-full mt-5 flex flex-col"> 
-                            <WoodenButton text="Se connecter" action={login}/>
-                        </div>
-                    </div>
+                <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
+                    <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
+                    <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
+                    <label className="w-fit flex items-center" htmlFor="rememberMe">
+                        <input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />
+                        Se souvenir de moi
+                    </label>
+                    <WoodenButton text="Se connecter" action={login}/>
                 </form>
             </div>
 
             <div className="w-full flex flex-col">
                 <p>Vous n&apos;avez pas de compte?</p>
-                <WoodenButton text="S'inscrire" action={() => console.log("inscription")}/>
+                <WoodenButton text="S'inscrire" action={() => signIn()}/>
             </div>
         </div>
     )
