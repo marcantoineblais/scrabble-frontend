@@ -45,7 +45,7 @@ export default function Landing(
     }
 
     return (
-        <div className="h-full mt-5 px-5 flex flex-col justify-between gap-3">
+        <div className="h-full mt-5 px-5 flex flex-col justify-between gap-7">
             <div className="flex flex-col gap-5">
                 <CheetahLogo className="text-emerald-900"/>
                 <div className="mt-5 flex flex-col gap-3">

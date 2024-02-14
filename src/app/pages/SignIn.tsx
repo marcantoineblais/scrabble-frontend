@@ -12,6 +12,7 @@ import LoadingScreen from "../components/LoadingScreen"
 export default function SignIn({ setPage }: { setPage: Function }) {
 
     const [loading, setLoading] = React.useState<boolean>(false)
+    const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false)
     const formRef = React.useRef<HTMLFormElement|null>(null)
 
     async function submitForm() {
@@ -72,18 +73,35 @@ export default function SignIn({ setPage }: { setPage: Function }) {
 
 
     return (
-        <div className="px-5 grow flex flex-col justify-between gap-5">
+        <div className="px-5 grow flex flex-col justify-between gap-7">
             <LoadingScreen visible={loading} />
             <div className="flex flex-col gap-5">
                 <CheetahLogo className="text-emerald-800" />
-                <p className="text-justify">Veuillez remplir les champs ci-dessous. Vous recevrez un courriel une fois que votre demande sera acceptée.</p>
+                <p className="pb-3 text-justify border-b">Veuillez remplir les champs ci-dessous. Vous recevrez un courriel une fois que votre demande sera acceptée.</p>
                 <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-                    <input name="username" className="p-1 rounded" type="text" maxLength={30} placeholder="Nom d'utilisateur" />
-                    <input name="password" className="p-1 rounded" type="password" maxLength={30} placeholder="Mot de passe" />
-                    <input name="email" className="p-1 rounded" type="text" placeholder="Courriel" />
-                    <textarea name="info" className="p-1 rounded" maxLength={300} rows={5} placeholder="Qui êtes-vous ?"/>
-                    <WoodenButton text="Envoyer" action={() => submitForm()} />
+                    <FormInput name="Nom d'utilisateur">
+                        <input name="username" className="py-1 px-3 rounded" type="text" maxLength={30} />
+                    </FormInput>
+
+                    <FormInput name="Mot de passe" className="relative" >
+                        <input name="password" className="py-1 px-3 rounded" type={passwordVisible ? "text" : "password"} maxLength={30} />
+                        <button 
+                            className="absolute bottom-0 right-0 py-1 px-3 cursor-pointer hover:opacity-50"
+                            onClick={() => setPasswordVisible(!passwordVisible)}
+                        >
+                            { passwordVisible ? "Masquer" : "Afficher" }
+                        </button>
+                    </FormInput>
+                    
+                    <FormInput name="Courriel">
+                        <input name="email" className="py-1 px-3 rounded" type="text" />
+                    </FormInput>
+                    
+                    <FormInput name="Qui êtes-vous ?">
+                        <textarea name="info" className="py-1 px-3 rounded" maxLength={300} rows={3} />
+                    </FormInput>
                 </form>
+                <WoodenButton text="Envoyer" action={() => submitForm()} />
             </div>
 
             <WoodenButton text="Retour" action={() => setPage("")} />

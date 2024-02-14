@@ -6,9 +6,11 @@ import { postRequest } from "../utilities/utilities";
 import { Player } from "../models/Player";
 import { LoginRequest } from "../models/LoginRequest";
 import CheetahLogo from "../components/CheetahLogo";
+import FormInput from "../components/FormInput";
 
 export default function Login({ setPlayer, setPage }: { setPlayer: Function, setPage: Function }) {
 
+    const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false)
     const formRef = React.useRef<HTMLFormElement|null>(null)
 
     async function login() {
@@ -52,18 +54,30 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
 
     return (
         <div className="grow px-5 flex flex-col justify-between gap-7">
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-7">
                 <CheetahLogo className="text-emerald-900" />
 
                 <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-                    <input className="p-1 rounded" name="username" type="text" placeholder="Nom d'utilisateur" />
-                    <input className="p-1 rounded" name="password" type="password" placeholder="Mot de passe" />
+                    <FormInput name="Nom d'utilisateur">
+                        <input name="username" className="py-1 px-3 rounded" type="text" maxLength={30} />
+                    </FormInput>
+
+                    <FormInput name="Mot de passe" className="relative" >
+                        <input name="password" className="py-1 px-3 rounded" type={passwordVisible ? "text" : "password"} maxLength={30} />
+                        <button 
+                            className="absolute bottom-0 right-0 py-1 px-3 cursor-pointer hover:opacity-50"
+                            onClick={() => setPasswordVisible(!passwordVisible)}
+                        >
+                            { passwordVisible ? "Masquer" : "Afficher" }
+                        </button>
+                    </FormInput>
+
                     <label className="w-fit flex items-center" htmlFor="rememberMe">
                         <input className="me-2" id="rememberMe" name="rememberMe" type="checkbox" />
                         Se souvenir de moi
                     </label>
-                    <WoodenButton text="Se connecter" action={login}/>
                 </form>
+                <WoodenButton text="Se connecter" action={login}/>
             </div>
 
             <div className="w-full flex flex-col">
