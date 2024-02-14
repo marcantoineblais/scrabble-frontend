@@ -40,8 +40,12 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
                 const player: Player = await response.json()
                 setPlayer(player)
                 setPage("landing")                
-            } else {
+            } else if (response.status === 401) {
+                alert("Votre inscription n'a pas encore été approuvé. Veuillez réessayer plus tard.")
+            } else if (response.status === 511) {
                 alert("Nom d'utilisateur ou mot de passe incorrect.")
+            } else {
+                alert("Un problème est survenu, veuillez réessayer plus tard.")
             }
         } catch (ex) {
             console.error(ex)
