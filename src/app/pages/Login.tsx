@@ -41,7 +41,7 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
                 setPlayer(player)
                 setPage("landing")                
             } else if (response.status === 401) {
-                alert("Votre inscription n'a pas encore été approuvé. Veuillez réessayer plus tard.")
+                alert("Votre inscription n'a pas encore été approuvée. Veuillez réessayer plus tard.")
             } else if (response.status === 511) {
                 alert("Nom d'utilisateur ou mot de passe incorrect.")
             } else {

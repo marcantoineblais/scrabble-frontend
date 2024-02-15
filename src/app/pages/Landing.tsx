@@ -12,6 +12,15 @@ export default function Landing(
     { grids: Grid[], setCurrentGrid: Function, setPlayer: Function, setPage: Function }
 ) {
 
+    const [continueGridName, setContinueGridName] = React.useState<string>("")
+
+    React.useEffect(() => {
+        if (grids.length) {
+            const name = grids[0].name.length > 15 ? grids[0].name.substring(0, 15) + "..." : grids[0].name
+            setContinueGridName(" (" + name + ")")
+        }
+    }, [grids])
+
     function newGame() {
         setPage("gridSelection")
     }
@@ -50,7 +59,7 @@ export default function Landing(
                 <CheetahLogo className="text-emerald-900"/>
                 <div className="mt-5 flex flex-col gap-3">
                     <ConditionalDiv visible={grids.length > 0}>
-                        <WoodenButton text="Continuer" action={continueGame} />
+                        <WoodenButton text={"Continuer" + continueGridName} action={continueGame} />
                     </ConditionalDiv>
                     <WoodenButton text="Nouvelle Partie" action={newGame} />
                     <ConditionalDiv className="flex flex-col gap-3" visible={grids.length > 0}>
