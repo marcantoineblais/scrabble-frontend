@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       backgroundImage: {
         'tile-texture': "url('../images/tile-texture.jpg')",
-        'cheetah': "url('../images/cheetah.jpg')"
+        'tile-blur': "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))"
       },
     },
   },

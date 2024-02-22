@@ -21,13 +21,13 @@ export default function ScrabbleOverlay(
             overlays[y] = []
 
             row.forEach((_col, x) => {
-                if (selectedSolution && !selectedSolution.entry.letterAtCoord([y, x]))
-                    overlays[y][x] = Overlay.BLURRED
-                else if (!selectedSolution && selectedTile && y == selectedTile[0] && x == selectedTile[1])
+                if (selectedSolution) {
+                    overlays[y][x] = Overlay.NONE
+                } else if (selectedTile && y == selectedTile[0] && x == selectedTile[1])
                     overlays[y][x] = Overlay.SELECTED
-                else if (!selectedSolution && selectedTile && selectedVertical && x == selectedTile[1])
+                else if (selectedTile && selectedVertical && x == selectedTile[1])
                     overlays[y][x] = Overlay.LINE
-                else if (!selectedSolution && selectedTile && !selectedVertical && y == selectedTile[0])
+                else if (selectedTile && !selectedVertical && y == selectedTile[0])
                     overlays[y][x] = Overlay.LINE
                 else
                     overlays[y][x] = Overlay.NONE
@@ -43,13 +43,15 @@ export default function ScrabbleOverlay(
         
         const gridTiles: ReactNode[] = grid.map((row: string[], y: number) => {
             const cols: ReactNode[] = row.map((_col: string, x: number) => {
-                return <ScrabbleOverlayTile 
-                    key={x} 
-                    size={width / grid.length} 
-                    overlay={overlayGrid[y][x]} 
-                    coords={[y, x]}
-                    selectOrToggleTile={selectOrToggleTile}
-                />
+                return (
+                    <ScrabbleOverlayTile 
+                        key={x} 
+                        size={width / grid.length} 
+                        overlay={overlayGrid[y][x]} 
+                        coords={[y, x]}
+                        selectOrToggleTile={selectOrToggleTile}
+                    />
+                )
             })
 
             return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>

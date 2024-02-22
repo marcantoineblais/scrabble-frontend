@@ -3,8 +3,8 @@
 import React from "react"
 
 export default function ScrabbleLetterTile(
-    { size, letter, conflict, selected, solution, blank}:
-    { size: number, letter: string, conflict: boolean, selected: boolean, solution: boolean, blank: boolean }
+    { size, letter, conflict, selected, solution, blank, blur}:
+    { size: number, letter: string, conflict: boolean, selected: boolean, solution: boolean, blank: boolean, blur: boolean }
 ) {
 
     const [background, setBackground] = React.useState<string>("")
@@ -21,22 +21,34 @@ export default function ScrabbleLetterTile(
     }, [size])
 
     React.useEffect(() => {
+        let background
+
         if (conflict)
-            setBackground("bg-red-700 opacity-75")
+            background = "bg-red-700 opacity-75"
         else if (solution)
-            setBackground("bg-teal-700")
+            background = "bg-teal-700"
         else if (selected)
-            setBackground("bg-neutral-700")
+            background = "bg-neutral-700"
+        else if (letter && blur)
+            background = "bg-tile-texture brightness-50 blur-[1px]"
+        else if (blur)
+            background = "bg-tile-blur brightness-50"
         else if (letter)
-            setBackground("bg-tile-texture")
+            background = "bg-tile-texture"
         else
-            setBackground("")
-    }, [letter, conflict, selected, solution])
+            background = ""
+
+        setBackground(background)
+    }, [letter, conflict, selected, solution, blur])
 
     return (
         <div 
             ref={tileRef}
-            className={`w-full h-full flex justify-center items-center text-center border text-white overflow-hidden ${background}`}
+            className={
+                `w-full h-full flex justify-center items-center
+                text-center border text-white overflow-hidden 
+                ${background}`
+            }
         >
             { blank ? "(" + letter + ")" : letter }
         </div>

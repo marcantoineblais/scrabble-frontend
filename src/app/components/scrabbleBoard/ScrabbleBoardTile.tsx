@@ -61,7 +61,12 @@ export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus
     return (
         <div 
             ref={tileRef}
-            className={`w-full h-full flex justify-center items-center border text-center bg- text-slate-100 overflow-hidden ${background}`}
+            className={
+                `w-full h-full 
+                flex justify-center items-center duration-200
+                border text-center border-orange-100
+                bg- text-slate-100 overflow-hidden 
+                ${background}`}
         >
             { text }
         </div>

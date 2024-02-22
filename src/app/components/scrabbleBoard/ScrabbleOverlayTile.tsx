@@ -29,11 +29,7 @@ export default function ScrabbleOverlayTile(
             case Overlay.SELECTED:
                 setBackground("bg-black/50")
                 break
-            
-            case Overlay.BLURRED:
-                setBackground("bg-black/50 backdrop-blur-[0.5px]")
-                break
-                
+
             default:
                 setBackground("")
         }

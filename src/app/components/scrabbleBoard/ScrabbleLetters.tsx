@@ -33,10 +33,15 @@ export default function ScrabbleLetters(
                 let selected = false
                 let solution = false
                 let blank = blankTilesGrid ? blankTilesGrid[y][x] : false
+                let blur = false
                 
-                if (selectedSolution && selectedSolution.entry.letterAtCoord([y, x])) {
-                    letter = selectedSolution.entry.letterAtCoord([y, x]) || ""
-                    solution = true
+                if (selectedSolution) {
+                    if (selectedSolution.entry.letterAtCoord([y, x])) {
+                        letter = selectedSolution.entry.letterAtCoord([y, x]) || ""
+                        solution = true
+                    } else {
+                        blur = true
+                    }
 
                     if (selectedSolution.isLetterBlank([y, x]))
                         blank = true
@@ -55,6 +60,7 @@ export default function ScrabbleLetters(
                     selected={selected} 
                     solution={solution} 
                     blank={blank}
+                    blur={blur}
                 />
             })
 
