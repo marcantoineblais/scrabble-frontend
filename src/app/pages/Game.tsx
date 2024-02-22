@@ -44,7 +44,7 @@ export default function Game(
 
     // READ ENTRIES FROM GRID
     React.useEffect(() => {
-        entries.splice(0, entries.length)
+        const updatedEntries: Entry[] = []
 
         grid.forEach((row, y) => {
             row.forEach((letter, x) => {
@@ -57,7 +57,7 @@ export default function Game(
                         }
 
                         if (word.length > 1) {
-                            entries.push(new Entry(word, y, x, false))
+                            updatedEntries.push(new Entry(word, y, x, false))
                         }
                     }
 
@@ -69,49 +69,16 @@ export default function Game(
                         }
 
                         if (word.length > 1) {
-                            entries.push(new Entry(word, y, x, true))
+                            updatedEntries.push(new Entry(word, y, x, true))
                         }
                     }
                 }
             })
         })
 
-        const updatedBlankTiles = blankTiles.filter(([y, x]: number[]) => grid[y][x])
-        
-        if (updatedBlankTiles.length !== blankTiles.length)
-            setBlankTiles(updatedBlankTiles)
-        
+        currentGrid.grid = grid
+        setEntries(updatedEntries)    
     }, [grid, currentGrid])
-
-    React.useEffect(() => {       
-        async function saveGrid() {
-            currentGrid.grid = grid
-            currentGrid.playerLetters = playerLetters
-            currentGrid.blankTiles = blankTiles        
-
-            try {
-                const response = await postRequest(JSON.stringify(currentGrid), "/grid")
-                if (response.ok) {
-                    const player: Player = await response.json()
-                    setPlayer(player)
-                } else {
-                    console.warn("Could not update player data")
-                }
-            } catch (ex) {
-                console.error(ex)
-            }
-        }
-
-        saveGrid()
-    }, [blankTiles, grid, currentGrid])
-
-    // WRITE THE ENTRIES ON THE GRID AND UPDATE THE GRID
-    React.useEffect(() => {        
-        let updatedGrid: string[][] = currentGrid.grid.map(row => row.map(_col => ""))
-        
-        entries.forEach(entry => entry.writeWordOnGrid(updatedGrid))
-        setGrid([...updatedGrid])
-    }, [entries, currentGrid])
 
     // SELECT THE NEW ENTRY TO DISPLAY ON GRID, TURNS RED WHEN CANNOT BE PLACED
     React.useEffect(() => {
@@ -142,7 +109,7 @@ export default function Game(
         
         setNewEntry(entry)
 
-    }, [newWord, editedWord, selectedTile, selectedVertical, openDrawerId])
+    }, [newWord, editedWord, selectedTile, selectedVertical, openDrawerId, entries, grid, selectedEntry, wordEditMode])
 
     // CHANGE THE SELECTED ENTRY WHEN THE EDIT MENU IS OPEN
     React.useEffect(() => {
@@ -159,7 +126,7 @@ export default function Game(
             setWordEditMode(false)
         }
         
-    }, [selectedTile, selectedVertical, openDrawerId])
+    }, [selectedTile, selectedVertical, openDrawerId, entries, wordEditMode])
 
     // REMOVE THE SELECTED ENTRY FROM THE GRID WHILE EDITING, KEEP THE BACKGROUND COLOR FOR REFERENCE
     React.useEffect(() => {        
@@ -168,15 +135,48 @@ export default function Game(
         
         if (wordEditMode) {
             setEditedWord(selectedEntry.word)
-            setEntries(entries.filter(e => !e.equals(selectedEntry)))
-        } else {
+            setEntries((entries) => [...entries.filter(e => !e.equals(selectedEntry))])
+        } else if (openDrawerId !== 2) {
             setEditedWord("")
             setNewEntry(null)
-            setSelectedEntry(null)
-            setEntries([...entries, selectedEntry])
+            setSelectedEntry((null))
+            setEntries((entries) => [...entries, selectedEntry])
         }
             
-    }, [wordEditMode, openDrawerId])
+    }, [wordEditMode, openDrawerId, selectedEntry])
+
+    React.useEffect(() => {
+        currentGrid.playerLetters = playerLetters
+        currentGrid.blankTiles = blankTiles
+        currentGrid.grid = grid
+    }, [playerLetters, blankTiles, grid, currentGrid])
+
+    React.useEffect(() => {
+        async function saveGrid() {     
+            try {
+                const response = await postRequest(JSON.stringify(currentGrid), "/grid")
+                if (response.ok) {
+                    const player: Player = await response.json()
+                    setPlayer(() => player)
+                } else {
+                    console.warn("Could not update player data")
+                }
+            } catch (ex) {
+                console.error(ex)
+            }
+        }
+
+        saveGrid()
+    }, [grid, blankTiles, currentGrid, setPlayer])
+
+
+    // WRITE THE ENTRIES ON THE GRID AND UPDATE THE GRID
+    function updateGrid(entryList: Entry[]) {       
+        let updatedGrid: string[][] = currentGrid.grid.map(row => row.map(_col => ""))
+        
+        entryList.forEach(entry => entry.writeWordOnGrid(updatedGrid))
+        setGrid([...updatedGrid])
+    }
 
     function selectTile([y, x]: number[]) {
         if (selectedTile && selectedTile[0] == y && selectedTile[1] == x)
@@ -196,7 +196,7 @@ export default function Game(
                 updatedList.push([y, x])
 
             setBlankTiles(updatedList)
-            navigator.vibrate(100)
+            navigator.vibrate(50)
             window.removeEventListener("mouseup", cancelTimeout)
             window.removeEventListener("touchend", cancelTimeout)
         }, 200)
@@ -243,7 +243,7 @@ export default function Game(
 
         const textbox = lettersTextBoxRef.current
         textbox.value = textbox.value.toUpperCase()
-        setPlayerLetters(textbox.value)
+        setPlayerLetters(textbox.value) 
     }
 
     function placeWord() {
@@ -257,7 +257,6 @@ export default function Game(
 
         setSelectedEntry(null)
         setNewEntry(null)
-        setEntries([...entries, newEntry])
         setWordEditMode(false)
 
         if (openDrawerId === 1) {
@@ -267,6 +266,8 @@ export default function Game(
             resetTextbox(editWordTextBoxRef)
             setEditedWord("")
         }
+
+        updateGrid([...entries, newEntry])
     }
 
     function eraseEntry() {
@@ -280,8 +281,8 @@ export default function Game(
             entries.forEach(entry => {
                 coords.forEach(([y, x]) => entry.eraseLetterArCoord([y, x]))
             })
-            setEntries(entries.filter(e => !e.equals(selectedEntry)))
             resetTextbox(editWordTextBoxRef)
+            updateGrid(entries.filter(e => !e.equals(selectedEntry)))
         }
     }
 
@@ -303,11 +304,11 @@ export default function Game(
         })
 
         setSelectedSolution(null)
-        setEntries([...entries, selectedSolution.entry])
         setBlankTiles([...blankTiles])
         setWordEditMode(false)
         setSolutions([])
         resetTextbox(lettersTextBoxRef)
+        updateGrid([...entries, selectedSolution.entry])
     }
 
     function ignoreSolutions() {
@@ -343,9 +344,10 @@ export default function Game(
         )
 
         try {
-            const response = await postRequest(JSON.stringify(body), "/grid/solve")
+            const response = await postRequest(JSON.stringify(body), "/grid/solve")          
             const data = await response.json()
             const solutionsList: Solution[] = []
+            
             data.forEach((obj: any) => {
                 const entry: Entry = new Entry(obj.entry.word, obj.y, obj.x, obj.vertical)
                 solutionsList.push(new Solution(entry, obj.points, obj.blankTiles))
@@ -371,7 +373,7 @@ export default function Game(
                     <ScrabbleContainer setWidth={setWidth}>
                         <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
                         <ScrabbleLetters grid={grid} newEntry={newEntry} selectedEntry={selectedEntry} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width}/>
-                        <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={grid} selectOrToggleTile={selectOrToggleTile} />
+                        <ScrabbleOverlay width={width} selectedTile={selectedTile} selectedVertical={selectedVertical} grid={grid} selectOrToggleTile={selectOrToggleTile} selectedSolution={selectedSolution} />
                     </ScrabbleContainer>
                 </div>
                 

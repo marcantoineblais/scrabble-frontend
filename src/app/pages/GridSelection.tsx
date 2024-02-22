@@ -19,7 +19,7 @@ export default function GridSelection(
     { setCurrentGrid: Function, setPage: Function, setPlayer: Function }
 ) {
 
-    const [gameOptions, setGameOptions] = React.useState<GameOptions|null>(null)
+    const [gameOptions, setGameOptions] = React.useState<GameOptions>(new GameOptions([], []))
     const [gridType, setGridType] = React.useState<GridType|null>(null)
     const [gridTypeIndex, setGridTypeIndex] = React.useState<number>(0)
     const [language, setLanguage] = React.useState<Language|null>(null)
@@ -141,8 +141,8 @@ export default function GridSelection(
                 </ScrabbleContainer>
 
                 <div className="flex justify-between">
-                    <Arrow action={() => previousGridType()} reversed={true} className="w-[2rem]" />
-                    <Arrow action={() => nextGridType()} reversed={false} className="w-[2rem]" />
+                    <Arrow action={() => previousGridType()} reversed={true} className="w-[2rem]" visible={gridTypeIndex > 0}/>
+                    <Arrow action={() => nextGridType()} reversed={false} className="w-[2rem]" visible={gridTypeIndex < gameOptions?.gridTypes.length - 1}/>
                 </div>
             </div>
 

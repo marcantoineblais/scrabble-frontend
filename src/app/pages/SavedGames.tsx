@@ -48,7 +48,7 @@ export default function SavedGames(
         })
 
         setGames(savedGames)
-    }, [grids])
+    }, [grids, deleteMode, setCurrentGrid, setPage, setPlayer])
 
 
     return (

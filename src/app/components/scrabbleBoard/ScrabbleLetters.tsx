@@ -47,7 +47,15 @@ export default function ScrabbleLetters(
                     selected = true
                 }
 
-                return <ScrabbleLetterTile key={x} size={width / grid.length} letter={letter} conflict={conflict} selected={selected} solution={solution} blank={blank} />
+                return <ScrabbleLetterTile 
+                    key={x} 
+                    size={width / grid.length} 
+                    letter={letter} 
+                    conflict={conflict} 
+                    selected={selected} 
+                    solution={solution} 
+                    blank={blank}
+                />
             })
 
             return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>

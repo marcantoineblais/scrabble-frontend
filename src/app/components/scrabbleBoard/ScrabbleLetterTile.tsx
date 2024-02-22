@@ -3,11 +3,11 @@
 import React from "react"
 
 export default function ScrabbleLetterTile(
-    { size, letter, conflict, selected, solution, blank }:
+    { size, letter, conflict, selected, solution, blank}:
     { size: number, letter: string, conflict: boolean, selected: boolean, solution: boolean, blank: boolean }
 ) {
 
-    const [background, setBackground] = React.useState("")
+    const [background, setBackground] = React.useState<string>("")
     const tileRef = React.useRef<HTMLDivElement|null>(null)
 
     React.useEffect(() => {

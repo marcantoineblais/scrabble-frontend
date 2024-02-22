@@ -4,10 +4,11 @@ import { Overlay } from "@/app/models/Overlay"
 import React, { ReactNode } from "react"
 import ScrabbleRow from "./ScrabbleRow"
 import ScrabbleOverlayTile from "./ScrabbleOverlayTile"
+import { Solution } from "@/app/models/Solution"
 
 export default function ScrabbleOverlay(
-    { width, selectedTile, selectedVertical, grid, selectOrToggleTile }: 
-    { width: number, selectedTile: number[]|null, selectedVertical: boolean, grid: string[][], selectOrToggleTile: Function }
+    { width, selectedTile, selectedVertical, grid, selectOrToggleTile, selectedSolution }: 
+    { width: number, selectedTile: number[]|null, selectedVertical: boolean, grid: string[][], selectOrToggleTile: Function, selectedSolution: Solution|null }
 ) {
 
     const [overlayGrid, setOverlayGrid] = React.useState<number[][]|null>(null)
@@ -20,11 +21,13 @@ export default function ScrabbleOverlay(
             overlays[y] = []
 
             row.forEach((_col, x) => {
-                if (selectedTile && y == selectedTile[0] && x == selectedTile[1])
+                if (selectedSolution && !selectedSolution.entry.letterAtCoord([y, x]))
+                    overlays[y][x] = Overlay.BLURRED
+                else if (!selectedSolution && selectedTile && y == selectedTile[0] && x == selectedTile[1])
                     overlays[y][x] = Overlay.SELECTED
-                else if (selectedTile && selectedVertical && x == selectedTile[1])
+                else if (!selectedSolution && selectedTile && selectedVertical && x == selectedTile[1])
                     overlays[y][x] = Overlay.LINE
-                else if (selectedTile && !selectedVertical && y == selectedTile[0])
+                else if (!selectedSolution && selectedTile && !selectedVertical && y == selectedTile[0])
                     overlays[y][x] = Overlay.LINE
                 else
                     overlays[y][x] = Overlay.NONE
@@ -32,7 +35,7 @@ export default function ScrabbleOverlay(
         })
 
         setOverlayGrid(overlays)
-    }, [selectedTile, selectedVertical, grid])
+    }, [selectedTile, selectedVertical, grid, selectedSolution])
 
     React.useEffect(() => {
         if (!overlayGrid)

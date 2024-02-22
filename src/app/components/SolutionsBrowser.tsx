@@ -42,9 +42,9 @@ export default function SolutionsBrowser(
             <h2 className="font-bold underline">Meilleures solutions ({index + 1} sur {solutions.length}) :</h2>
             <div className="flex flex-col gap-3">
                 <div className="flex justify-between">
-                    <Arrow className="w-[2rem]" reversed={true} action={() => previousSolution()} />
+                    <Arrow className="w-[2rem]" reversed={true} action={() => previousSolution()} visible={index > 0} />
                     <span className="text-xl font-bold">{ word }</span>
-                    <Arrow className="w-[2rem]" reversed={false} action={() => nextSolution()} />
+                    <Arrow className="w-[2rem]" reversed={false} action={() => nextSolution()} visible={index < solutions.length - 1} />
                 </div>
                 <div className="flex justify-center">               
                     <span className="">{points} points</span>
