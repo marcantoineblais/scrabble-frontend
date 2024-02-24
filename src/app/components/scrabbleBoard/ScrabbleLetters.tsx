@@ -39,12 +39,12 @@ export default function ScrabbleLetters(
                     if (selectedSolution.entry.letterAtCoord([y, x])) {
                         letter = selectedSolution.entry.letterAtCoord([y, x]) || ""
                         solution = true
+                        
+                        if (selectedSolution.isLetterBlank([y, x]))
+                          blank = true
                     } else {
                         blur = true
                     }
-
-                    if (selectedSolution.isLetterBlank([y, x]))
-                        blank = true
                 } else if (newEntry && newEntry.letterAtCoord([y, x])) {
                     letter = newEntry.letterAtCoord([y, x]) || ""
                     conflict = newEntry.conflict
