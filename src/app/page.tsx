@@ -8,7 +8,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import Menu from "./components/Menu";
 import GridSelection from "./pages/GridSelection";
 import Game from "./pages/Game";
-import SavedGames from "./pages/SavedGames";
+import SavedGames from "./components/SavedGames";
 import { Player } from "./models/Player";
 import { Grid } from "./models/Grid";
 import SignIn from "./pages/SignIn";
@@ -39,17 +39,12 @@ export default function Page() {
             
             case "gridSelection":
                 setChildren(<GridSelection setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
-                setTitle("Grille de Jeu")
+                setTitle("Sélection")
                 break
 
             case "savedGames":
                 setChildren(<SavedGames grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer}/>)
-                setTitle("Parties Sauvegardées")
-                break
-            
-            case "deleteGames":
-                setChildren(<SavedGames grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} deleteMode={true} />)
-                setTitle("Parties Sauvegardées")
+                setTitle("Sauvegardes")
                 break
 
             case "game":
@@ -65,11 +60,13 @@ export default function Page() {
     }, [page, currentGrid, player])
 
     return (
-        <main className="min-h-full flex bg-orange-50">
-            <Authentication setPlayer={setPlayer} setPage={setPage} />
-            <div className="grow flex py-3 container max-w-screen-md mx-auto">
-                <Menu title={title}>{ children }</Menu>
-            </div>
-        </main>
+        <>
+        <Authentication setPlayer={setPlayer} setPage={setPage} />
+          <main className="h-screen flex bg-orange-50 overflow-hidden">
+              <div className="grow flex py-3 container max-w-screen-md mx-auto">
+                  <Menu title={title}>{ children }</Menu>
+              </div>
+          </main>
+        </>
     )
 }
