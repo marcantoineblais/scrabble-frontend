@@ -16,6 +16,8 @@ import ConditionalDiv from "../components/ConditionalDiv"
 import SolutionsBrowser from "../components/SolutionsBrowser"
 import { Solution } from "../models/Solution"
 import { Player } from "../models/Player"
+import TilesInputSection from "../components/scrabbleBoard/TilesInputSection"
+import PlayerLettersSection from "../components/scrabbleBoard/PlayerLettersSection"
 
 export default function Game(
     { currentGrid, setPage, setPlayer }: 
@@ -377,50 +379,9 @@ export default function Game(
                     </ScrabbleContainer>
                 </div>
                 
-                <ConditionalDiv className="px-5 flex flex-col gap-10" visible={!solutions.length}>    
-                    <Drawer title="Ajouter un mot" id={1} open={openDrawerId === 1} openDrawer={openDrawer}>
-                        <FormInput name="Entrez un mot à placer :">
-                            <input 
-                                onChange={() => updateNewWord()} 
-                                ref={newWordTextBoxRef} 
-                                className="w-full py-1 px-3" 
-                                maxLength={15}
-                            />
-                        </FormInput>
-                        <WoodenButton text="Placer le mot" action={() => placeWord()} />
-                    </Drawer>
-                    
-                    <Drawer title="Modifier un mot" id={2} open={openDrawerId === 2} openDrawer={openDrawer}>
-                        <FormInput name="Modifier le mot sélectionné :">
-                            <input 
-                                onChange={() => editSelectedWordLetters()}
-                                ref={editWordTextBoxRef}
-                                readOnly={!wordEditMode}
-                                className="w-full py-1 px-3"
-                                maxLength={15} 
-                            />
-                        </FormInput>
-                        <ConditionalDiv className="w-full flex gap-1" visible={!wordEditMode}>
-                            <WoodenButton text="Modifier" action={() => toggleWordEditMode()} />
-                            <WoodenButton text="Effacer" action={() => eraseEntry()} />
-                        </ConditionalDiv> 
-                        <ConditionalDiv className="w-full flex gap-1" visible={wordEditMode}>
-                            <WoodenButton text="Accepter" action={() => placeWord()} /> 
-                            <WoodenButton text="Annuler" action={() => toggleWordEditMode()} /> 
-                        </ConditionalDiv> 
-                    </Drawer>
-
-                    <Drawer title="Trouver les solutions" id={3} open={openDrawerId === 3} openDrawer={openDrawer}>
-                        <FormInput name="Entrez vos lettres :">
-                            <input 
-                                onChange={() => updatePlayerLetters()} 
-                                ref={lettersTextBoxRef} 
-                                className="w-full py-1 px-3" 
-                                maxLength={7}
-                            />
-                        </FormInput>
-                        <WoodenButton text="Trouver les solutions" action={() => submitGrid()} />
-                    </Drawer>            
+                <ConditionalDiv className="flex flex-col gap-10" visible={!solutions.length}>    
+                    <TilesInputSection width={width} />
+                    <PlayerLettersSection width={width} />         
                 </ConditionalDiv>
 
                 <ConditionalDiv className="px-5" visible={solutions.length > 1}>
