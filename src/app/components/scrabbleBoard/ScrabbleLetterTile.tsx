@@ -3,8 +3,8 @@
 import React from "react"
 
 export default function ScrabbleLetterTile(
-    { size, letter, conflict, selected, solution, blank, blur}:
-    { size: number, letter: string, conflict: boolean, selected: boolean, solution: boolean, blank: boolean, blur: boolean }
+    { size, letter, solution, blank, blur, updateSelectedTile, updateGrid}:
+    { size: number, letter: string, solution: boolean, blank: boolean, blur: boolean, updateSelectedTile: Function, updateGrid: Function }
 ) {
 
     const [background, setBackground] = React.useState<string>("")
@@ -18,35 +18,36 @@ export default function ScrabbleLetterTile(
         tile.style.width = size + "px"
         tile.style.height = size + "px"
         tile.style.fontSize = size * 0.6 + "px"
-    }, [size])
+        
+        if (letter)
+          tile.style.boxShadow = `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)`
+        else 
+          tile.style.boxShadow = ""
+    }, [size, letter])
 
     React.useEffect(() => {
         let background
 
-        if (conflict)
-            background = "bg-red-700 opacity-75"
-        else if (solution)
-            background = "bg-teal-700"
-        else if (selected)
-            background = "bg-neutral-700"
-        else if (letter && blur)
-            background = "bg-tile-texture brightness-50 blur-[1px]"
+        if (letter && blur)
+            background = "bg-tile-texture brightness-50 rounded-sm border border-yellow-700 shadow-orange-50/75"
         else if (blur)
             background = "bg-tile-blur brightness-50"
         else if (letter)
-            background = "bg-tile-texture"
+            background = "bg-tile-texture rounded-sm border border-yellow-700 shadow-orange-50/75"
         else
             background = ""
 
         setBackground(background)
-    }, [letter, conflict, selected, solution, blur])
+    }, [letter, solution, blur])
 
     return (
         <div 
             ref={tileRef}
+            onMouseEnter={() => updateSelectedTile()}
+            onMouseUp={() => updateGrid()}
             className={
-                `w-full h-full flex justify-center items-center
-                text-center border text-white overflow-hidden 
+                `w-full h-full flex justify-center items-center shadow-orange-50/75
+                text-center border text-white overflow-hidden
                 ${background}`
             }
         >

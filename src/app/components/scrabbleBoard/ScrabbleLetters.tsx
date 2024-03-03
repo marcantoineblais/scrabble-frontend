@@ -3,76 +3,70 @@
 import React, { ReactNode } from "react"
 import ScrabbleRow from "./ScrabbleRow"
 import ScrabbleLetterTile from "./ScrabbleLetterTile"
-import { Entry } from "@/app/models/Entry"
 import { Solution } from "@/app/models/Solution"
-import { Solitreo } from "next/font/google"
 
 export default function ScrabbleLetters(
-    { grid, width, blankTiles, newEntry = null, selectedEntry = null, selectedSolution= null }:
-    { grid: string[][], width: number, blankTiles: number[][], newEntry?: Entry|null, selectedEntry?: Entry|null, selectedSolution?: Solution|null }
+  { grid, tempGrid, width, blankTiles, selectedSolution = null, updateSelectedTile = () => false, updateGrid = () => false }:
+    { grid: string[][], tempGrid: string[][], width: number, blankTiles: number[][], updateSelectedTile?: Function, updateGrid?: Function, selectedSolution?: Solution | null }
 ) {
 
-    const [tiles, setTiles] = React.useState<ReactNode|null>(null)
-    const [blankTilesGrid, setBlankTilesGrid] = React.useState<boolean[][]|null>(null)
+  const [tiles, setTiles] = React.useState<ReactNode | null>(null)
+  const [blankTilesGrid, setBlankTilesGrid] = React.useState<boolean[][] | null>(null)
 
-    React.useEffect(() => {
-        const tileGrid: boolean[][] = grid.map(row => row.map(_col => false))
-        
-        blankTiles.forEach(([y, x]: number[]) => {
-            tileGrid[y][x] = true;
-        })
-        
-        setBlankTilesGrid(tileGrid)
-    }, [grid, blankTiles])
+  React.useEffect(() => {
+    const tileGrid: boolean[][] = grid.map(row => row.map(_col => false))
 
-    React.useEffect(() => {
-        const gridTiles = grid.map((row, y) => {
-            const cols = row.map((col, x) => {
-                let letter = col
-                let conflict = false
-                let selected = false
-                let solution = false
-                let blank = blankTilesGrid ? blankTilesGrid[y][x] : false
-                let blur = false
-                
-                if (selectedSolution) {
-                    if (selectedSolution.entry.letterAtCoord([y, x])) {
-                        letter = selectedSolution.entry.letterAtCoord([y, x]) || ""
-                        solution = true
-                        
-                        if (selectedSolution.isLetterBlank([y, x]))
-                          blank = true
-                    } else {
-                        blur = true
-                    }
-                } else if (newEntry && newEntry.letterAtCoord([y, x])) {
-                    letter = newEntry.letterAtCoord([y, x]) || ""
-                    conflict = newEntry.conflict
-                } else if (selectedEntry && selectedEntry.letterAtCoord([y, x])) {
-                    selected = true
-                }
+    blankTiles.forEach(([y, x]: number[]) => {
+      tileGrid[y][x] = true;
+    })
 
-                return <ScrabbleLetterTile 
-                    key={x} 
-                    size={width / grid.length} 
-                    letter={letter} 
-                    conflict={conflict} 
-                    selected={selected} 
-                    solution={solution} 
-                    blank={blank}
-                    blur={blur}
-                />
-            })
+    setBlankTilesGrid(tileGrid)
+  }, [grid, blankTiles])
 
-            return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>
-        })
-        
-        setTiles(gridTiles)
-    }, [newEntry, selectedEntry, selectedSolution, blankTilesGrid, grid, width])
+  React.useEffect(() => {
+    const gridTiles = grid.map((row, y) => {
+      const cols = row.map((col, x) => {
+        let letter = col
+        if (tempGrid && tempGrid[y][x])
+          letter = tempGrid[y][x]
 
-    return (
-        <div className="absolute inset-0">
-            { tiles }
-        </div>
-    )
+        let solution = false
+        let blank = blankTilesGrid ? blankTilesGrid[y][x] : false
+        let blur = false
+
+        if (selectedSolution) {
+          if (selectedSolution.entry.letterAtCoord([y, x])) {
+            letter = selectedSolution.entry.letterAtCoord([y, x]) || ""
+            solution = true
+
+            if (selectedSolution.isLetterBlank([y, x]))
+              blank = true
+          } else {
+            blur = true
+          }
+        }
+
+        return <ScrabbleLetterTile
+          updateSelectedTile={() => updateSelectedTile([y, x])} 
+          updateGrid={() => updateGrid([y, x])}
+          key={x}
+          size={width / grid.length}
+          letter={letter}
+          solution={solution}
+          blank={blank}
+          blur={blur}
+        />
+      })
+
+      return <ScrabbleRow key={y} width={width}>{cols}</ScrabbleRow>
+    })
+
+    setTiles(gridTiles)
+  }, [selectedSolution, tempGrid, blankTilesGrid, grid, width])
+
+  return (
+    <div className="absolute inset-0">
+      {tiles}
+    </div>
+  )
 }

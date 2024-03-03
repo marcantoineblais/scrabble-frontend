@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react"
 
-export default function TilesInputSection({ width }: { width: number }) {
+export default function TilesInputSection({ size, spawnFloatingTile }: { size: number, spawnFloatingTile: Function }) {
   
   const [letters, setLetters] = React.useState<ReactNode[]>([])
 
@@ -11,13 +11,15 @@ export default function TilesInputSection({ width }: { width: number }) {
     const value = "A".charCodeAt(0)
 
     for (let i = 0; i < 26; i++) {
+      const letter =  String.fromCharCode(value + i)
       letterTiles.push(
         <div 
           key={i}
-          style={{ width: (width / 12) + "px", height: (width / 12) + "px"}} 
-          className="bg-tile-texture flex justify-center items-center shadow-xl"
+          onMouseDown={(e) => spawnFloatingTile(e, letter)}
+          style={{ width: size + "px", height: size + "px", boxShadow: `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)`}} 
+          className="bg-tile-texture flex justify-center items-center rounded-sm border border-yellow-700 shadow-inner shadow-orange-50/75"
         >
-          { String.fromCharCode(value + i) }
+          { letter }
         </div>
       )
     }
@@ -25,16 +27,20 @@ export default function TilesInputSection({ width }: { width: number }) {
     letterTiles.push(
       <div 
         key="blank" 
-        style={{ width: (width / 12) + "px", height: (width / 12) + "px"}} 
-        className="bg-tile-texture flex justify-center items-center shadow-xl"
+        onMouseDown={(e) => spawnFloatingTile(e, " ")}
+        style={{ width: size + "px", height: size + "px", boxShadow: `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)`}} 
+        className="bg-tile-texture flex justify-center items-center rounded-sm border border-yellow-700"
       ></div>
     )
     setLetters(letterTiles)
-  }, [width])
+  }, [size, spawnFloatingTile])
 
 
   return (
-    <div style={{ fontSize: (width / 20) + "px"}} className="flex flex-wrap gap-3 text-white">
+    <div 
+      style={{ fontSize: (size * 0.6) + "px"}} 
+      className="flex flex-wrap justify-between gap-1 text-white"
+    >
       { letters }
     </div>
   )
