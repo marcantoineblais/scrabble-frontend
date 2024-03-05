@@ -23,8 +23,6 @@ export default function Game(
 ) {
   const [width, setWidth] = React.useState<number>(0)
   const [grid, setGrid] = React.useState<string[][]>(currentGrid.grid)
-  const [tempGrid, setTempGrid] = React.useState<string[][]>(currentGrid.grid.map(row => row.map(() => "")))
-  const [selectedTile, setSelectedTile] = React.useState<number[] | null>(null)
   const [selectedLetter, setSelectedLetter] = React.useState<string | null>(null)
   const [selectedSolution, setSelectedSolution] = React.useState<Solution | null>(null)
   const [solutions, setSolutions] = React.useState<Solution[]>([])
@@ -57,17 +55,6 @@ export default function Game(
     saveGrid()
   }, [grid, blankTiles, currentGrid, setPlayer])
 
-  React.useEffect(() => {
-    if (selectedLetter && selectedTile) {
-      const tempGrid = grid.map(row => row.map(() => ""))
-      const [y, x] = selectedTile
-      tempGrid[y][x] = selectedLetter
-
-      setTempGrid(tempGrid)
-    } else {
-      setTempGrid(grid.map(row => row.map(() => "")))
-    }
-  }, [selectedLetter, selectedTile])
   
   function moveFloatingTile(e: MouseEvent, offsetY: number, offsetX: number) {
     if (!floatingTileRef.current)
@@ -90,9 +77,8 @@ export default function Game(
       moveFloatingTile(e, offsetY, offsetY)
     }
     
-    const despawnFloatingTile = () => {
+    const despawnFloatingTile = () => {        
       setSelectedLetter(null)
-      setSelectedTile(null)
       window.removeEventListener("mousemove", move)
       window.removeEventListener("mouseup", despawnFloatingTile)
     }
@@ -108,21 +94,21 @@ export default function Game(
     window.addEventListener("mouseup", despawnFloatingTile)
   }
 
-  function updateSelectedTile([y, x]: number[]) {
-    if (selectedLetter?.length) {
-      setSelectedTile([y, x])
-    } else {
-      setSelectedTile(null)
-    }
-  }
-
   function updateGrid([y, x]: number[]) {
     if (selectedLetter?.length) {
       grid[y][x] = selectedLetter
       setGrid([...grid])
       setSelectedLetter(null)
-      setSelectedTile(null)  
     }
+  }
+
+  function moveLetter(e: MouseEvent, [y, x]: number[], letter: string) {
+    if (!letter.length)
+      return 
+    
+    grid[y][x] = ""
+    setGrid([...grid])
+    spawnFloatingTile(e, letter)
   }
 
   function acceptSolution() {
@@ -185,16 +171,16 @@ export default function Game(
     <div className="px-3 grow flex flex-col justify-between">
       <div className="pt-5 pb-3 flex flex-col gap-7">
         <LoadingScreen visible={loadingScreen} />
-        <FloatingTile visible={selectedTile === null && selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />
+        <FloatingTile visible={selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />
 
         <div>
           <div className="flex justify-between">
             <h2 className="font-bold">{currentGrid.name}</h2>
             <h2 className="font-bold">{currentGrid.language.name}</h2>
           </div>
-          <ScrabbleContainer onMouseExit={() => setSelectedTile(null)} setWidth={setWidth}>
+          <ScrabbleContainer setWidth={setWidth}>
             <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType}/>
-            <ScrabbleLetters grid={grid} tempGrid={tempGrid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width} updateGrid={updateGrid} updateSelectedTile={updateSelectedTile}/>
+            <ScrabbleLetters grid={grid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width} updateGrid={updateGrid} moveLetter={moveLetter}/>
           </ScrabbleContainer>
         </div>
 

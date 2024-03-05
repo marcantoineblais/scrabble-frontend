@@ -3,8 +3,8 @@
 import React from "react"
 
 export default function ScrabbleLetterTile(
-    { size, letter, solution, blank, blur, updateSelectedTile, updateGrid}:
-    { size: number, letter: string, solution: boolean, blank: boolean, blur: boolean, updateSelectedTile: Function, updateGrid: Function }
+    { size, letter, solution, blank, blur, updateGrid, moveLetter}:
+    { size: number, letter: string, solution: boolean, blank: boolean, blur: boolean, updateGrid: Function, moveLetter: Function }
 ) {
 
     const [background, setBackground] = React.useState<string>("")
@@ -43,8 +43,8 @@ export default function ScrabbleLetterTile(
     return (
         <div 
             ref={tileRef}
-            onMouseEnter={() => updateSelectedTile()}
             onMouseUp={() => updateGrid()}
+            onMouseDown={(e) => moveLetter(e)}
             className={
                 `w-full h-full flex justify-center items-center shadow-orange-50/75
                 text-center border text-white overflow-hidden

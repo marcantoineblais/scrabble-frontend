@@ -1,13 +1,13 @@
 "use client"
 
-import React, { ReactNode } from "react"
+import React, { MouseEvent, ReactNode } from "react"
 import ScrabbleRow from "./ScrabbleRow"
 import ScrabbleLetterTile from "./ScrabbleLetterTile"
 import { Solution } from "@/app/models/Solution"
 
 export default function ScrabbleLetters(
-  { grid, tempGrid, width, blankTiles, selectedSolution = null, updateSelectedTile = () => false, updateGrid = () => false }:
-    { grid: string[][], tempGrid: string[][], width: number, blankTiles: number[][], updateSelectedTile?: Function, updateGrid?: Function, selectedSolution?: Solution | null }
+  { grid, width, blankTiles, selectedSolution, updateGrid, moveLetter }:
+  { grid: string[][], width: number, blankTiles: number[][], updateGrid: Function, selectedSolution: Solution | null, moveLetter: Function }
 ) {
 
   const [tiles, setTiles] = React.useState<ReactNode | null>(null)
@@ -27,8 +27,6 @@ export default function ScrabbleLetters(
     const gridTiles = grid.map((row, y) => {
       const cols = row.map((col, x) => {
         let letter = col
-        if (tempGrid && tempGrid[y][x])
-          letter = tempGrid[y][x]
 
         let solution = false
         let blank = blankTilesGrid ? blankTilesGrid[y][x] : false
@@ -47,8 +45,8 @@ export default function ScrabbleLetters(
         }
 
         return <ScrabbleLetterTile
-          updateSelectedTile={() => updateSelectedTile([y, x])} 
           updateGrid={() => updateGrid([y, x])}
+          moveLetter={(e: MouseEvent) => moveLetter(e, [y, x], letter)}
           key={x}
           size={width / grid.length}
           letter={letter}
@@ -62,7 +60,7 @@ export default function ScrabbleLetters(
     })
 
     setTiles(gridTiles)
-  }, [selectedSolution, tempGrid, blankTilesGrid, grid, width])
+  }, [selectedSolution, blankTilesGrid, grid, width, updateGrid, moveLetter])
 
   return (
     <div className="absolute inset-0">
