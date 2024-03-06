@@ -24,7 +24,7 @@ export default function ScrabbleLetterTile(
     return () => {
       tile.removeEventListener("mouseup", mouseup)
     }
-  }, [moveLetter])
+  }, [moveLetter, updateGrid])
 
   React.useEffect(() => {
     if (!tileRef.current)

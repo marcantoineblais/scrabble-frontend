@@ -37,7 +37,6 @@ export default function Game(
       return
 
     const letters = currentGrid.playerLetters.split("")
-    letters.forEach((letter, i) => playerLetters[i] = letter)
 
     setPlayerLetters(playerLetters => {
       letters.forEach((letter, i) => playerLetters[i] = letter)
@@ -112,7 +111,8 @@ export default function Game(
         const y = e.changedTouches[0].clientY
         const x = e.changedTouches[0].clientX
         const tile = document.elementFromPoint(x, y)
-        tile?.dispatchEvent(new MouseEvent('mouseup'))        
+        tile?.dispatchEvent(new MouseEvent('mouseup'))
+        navigator.vibrate(25)        
       }
 
       setSelectedLetter(null)
@@ -133,6 +133,7 @@ export default function Game(
     window.addEventListener("touchmove", move)
     window.addEventListener("mouseup", despawnFloatingTile)
     window.addEventListener("touchend", despawnFloatingTile)
+    navigator.vibrate(50)
   }
 
   function updateGrid([y, x]: number[]) {
@@ -159,7 +160,7 @@ export default function Game(
     }
   }
   
-  function editPlayerLetter(e: MouseEvent, i: number) {
+  function editPlayerLetter(e: MouseEvent | TouchEvent, i: number) {
     const letter = playerLetters[i]
     playerLetters[i] = ""
 
@@ -233,8 +234,8 @@ export default function Game(
   }
 
   return (
-    <div className="px-3 grow flex flex-col justify-between touch-none">
-      <div className="pt-5 pb-3 flex flex-col gap-7">
+    <div className="px-3 grow flex flex-col justify-between overflow-hidden">
+      <div className="pb-3 flex flex-col gap-3 touch-none">
         <LoadingScreen visible={loadingScreen} />
         <FloatingTile visible={selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />
 
@@ -243,19 +244,19 @@ export default function Game(
             <h2 className="font-bold">{currentGrid.name}</h2>
             <h2 className="font-bold">{currentGrid.language.name}</h2>
           </div>
-          <ScrabbleContainer setWidth={setWidth}>
+
+          <ScrabbleContainer interactable={solutions.length === 0} setWidth={setWidth}>
             <ScrabbleBoard solutions={solutions} width={width} grid={currentGrid.grid} gridType={currentGrid.gridType}/>
             <ScrabbleLetters grid={grid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width} updateGrid={updateGrid} moveLetter={moveLetter}/>
           </ScrabbleContainer>
         </div>
 
-        <ConditionalDiv className="flex flex-col gap-10" visible={!solutions.length}>
-          <TilesInputSection size={width / 10} spawnFloatingTile={spawnFloatingTile} />
+        <ConditionalDiv className="flex flex-col gap-3" visible={!solutions.length}>
+          <TilesInputSection selected={selectedLetter !== null} size={width / 10} spawnFloatingTile={spawnFloatingTile} />
           <PlayerLettersSection letters={playerLetters} changePlayerLetter={changePlayerLetter} editPlayerLetter={editPlayerLetter} size={width / 10} />
-          <WoodenButton text="Chercher les solutions" action={submitGrid} />
         </ConditionalDiv>
 
-        <ConditionalDiv className="px-5" visible={solutions.length > 1}>
+        <ConditionalDiv visible={solutions.length > 1}>
           <SolutionsBrowser
             solutions={solutions}
             ignoreSolutions={ignoreSolutions}
@@ -264,8 +265,9 @@ export default function Game(
           />
         </ConditionalDiv>
       </div>
-      <div className="px-5">
-        <WoodenButton text="Retour" action={() => setPage("landing")} />
+      <div className="flex justify-between gap-1">
+        <WoodenButton small={true} text="Retour" action={() => setPage("landing")} />
+        <WoodenButton small={true} text="Solutions" action={submitGrid} />
       </div>
     </div>
   )

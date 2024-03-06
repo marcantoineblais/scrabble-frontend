@@ -3,15 +3,16 @@
 import React, { ReactNode } from "react"
 
 export default function ScrabbleContainer(
-  { children, setWidth, interactable = true }: 
+  { children, setWidth, interactable }: 
   { children: ReactNode, setWidth: Function, interactable?: boolean }
 ) {
 
   const [zoomedIn, setZoomedIn] = React.useState<boolean>(false)
   const containerRef = React.useRef<HTMLDivElement | null>(null)
+  const zoomInCallBack = React.useCallback(zoomIn, [zoomedIn])
 
   React.useEffect(() => {
-    if (!containerRef.current?.parentElement)
+    if (!containerRef.current?.parentElement || !interactable)
       return
 
     const parent = containerRef.current?.parentElement
@@ -20,7 +21,7 @@ export default function ScrabbleContainer(
       const x = e.touches[0].clientX
 
       if (document.elementsFromPoint(x, y).includes(parent)) {
-        zoomIn()
+        zoomInCallBack()
         moveGrid(y, x)
       } else {
         zoomOut()
@@ -34,7 +35,7 @@ export default function ScrabbleContainer(
       window.removeEventListener("touchmove", zoomAndMoveGrid)
       window.removeEventListener("touchend", zoomOut)
     }
-  }, [zoomedIn])
+  }, [zoomedIn, interactable, zoomInCallBack])
 
   React.useEffect(() => {
     function resize() {

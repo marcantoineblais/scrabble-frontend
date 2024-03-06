@@ -57,9 +57,9 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
     }
 
     return (
-        <div className="grow px-3 flex flex-col justify-between gap-7">
-            <div className="flex flex-col gap-7">
-                <CheetahLogo className="text-emerald-900" />
+        <div className="grow px-3 flex flex-col justify-between gap-7 overflow-hidden">
+            <div className="flex flex-col gap-7 overflow-y-auto">
+                <CheetahLogo className="text-emerald-900 max-h-[30%]" />
 
                 <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
                     <FormInput name="Nom d'utilisateur">

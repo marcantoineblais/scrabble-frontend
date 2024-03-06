@@ -1,6 +1,7 @@
 "use client"
 
 import React, { ReactNode } from "react"
+import PlayerLetterTile from "./PlayerLetterTile"
 
 export default function PlayerLettersSection(
   { size, letters, changePlayerLetter, editPlayerLetter }: 
@@ -14,24 +15,22 @@ export default function PlayerLettersSection(
 
     for (let i = 0; i < 7; i++) {
       letterSpots.push(
-        <div 
+        <PlayerLetterTile 
           key={i}
-          className={`flex justify-center items-center text-white ${letters[i] ? "bg-tile-texture" : "bg-orange-300"} border-2 border-yellow-700 rounded-sm`}
-          style={{ width: size + "px", height: size + "px", fontSize: (size * 0.6) + "px", boxShadow: letters[i] && `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)` }}
-          onMouseDown={(e) => editPlayerLetter(e, i)}
-          onMouseUp={() => changePlayerLetter(i)}
-        >
-          { letters[i] }  
-        </div>
+          letter={letters[i]}
+          size={size}
+          editPlayerLetter={(e: MouseEvent | TouchEvent) => editPlayerLetter(e, i)}
+          changePlayerLetter={() => changePlayerLetter(i)}
+        />
       )
     }
 
     setLetterSpots(letterSpots)
-  }, [size, letters, changePlayerLetter])
+  }, [size, letters, changePlayerLetter, editPlayerLetter])
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="font-bold border-b border-b-neutral-950">Lettres du joueur</h2>
+      <h2 className="font-bold border-b border-b-neutral-950">Mes lettres</h2>
       <div className="flex justify-between items-center">
         { letterSpots }
       </div>

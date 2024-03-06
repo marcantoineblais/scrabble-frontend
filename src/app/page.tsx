@@ -15,58 +15,58 @@ import SignIn from "./pages/SignIn";
 
 export default function Page() {
 
-    const [player, setPlayer] = React.useState<Player|null>(null)
-    const [currentGrid, setCurrentGrid] = React.useState<Grid|null>(null)
-    const [page, setPage] = React.useState<string>("")
-    const [title, setTitle] = React.useState<string>("")
-    const [children, setChildren] = React.useState<ReactNode|null>(null)
-    
-    React.useEffect(() => {
-        switch (page) {
-            case "authentication":
-                setChildren(<Authentication setPage={setPage} setPlayer={setPlayer} />)
-                setTitle("")
+  const [player, setPlayer] = React.useState<Player | null>(null)
+  const [currentGrid, setCurrentGrid] = React.useState<Grid | null>(null)
+  const [page, setPage] = React.useState<string>("")
+  const [title, setTitle] = React.useState<string>("")
+  const [children, setChildren] = React.useState<ReactNode | null>(null)
 
-            case "signIn":
-                setChildren(<SignIn setPage={setPage} />)
-                setTitle("Inscription")
-                break
-            
-            case "landing":
-                setChildren(<Landing grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
-                setTitle("Scrabble Cheetah")
-                break
-            
-            case "gridSelection":
-                setChildren(<GridSelection setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
-                setTitle("Sélection")
-                break
+  React.useEffect(() => {
+    switch (page) {
+      case "authentication":
+        setChildren(<Authentication setPage={setPage} setPlayer={setPlayer} />)
+        setTitle("")
 
-            case "savedGames":
-                setChildren(<SavedGames grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer}/>)
-                setTitle("Sauvegardes")
-                break
+      case "signIn":
+        setChildren(<SignIn setPage={setPage} />)
+        setTitle("Inscription")
+        break
 
-            case "game":
-                setChildren(<Game setPage={setPage} currentGrid={currentGrid || new Grid()} setPlayer={setPlayer} />)
-                setTitle("Scrabble Cheetah")
-                break
+      case "landing":
+        setChildren(<Landing grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
+        setTitle("Scrabble Cheetah")
+        break
 
-            default:
-                setChildren(<Login setPlayer={setPlayer} setPage={setPage} />)
-                setTitle("Connexion")
-                break;
-        }
-    }, [page, currentGrid, player])
+      case "gridSelection":
+        setChildren(<GridSelection setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
+        setTitle("")
+        break
 
-    return (
-        <>
-        <Authentication setPlayer={setPlayer} setPage={setPage} />
-          <main className="h-screen flex bg-orange-50 overflow-hidden">
-              <div className="grow flex py-3 container max-w-screen-md mx-auto">
-                  <Menu title={title}>{ children }</Menu>
-              </div>
-          </main>
-        </>
-    )
+      case "savedGames":
+        setChildren(<SavedGames grids={player?.grids || []} setCurrentGrid={setCurrentGrid} setPage={setPage} setPlayer={setPlayer} />)
+        setTitle("Sauvegardes")
+        break
+
+      case "game":
+        setChildren(<Game setPage={setPage} currentGrid={currentGrid || new Grid()} setPlayer={setPlayer} />)
+        setTitle("")
+        break
+
+      default:
+        setChildren(<Login setPlayer={setPlayer} setPage={setPage} />)
+        setTitle("Scrabble Cheetah")
+        break;
+    }
+  }, [page, currentGrid, player])
+
+  return (
+    <>
+      <Authentication setPlayer={setPlayer} setPage={setPage} />
+      <main className="h-screen flex bg-orange-50 overflow-hidden">
+        <div className="grow flex py-3 container max-w-screen-md mx-auto">
+          <Menu title={title}>{children}</Menu>
+        </div>
+      </main>
+    </>
+  )
 }

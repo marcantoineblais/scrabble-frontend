@@ -73,10 +73,10 @@ export default function SignIn({ setPage }: { setPage: Function }) {
 
 
     return (
-        <div className="px-5 grow flex flex-col justify-between gap-7">
+        <div className="px-5 grow flex flex-col justify-between gap-7 overflow-hidden">
             <LoadingScreen visible={loading} />
-            <div className="flex flex-col gap-5">
-                <CheetahLogo className="text-emerald-800" />
+            <div className="flex flex-col gap-5 overflow-y-auto">
+                <CheetahLogo className="text-emerald-800 max-h-[25%]" />
                 <p className="pb-3 text-justify border-b">Veuillez remplir les champs ci-dessous. Vous recevrez un courriel une fois que votre demande sera acceptée.</p>
                 <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
                     <FormInput name="Nom d'utilisateur">
