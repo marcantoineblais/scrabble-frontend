@@ -10,7 +10,7 @@ import { Solution } from "@/app/models/Solution"
 
 export default function ScrabbleBoard(
     { grid, gridType, width, solutions }:
-    { grid: string[][], gridType: GridType, width: number, solutions: Solution[] }
+    { grid: string[][], gridType: GridType, width: number, solutions?: Solution[] }
 ) {
 
     const [bonus, setBonus] = React.useState<number[][]|null>(null)
@@ -34,7 +34,7 @@ export default function ScrabbleBoard(
         
         const gridTiles: ReactNode[] = grid.map((row: string[], y: number) => {
             const cols: ReactNode[] = row.map((_col: string, x: number) => {
-                return <ScrabbleBoardTile key={x} size={width / grid.length} bonus={bonus[y][x]} solution={solutions.length > 0} />
+                return <ScrabbleBoardTile key={x} size={width / grid.length} bonus={bonus[y][x]} solution={solutions !== undefined && solutions.length > 0} />
             })
 
             return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>

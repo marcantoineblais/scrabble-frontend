@@ -31,13 +31,13 @@ export default function SavedGameCard(
                     <h2 className="text-sm bold">{ grid.language.name.toUpperCase() }</h2>
                 </div>
 
-                <div className="flex justify-between gap-1">
+                <div className="w-full flex justify-between gap-1">
                   <WoodenButton small={true} text="Reprendre" action={() => selectGame(grid)} />
                   <WoodenButton small={true} text="Supprimer" action={() => deleteGame(grid)} />
                 </div>
             </div>
             <div ref={containerRef} className="w-full h-full basis-2/5">
-                <ScrabbleContainer setWidth={setWidth}>
+                <ScrabbleContainer interactable={false} setWidth={setWidth}>
                     <ScrabbleBoard grid={grid.grid} gridType={grid.gridType} width={width}/>
                     <ScrabbleLetters grid={grid.grid} width={width} blankTiles={grid.blankTiles} />
                 </ScrabbleContainer>

@@ -2,7 +2,10 @@
 
 import React, { ReactNode } from "react"
 
-export default function ScrabbleContainer({ children, setWidth }: { children: ReactNode, setWidth: Function }) {
+export default function ScrabbleContainer(
+  { children, setWidth, interactable = true }: 
+  { children: ReactNode, setWidth: Function, interactable?: boolean }
+) {
 
   const containerRef = React.useRef<HTMLDivElement | null>(null)
 
@@ -35,7 +38,7 @@ export default function ScrabbleContainer({ children, setWidth }: { children: Re
     container.style.transform = "scale(1.5)"
   }
 
-  function moveGrid(e: React.MouseEvent) {
+  function moveGrid(y: number, x: number) {
     if (!containerRef.current)
       return
 
@@ -45,14 +48,12 @@ export default function ScrabbleContainer({ children, setWidth }: { children: Re
     if (!parent)
       return 
 
-    const y = e.clientY
-    const x = e.clientX
     const width = container.clientWidth
     const minTransform = width * 0.1
     const top = parent.getBoundingClientRect().top
     const left = parent.getBoundingClientRect().left
-    const offsetX = (e.clientX - left - minTransform) * 1.25
-    const offsetY = (e.clientY - top - minTransform) * 1.25
+    const offsetX = (x - left - minTransform) * 1.25
+    const offsetY = (y - top - minTransform) * 1.25
     
     container.style.transformOrigin = `${offsetX}px ${offsetY}px`
   }
@@ -65,12 +66,32 @@ export default function ScrabbleContainer({ children, setWidth }: { children: Re
     container.style.transform = ""
   }
 
+  function moveGridWithMouse(e: React.MouseEvent) {  
+    const y = e.clientY
+    const x = e.clientX
+
+    moveGrid(y, x)
+  }
+
+  function moveGridWithTouch(e: React.TouchEvent) {
+    if (e.touches.length > 1)
+      return 
+
+    const y = e.touches[0].clientY
+    const x = e.touches[0].clientX
+
+    moveGrid(y, x)
+  }
+
   return (
     <div 
       className="w-full h-full overflow-hidden transform-gpu"
-      onMouseLeave={() => zoomOut()} 
-      onMouseEnter={() => zoomIn()}
-      onMouseMove={(e) => moveGrid(e)}
+      onPointerLeave={interactable ? () => zoomOut() : undefined} 
+      onTouchEnd={interactable ? () => zoomOut() : undefined} 
+      onPointerEnter={interactable ? () => zoomIn() : undefined}
+      onTouchStart={interactable ? () => zoomIn() : undefined}
+      onMouseMove={interactable ? (e) => moveGridWithMouse(e) : undefined}
+      onTouchMove={interactable ? (e) => moveGridWithTouch(e) : undefined}
     >
       <div ref={containerRef} className="w-full h-full relative" >
         {children}

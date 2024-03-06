@@ -206,7 +206,7 @@ export default function Game(
   }
 
   return (
-    <div className="px-3 grow flex flex-col justify-between">
+    <div className="px-3 grow flex flex-col justify-between touch-none">
       <div className="pt-5 pb-3 flex flex-col gap-7">
         <LoadingScreen visible={loadingScreen} />
         <FloatingTile visible={selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />

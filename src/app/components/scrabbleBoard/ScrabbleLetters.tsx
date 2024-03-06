@@ -7,13 +7,16 @@ import { Solution } from "@/app/models/Solution"
 
 export default function ScrabbleLetters(
   { grid, width, blankTiles, selectedSolution, updateGrid, moveLetter }:
-  { grid: string[][], width: number, blankTiles: number[][], updateGrid: Function, selectedSolution: Solution | null, moveLetter: Function }
+  { grid: string[][], width: number, blankTiles?: number[][], updateGrid?: Function, selectedSolution?: Solution | null, moveLetter?: Function }
 ) {
 
   const [tiles, setTiles] = React.useState<ReactNode | null>(null)
   const [blankTilesGrid, setBlankTilesGrid] = React.useState<boolean[][] | null>(null)
 
   React.useEffect(() => {
+    if (!blankTiles)
+      return
+
     const tileGrid: boolean[][] = grid.map(row => row.map(_col => false))
 
     blankTiles.forEach(([y, x]: number[]) => {
@@ -45,8 +48,8 @@ export default function ScrabbleLetters(
         }
 
         return <ScrabbleLetterTile
-          updateGrid={() => updateGrid([y, x])}
-          moveLetter={(e: MouseEvent) => moveLetter(e, [y, x], letter)}
+          updateGrid={updateGrid ? () => updateGrid([y, x]) : () => false}
+          moveLetter={moveLetter ? (e: MouseEvent) => moveLetter(e, [y, x], letter) : () => false}
           key={x}
           size={width / grid.length}
           letter={letter}
