@@ -29,6 +29,7 @@ export default function Game(
   const [playerLetters, setPlayerLetters] = React.useState<string[]>(Array(7).fill(""))
   const [loadingScreen, setLoadingScreen] = React.useState<boolean>(false)
   const [blankTiles, setBlankTiles] = React.useState<number[][]>(currentGrid.blankTiles)
+  const [bin, setBin] = React.useState<boolean>(false)
   const floatingTileRef = React.useRef<HTMLDivElement|null>(null)
 
 
@@ -116,6 +117,7 @@ export default function Game(
       }
 
       setSelectedLetter(null)
+      setBin(false)
       window.removeEventListener("mousemove", move)
       window.removeEventListener("touchmove", move)
       window.removeEventListener("mouseup", despawnFloatingTile)
@@ -144,12 +146,13 @@ export default function Game(
     }
   }
 
-  function moveLetter(e: MouseEvent | TouchEvent, [y, x]: number[], letter: string) {
+  function moveLetter(e: MouseEvent | TouchEvent, [y, x]: number[], letter: string, bin: boolean = false) {
     if (!letter.length)
       return
     
     grid[y][x] = ""
     setGrid([...grid])
+    setBin(bin)
     spawnFloatingTile(e, letter)
   }
 
@@ -252,7 +255,7 @@ export default function Game(
         </div>
 
         <ConditionalDiv className="flex flex-col gap-3" visible={!solutions.length}>
-          <TilesInputSection selected={selectedLetter !== null} size={width / 10} spawnFloatingTile={spawnFloatingTile} />
+          <TilesInputSection bin={bin} size={width / 10} spawnFloatingTile={spawnFloatingTile} />
           <PlayerLettersSection letters={playerLetters} changePlayerLetter={changePlayerLetter} editPlayerLetter={editPlayerLetter} size={width / 10} />
         </ConditionalDiv>
 

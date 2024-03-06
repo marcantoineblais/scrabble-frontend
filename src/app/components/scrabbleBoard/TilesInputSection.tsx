@@ -3,8 +3,8 @@
 import React, { ReactNode } from "react"
 
 export default function TilesInputSection(
-  { size, spawnFloatingTile, selected }: 
-  { size: number, spawnFloatingTile: Function, selected: boolean }
+  { size, spawnFloatingTile, bin }: 
+  { size: number, spawnFloatingTile: Function, bin: boolean }
 ) {
   
   const [letters, setLetters] = React.useState<ReactNode[]>([])
@@ -48,8 +48,8 @@ export default function TilesInputSection(
     >
       { letters }
       { 
-        selected && 
-          <div className="absolute inset-0 flex justify-center items-center bg-gray-950/75">
+        bin && 
+          <div className="absolute inset-0 p-7 flex justify-center items-center bg-gray-950/75">
             <svg className="h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
               <rect fill="currentColor" x="122.88" y="109.09" width="22.67" height="333.5" rx="4" transform="translate(-15.34 8.01) rotate(-3.23)"/>
               <rect fill="currentColor" x="379.2" y="109.09" width="22.67" height="333.5" rx="4" transform="translate(13.92 -18.73) rotate(2.8)"/>
