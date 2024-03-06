@@ -1,6 +1,6 @@
 "use client"
 
-import React, { ReactNode } from "react"
+import React, { ReactNode, Touch } from "react"
 import ScrabbleContainer from "../components/scrabbleBoard/ScrabbleContainer"
 import ScrabbleBoard from "../components/scrabbleBoard/ScrabbleBoard"
 import ScrabbleLetters from "../components/scrabbleBoard/ScrabbleLetters"
@@ -70,42 +70,69 @@ export default function Game(
   }, [grid, blankTiles, playerLetters, currentGrid, setPlayer])
 
   
-  function moveFloatingTile(e: MouseEvent, offsetY: number, offsetX: number) {
+  function getCoordinatesFromEvent(e: MouseEvent | TouchEvent) {
+    let y
+    let x
+
+    if ('touches' in e) {
+      y = e.touches[0].clientY
+      x = e.touches[0].clientX
+    } else {
+      y = e.clientY
+      x = e.clientX
+    }
+
+    return [y, x]
+  }
+
+  function moveFloatingTile(e: MouseEvent | TouchEvent, offsetY: number, offsetX: number) {
     if (!floatingTileRef.current)
       return
 
     const floatingTile = floatingTileRef.current
-    const y = e.y - offsetY 
-    const x = e.x - offsetX
+    const [y, x] = getCoordinatesFromEvent(e)
 
-    floatingTile.style.top = y + "px"
-    floatingTile.style.left = x + "px"
+    floatingTile.style.top = (y - offsetY) + "px"
+    floatingTile.style.left = (x - offsetX) + "px"
   }
 
-  function spawnFloatingTile(e: MouseEvent, letter: string) {
+  function spawnFloatingTile(e: MouseEvent | TouchEvent, letter: string) {
     const div = e.currentTarget as HTMLDivElement
-    const offsetY = e.clientY - div.getBoundingClientRect().top
-    const offsetX = e.clientX - div.getBoundingClientRect().left
+    const [y, x] = getCoordinatesFromEvent(e)
+    
+    const offsetY = y - div.getBoundingClientRect().top
+    const offsetX = x - div.getBoundingClientRect().left
 
-    const move = (e: MouseEvent) => {
+    const move = (e: MouseEvent | TouchEvent) => {
       moveFloatingTile(e, offsetY, offsetY)
     }
     
-    const despawnFloatingTile = () => {        
+    const despawnFloatingTile = (e: MouseEvent | TouchEvent) => {
+      if ('touches' in e) {
+        const y = e.changedTouches[0].clientY
+        const x = e.changedTouches[0].clientX
+        const tile = document.elementFromPoint(x, y)
+        tile?.dispatchEvent(new MouseEvent('mouseup'))        
+      }
+
       setSelectedLetter(null)
       window.removeEventListener("mousemove", move)
+      window.removeEventListener("touchmove", move)
       window.removeEventListener("mouseup", despawnFloatingTile)
+      window.removeEventListener("touchend", despawnFloatingTile)
     }
 
     if (floatingTileRef.current) {
       const floatingTile = floatingTileRef.current
-      floatingTile.style.top = (e.clientY - offsetY) + "px"
-      floatingTile.style.left = (e.clientX - offsetX) + "px"
+      floatingTile.style.top = (y - offsetY) + "px"
+      floatingTile.style.left = (x - offsetX) + "px"      
     }
 
     setSelectedLetter(letter)
     window.addEventListener("mousemove", move)
+    window.addEventListener("touchmove", move)
     window.addEventListener("mouseup", despawnFloatingTile)
+    window.addEventListener("touchend", despawnFloatingTile)
   }
 
   function updateGrid([y, x]: number[]) {
@@ -116,9 +143,9 @@ export default function Game(
     }
   }
 
-  function moveLetter(e: MouseEvent, [y, x]: number[], letter: string) {
+  function moveLetter(e: MouseEvent | TouchEvent, [y, x]: number[], letter: string) {
     if (!letter.length)
-      return 
+      return
     
     grid[y][x] = ""
     setGrid([...grid])

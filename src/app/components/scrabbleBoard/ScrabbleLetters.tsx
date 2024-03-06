@@ -48,8 +48,8 @@ export default function ScrabbleLetters(
         }
 
         return <ScrabbleLetterTile
-          updateGrid={updateGrid ? () => updateGrid([y, x]) : () => false}
-          moveLetter={moveLetter ? (e: MouseEvent) => moveLetter(e, [y, x], letter) : () => false}
+          updateGrid={updateGrid ? () => updateGrid([y, x]) : undefined}
+          moveLetter={moveLetter ? (e: MouseEvent | TouchEvent) => moveLetter(e, [y, x], letter) : undefined}
           key={x}
           size={width / grid.length}
           letter={letter}

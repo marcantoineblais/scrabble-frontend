@@ -7,7 +7,34 @@ export default function ScrabbleContainer(
   { children: ReactNode, setWidth: Function, interactable?: boolean }
 ) {
 
+  const [zoomedIn, setZoomedIn] = React.useState<boolean>(false)
   const containerRef = React.useRef<HTMLDivElement | null>(null)
+
+  React.useEffect(() => {
+    if (!containerRef.current?.parentElement)
+      return
+
+    const parent = containerRef.current?.parentElement
+    const zoomAndMoveGrid = (e: TouchEvent) => {
+      const y = e.touches[0].clientY
+      const x = e.touches[0].clientX
+
+      if (document.elementsFromPoint(x, y).includes(parent)) {
+        zoomIn()
+        moveGrid(y, x)
+      } else {
+        zoomOut()
+      }
+    }
+
+    window.addEventListener("touchmove", zoomAndMoveGrid)
+    window.addEventListener("touchend", zoomOut)
+    
+    return () => {
+      window.removeEventListener("touchmove", zoomAndMoveGrid)
+      window.removeEventListener("touchend", zoomOut)
+    }
+  }, [zoomedIn])
 
   React.useEffect(() => {
     function resize() {
@@ -31,11 +58,12 @@ export default function ScrabbleContainer(
   }, [setWidth])
 
   function zoomIn() {
-    if (!containerRef.current)
+    if (zoomedIn || !containerRef.current)
       return
 
     const container = containerRef.current
     container.style.transform = "scale(1.5)"
+    setZoomedIn(true)
   }
 
   function moveGrid(y: number, x: number) {
@@ -64,6 +92,7 @@ export default function ScrabbleContainer(
 
     const container = containerRef.current
     container.style.transform = ""
+    setZoomedIn(false)
   }
 
   function moveGridWithMouse(e: React.MouseEvent) {  
@@ -73,25 +102,12 @@ export default function ScrabbleContainer(
     moveGrid(y, x)
   }
 
-  function moveGridWithTouch(e: React.TouchEvent) {
-    if (e.touches.length > 1)
-      return 
-
-    const y = e.touches[0].clientY
-    const x = e.touches[0].clientX
-
-    moveGrid(y, x)
-  }
-
   return (
     <div 
       className="w-full h-full overflow-hidden transform-gpu"
-      onPointerLeave={interactable ? () => zoomOut() : undefined} 
-      onTouchEnd={interactable ? () => zoomOut() : undefined} 
-      onPointerEnter={interactable ? () => zoomIn() : undefined}
-      onTouchStart={interactable ? () => zoomIn() : undefined}
+      onMouseLeave={interactable ? () => zoomOut() : undefined}
+      onMouseEnter={interactable ? () => zoomIn() : undefined}
       onMouseMove={interactable ? (e) => moveGridWithMouse(e) : undefined}
-      onTouchMove={interactable ? (e) => moveGridWithTouch(e) : undefined}
     >
       <div ref={containerRef} className="w-full h-full relative" >
         {children}
