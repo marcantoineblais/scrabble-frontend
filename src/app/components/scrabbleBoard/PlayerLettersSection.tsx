@@ -2,9 +2,11 @@
 
 import React, { ReactNode } from "react"
 
-export default function PlayerLettersSection({ size }: { size: number }) {
+export default function PlayerLettersSection(
+  { size, letters, changePlayerLetter, editPlayerLetter }: 
+  { size: number, letters: string[], changePlayerLetter: Function, editPlayerLetter: Function }
+) {
 
-  const [letters, setLetters] = React.useState<string[]>(Array(7).fill(""))
   const [letterSpots, setLetterSpots] = React.useState<ReactNode[]>([])
 
   React.useEffect(() => {
@@ -14,8 +16,10 @@ export default function PlayerLettersSection({ size }: { size: number }) {
       letterSpots.push(
         <div 
           key={i}
-          style={{ width: size + "px", height: size + "px", boxShadow: letters[i] && `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)` }}
-          className={`flex justify-center items-center ${letters[i] ? "bg-tile-texture" : "bg-orange-300"} border-2 border-neutral-950 rounded-sm`}
+          className={`flex justify-center items-center text-white ${letters[i] ? "bg-tile-texture" : "bg-orange-300"} border-2 border-yellow-700 rounded-sm`}
+          style={{ width: size + "px", height: size + "px", fontSize: (size * 0.6) + "px", boxShadow: letters[i] && `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)` }}
+          onMouseDown={(e) => editPlayerLetter(e, i)}
+          onMouseUp={() => changePlayerLetter(i)}
         >
           { letters[i] }  
         </div>
@@ -23,7 +27,7 @@ export default function PlayerLettersSection({ size }: { size: number }) {
     }
 
     setLetterSpots(letterSpots)
-  }, [size])
+  }, [size, letters, changePlayerLetter])
 
   return (
     <div className="flex flex-col gap-3">

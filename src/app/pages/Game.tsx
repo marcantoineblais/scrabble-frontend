@@ -15,7 +15,7 @@ import { Solution } from "../models/Solution"
 import { Player } from "../models/Player"
 import TilesInputSection from "../components/scrabbleBoard/TilesInputSection"
 import PlayerLettersSection from "../components/scrabbleBoard/PlayerLettersSection"
-import FloatingTile from "../components/FloatingTile"
+import FloatingTile from "../components/scrabbleBoard/FloatingTile"
 
 export default function Game(
   { currentGrid, setPage, setPlayer }:
@@ -26,13 +26,27 @@ export default function Game(
   const [selectedLetter, setSelectedLetter] = React.useState<string | null>(null)
   const [selectedSolution, setSelectedSolution] = React.useState<Solution | null>(null)
   const [solutions, setSolutions] = React.useState<Solution[]>([])
-  const [playerLetters, setPlayerLetters] = React.useState<string>("")
+  const [playerLetters, setPlayerLetters] = React.useState<string[]>(Array(7).fill(""))
   const [loadingScreen, setLoadingScreen] = React.useState<boolean>(false)
   const [blankTiles, setBlankTiles] = React.useState<number[][]>(currentGrid.blankTiles)
   const floatingTileRef = React.useRef<HTMLDivElement|null>(null)
 
+
   React.useEffect(() => {
-    currentGrid.playerLetters = playerLetters
+    if (!currentGrid.playerLetters)
+      return
+
+    const letters = currentGrid.playerLetters.split("")
+    letters.forEach((letter, i) => playerLetters[i] = letter)
+
+    setPlayerLetters(playerLetters => {
+      letters.forEach((letter, i) => playerLetters[i] = letter)
+      return [...playerLetters]
+    })
+  }, [currentGrid])
+
+  React.useEffect(() => {
+    currentGrid.playerLetters = playerLetters.join("")
     currentGrid.blankTiles = blankTiles
     currentGrid.grid = grid
   }, [playerLetters, blankTiles, grid, currentGrid])
@@ -53,7 +67,7 @@ export default function Game(
     }
 
     saveGrid()
-  }, [grid, blankTiles, currentGrid, setPlayer])
+  }, [grid, blankTiles, playerLetters, currentGrid, setPlayer])
 
   
   function moveFloatingTile(e: MouseEvent, offsetY: number, offsetX: number) {
@@ -111,6 +125,22 @@ export default function Game(
     spawnFloatingTile(e, letter)
   }
 
+  function changePlayerLetter(i: number) {
+    if (selectedLetter) {
+      playerLetters[i] = selectedLetter
+      setPlayerLetters([...playerLetters])
+    }
+  }
+  
+  function editPlayerLetter(e: MouseEvent, i: number) {
+    const letter = playerLetters[i]
+    playerLetters[i] = ""
+
+    setSelectedLetter(letter)
+    setPlayerLetters([...playerLetters])
+    spawnFloatingTile(e, letter)
+  }
+
   function acceptSolution() {
     if (!selectedSolution)
       return
@@ -120,7 +150,15 @@ export default function Game(
       const x = selectedSolution.entry.vertical ? selectedSolution.entry.x : i + selectedSolution.entry.x
       blankTiles.push([y, x])
     })
+    
+    selectedSolution.entry.word.split("").forEach(letter => {
+      const index = playerLetters.findLastIndex(l => l === letter)
 
+      if (index >= 0)
+        playerLetters[index] = ""
+    })
+    selectedSolution.entry.writeWordOnGrid(grid)
+    setGrid([...grid])
     setSelectedSolution(null)
     setSolutions([])
   }
@@ -143,7 +181,7 @@ export default function Game(
       currentGrid.id,
       currentGrid.name,
       grid,
-      playerLetters,
+      playerLetters.join("").replace(" ", "."),
       currentGrid.gridType,
       blankTiles,
       currentGrid.language,
@@ -179,14 +217,15 @@ export default function Game(
             <h2 className="font-bold">{currentGrid.language.name}</h2>
           </div>
           <ScrabbleContainer setWidth={setWidth}>
-            <ScrabbleBoard width={width} grid={currentGrid.grid} gridType={currentGrid.gridType}/>
+            <ScrabbleBoard solutions={solutions} width={width} grid={currentGrid.grid} gridType={currentGrid.gridType}/>
             <ScrabbleLetters grid={grid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width} updateGrid={updateGrid} moveLetter={moveLetter}/>
           </ScrabbleContainer>
         </div>
 
         <ConditionalDiv className="flex flex-col gap-10" visible={!solutions.length}>
           <TilesInputSection size={width / 10} spawnFloatingTile={spawnFloatingTile} />
-          <PlayerLettersSection size={width / 10} />
+          <PlayerLettersSection letters={playerLetters} changePlayerLetter={changePlayerLetter} editPlayerLetter={editPlayerLetter} size={width / 10} />
+          <WoodenButton text="Chercher les solutions" action={submitGrid} />
         </ConditionalDiv>
 
         <ConditionalDiv className="px-5" visible={solutions.length > 1}>

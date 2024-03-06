@@ -3,7 +3,7 @@
 import React from "react"
 import { Bonus } from "@/app/models/Bonus"
 
-export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus: number }) {
+export default function ScrabbleBoardTile({ size, bonus, solution }: { size: number, bonus: number, solution: boolean }) {
 
     const [text, setText] = React.useState<string>("")
     const [background, setBackground] = React.useState("")
@@ -65,7 +65,7 @@ export default function ScrabbleBoardTile({ size, bonus }: { size: number, bonus
                 `w-full h-full 
                 flex justify-center items-center duration-200
                 border text-center border-orange-100
-                bg- text-slate-100 overflow-hidden 
+                bg- text-slate-100 overflow-hidden ${solution && "grayscale-[0.3]"} 
                 ${background}`}
         >
             { text }

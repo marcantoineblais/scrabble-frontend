@@ -6,10 +6,11 @@ import { Bonus } from "@/app/models/Bonus"
 import { emptyRow } from "@/app/utilities/utilities"
 import ScrabbleRow from "./ScrabbleRow"
 import { GridType } from "@/app/models/GridType"
+import { Solution } from "@/app/models/Solution"
 
 export default function ScrabbleBoard(
-    { grid, gridType, width }:
-    { grid: string[][], gridType: GridType, width: number }
+    { grid, gridType, width, solutions }:
+    { grid: string[][], gridType: GridType, width: number, solutions: Solution[] }
 ) {
 
     const [bonus, setBonus] = React.useState<number[][]|null>(null)
@@ -33,14 +34,14 @@ export default function ScrabbleBoard(
         
         const gridTiles: ReactNode[] = grid.map((row: string[], y: number) => {
             const cols: ReactNode[] = row.map((_col: string, x: number) => {
-                return <ScrabbleBoardTile key={x} size={width / grid.length} bonus={bonus[y][x]} />
+                return <ScrabbleBoardTile key={x} size={width / grid.length} bonus={bonus[y][x]} solution={solutions.length > 0} />
             })
 
             return <ScrabbleRow key={y} width={width}>{ cols }</ScrabbleRow>
         })
 
         setTiles(gridTiles)
-    }, [bonus, width, grid])
+    }, [bonus, width, grid, solutions])
 
     return (
         <div className="absolute inset-0">

@@ -17,7 +17,7 @@ export default function FloatingTile(
       container.style.display = "flex"
     else
       container.style.display = "none"
-  }, [visible])
+  }, [visible, containerRef])
   
   return (  
     <div
