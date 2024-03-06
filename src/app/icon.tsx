@@ -1,6 +1,5 @@
 
-import { ImageResponse } from "next/server"
-import CheetahLogo from "./components/CheetahLogo"
+import { ImageResponse } from "next/og"
 
 // Route segment config
 export const runtime = 'edge'
