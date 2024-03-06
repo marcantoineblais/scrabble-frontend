@@ -133,16 +133,16 @@ export default function GridSelection(
   }
 
   return (
-    <div className="px-3 w-full grow flex flex-col gap-5">
-      <div className="pt-5">
+    <div className="px-3 w-full grow flex flex-col gap-3">
+      <div className="flex flex-col gap-1 pt-1">
         <h2 className="font-bold">Choisir le type de grille de jeu :</h2>
         <ScrabbleContainer setWidth={setWidth}>
           { gridType && <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType} /> }
         </ScrabbleContainer>
 
         <div className="flex justify-between">
-          <Arrow action={() => previousGridType()} reversed={true} className="w-[2rem]" visible={gridTypeIndex > 0} />
-          <Arrow action={() => nextGridType()} reversed={false} className="w-[2rem]" visible={gridTypeIndex < gameOptions?.gridTypes.length - 1} />
+          <Arrow action={() => previousGridType()} reversed={true} className="w-[3rem] cursor-pointer" visible={gridTypeIndex > 0} />
+          <Arrow action={() => nextGridType()} reversed={false} className="w-[3rem] cursor-pointer" visible={gridTypeIndex < gameOptions?.gridTypes.length - 1} />
         </div>
       </div>
 
