@@ -30,6 +30,7 @@ export default function Game(
   const [loadingScreen, setLoadingScreen] = React.useState<boolean>(false)
   const [blankTiles, setBlankTiles] = React.useState<number[][]>(currentGrid.blankTiles)
   const [bin, setBin] = React.useState<boolean>(false)
+  const containerRef = React.useRef<HTMLDivElement|null>(null)
   const floatingTileRef = React.useRef<HTMLDivElement|null>(null)
 
 
@@ -97,11 +98,17 @@ export default function Game(
   }
 
   function spawnFloatingTile(e: MouseEvent | TouchEvent, letter: string) {
+    if (!containerRef.current)
+      return 
+
+    const container = containerRef.current
     const div = e.currentTarget as HTMLDivElement
     const [y, x] = getCoordinatesFromEvent(e)
     
     const offsetY = y - div.getBoundingClientRect().top
     const offsetX = x - div.getBoundingClientRect().left
+
+    container.classList.add("touch-none")
 
     const move = (e: MouseEvent | TouchEvent) => {
       moveFloatingTile(e, offsetY, offsetY)
@@ -112,10 +119,10 @@ export default function Game(
         const y = e.changedTouches[0].clientY
         const x = e.changedTouches[0].clientX
         const tile = document.elementFromPoint(x, y)
-        tile?.dispatchEvent(new MouseEvent('mouseup'))
-        navigator.vibrate(25)        
+        tile?.dispatchEvent(new MouseEvent('mouseup'))       
       }
 
+      container.classList.remove("touch-none")
       setSelectedLetter(null)
       setBin(false)
       window.removeEventListener("mousemove", move)
@@ -238,7 +245,7 @@ export default function Game(
 
   return (
     <div className="px-3 grow flex flex-col justify-between overflow-hidden">
-      <div className="pb-3 flex flex-col gap-3 touch-none">
+      <div ref={containerRef} className="pb-3 flex flex-col gap-3">
         <LoadingScreen visible={loadingScreen} />
         <FloatingTile visible={selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />
 
