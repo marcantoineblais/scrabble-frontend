@@ -51,8 +51,8 @@ export default function SolutionsBrowser(
         </div>
       </div>
       <div className="flex gap-3">
-        <WoodenButton text="Accepter" action={() => acceptSolution()} />
         <WoodenButton text="Refuser" action={() => ignoreSolutions()} />
+        <WoodenButton text="Accepter" action={() => acceptSolution()} />
       </div>
 
     </div>

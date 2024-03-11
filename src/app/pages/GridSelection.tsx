@@ -133,8 +133,8 @@ export default function GridSelection(
   }
 
   return (
-    <div className="px-3 w-full grow flex flex-col gap-5">
-      <div className="pt-5">
+    <div className="px-3 w-full grow flex flex-col gap-3">
+      <div>
         <h2 className="font-bold">Choisir le type de grille de jeu :</h2>
         <ScrabbleContainer setWidth={setWidth}>
           { gridType && <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType} /> }
@@ -146,7 +146,7 @@ export default function GridSelection(
         </div>
       </div>
 
-      <div className="h-full flex flex-col gap-7">
+      <div className="h-full flex flex-col gap-3">
         <FormInput name="Choisir la langue de jeu :">
           <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
             {options}

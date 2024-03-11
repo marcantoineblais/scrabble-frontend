@@ -21,7 +21,7 @@ export default function TilesInputSection(
           onMouseDown={(e) => spawnFloatingTile(e, letter)}
           onTouchStart={(e) => spawnFloatingTile(e, letter)}
           style={{ width: size + "px", height: size + "px", boxShadow: `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)` }}
-          className="bg-tile-texture flex justify-center items-center rounded-sm border border-yellow-700 shadow-inner shadow-orange-50/75"
+          className="bg-tile-texture flex justify-center items-center rounded-sm border border-yellow-700 shadow-inner shadow-orange-50/75 touch-none"
         >
           {letter}
         </div>
@@ -34,7 +34,7 @@ export default function TilesInputSection(
         onMouseDown={(e) => spawnFloatingTile(e, " ")}
         onTouchStart={(e) => spawnFloatingTile(e, " ")}
         style={{ width: size + "px", height: size + "px", boxShadow: `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)` }}
-        className="bg-tile-texture flex justify-center items-center rounded-sm border border-yellow-700"
+        className="bg-tile-texture flex justify-center items-center rounded-sm border border-yellow-700 touch-none"
       ></div>
     )
     setLetters(letterTiles)

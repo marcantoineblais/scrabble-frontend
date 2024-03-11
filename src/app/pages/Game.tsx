@@ -98,17 +98,11 @@ export default function Game(
   }
 
   function spawnFloatingTile(e: MouseEvent | TouchEvent, letter: string) {
-    if (!containerRef.current)
-      return 
-
-    const container = containerRef.current
     const div = e.currentTarget as HTMLDivElement
     const [y, x] = getCoordinatesFromEvent(e)
     
     const offsetY = y - div.getBoundingClientRect().top
     const offsetX = x - div.getBoundingClientRect().left
-
-    container.classList.add("touch-none")
 
     const move = (e: MouseEvent | TouchEvent) => {
       moveFloatingTile(e, offsetY, offsetY)
@@ -122,7 +116,6 @@ export default function Game(
         tile?.dispatchEvent(new MouseEvent('mouseup'))       
       }
 
-      container.classList.remove("touch-none")
       setSelectedLetter(null)
       setBin(false)
       window.removeEventListener("mousemove", move)

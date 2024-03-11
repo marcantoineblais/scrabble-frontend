@@ -43,6 +43,7 @@ export default function ScrabbleLetterTile(
 
   React.useEffect(() => {
     let background
+
     if (solution)
       background = "bg-emerald-700 rounded-sm shadow-emerald-50/25"
     else if (letter && blur)
@@ -50,12 +51,12 @@ export default function ScrabbleLetterTile(
     else if (blur)
       background = "bg-tile-blur brightness-50"
     else if (letter)
-      background = "bg-tile-texture rounded-sm border border-yellow-700 shadow-orange-50/25"
+      background = `bg-tile-texture rounded-sm border border-yellow-700 shadow-orange-50/25 ${moveLetter && "touch-none"}`
     else
       background = ""
 
     setBackground(background)
-  }, [letter, solution, blur])
+  }, [letter, solution, blur, moveLetter])
 
   return (
     <div

@@ -25,6 +25,12 @@ export default function SavedGameCard(
 
   return (
     <div className="w-full h-full flex justify-between gap-3 p-1 border border-neutral-900 rounded bg-orange-100">
+      <div ref={containerRef} className="w-full h-full basis-2/5">
+        <ScrabbleContainer setWidth={setWidth}>
+          <ScrabbleBoard grid={grid.grid} gridType={grid.gridType} width={width} />
+          <ScrabbleLetters grid={grid.grid} width={width} blankTiles={grid.blankTiles} />
+        </ScrabbleContainer>
+      </div>
       <div className="grow min-h-full flex flex-col items-start gap-7">
         <div className="grow w-full flex flex-col justify-start items-start">
           <h2 className="font-bold">{grid.name}</h2>
@@ -32,15 +38,9 @@ export default function SavedGameCard(
         </div>
 
         <div className="w-full flex justify-between gap-1">
-          <WoodenButton small={true} text="Reprendre" action={() => selectGame(grid)} />
           <WoodenButton small={true} text="Supprimer" action={() => deleteGame(grid)} />
+          <WoodenButton small={true} text="Reprendre" action={() => selectGame(grid)} />
         </div>
-      </div>
-      <div ref={containerRef} className="w-full h-full basis-2/5">
-        <ScrabbleContainer setWidth={setWidth}>
-          <ScrabbleBoard grid={grid.grid} gridType={grid.gridType} width={width} />
-          <ScrabbleLetters grid={grid.grid} width={width} blankTiles={grid.blankTiles} />
-        </ScrabbleContainer>
       </div>
     </div>
   )

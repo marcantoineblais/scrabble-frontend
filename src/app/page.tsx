@@ -62,7 +62,7 @@ export default function Page() {
   return (
     <>
       <Authentication setPlayer={setPlayer} setPage={setPage} />
-      <main className="min-h-screen flex bg-orange-50 overflow-hidden touch-pan-up touch-pan-down touch-pinch-zoom">
+      <main className="h-screen flex bg-orange-50 overflow-hidden">
         <div className="grow flex py-3 container max-w-screen-md mx-auto">
           <Menu title={title}>{children}</Menu>
         </div>
