@@ -33,7 +33,7 @@ export default function Landing(
   }
 
   return (
-    <div className="px-3 flex flex-col justify-between gap-3 overflow-hidden">
+    <div className="h-full px-3 flex flex-col justify-between gap-3 overflow-hidden">
       <div className="grow w-full max-h-full flex flex-col justify-start gap-3 overflow-hidden">
         <CheetahLogo className="text-emerald-900 max-h-[25%]" />
         <SavedGames grids={grids} setCurrentGrid={setCurrentGrid} setPlayer={setPlayer} setPage={setPage} />
