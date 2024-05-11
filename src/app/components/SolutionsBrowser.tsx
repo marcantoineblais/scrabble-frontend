@@ -50,11 +50,6 @@ export default function SolutionsBrowser(
           <span className="">{points} points</span>
         </div>
       </div>
-      <div className="flex gap-3">
-        <WoodenButton text="Accepter" action={() => acceptSolution()} />
-        <WoodenButton text="Refuser" action={() => ignoreSolutions()} />
-      </div>
-
     </div>
   )
 }

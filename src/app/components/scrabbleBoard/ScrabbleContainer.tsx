@@ -105,7 +105,7 @@ export default function ScrabbleContainer(
 
   return (
     <div 
-      className="w-full h-full overflow-hidden transform-gpu"
+      className="w-full h-fit overflow-hidden"
       onMouseLeave={interactable ? () => zoomOut() : undefined}
       onMouseEnter={interactable ? () => zoomIn() : undefined}
       onMouseMove={interactable ? (e) => moveGridWithMouse(e) : undefined}

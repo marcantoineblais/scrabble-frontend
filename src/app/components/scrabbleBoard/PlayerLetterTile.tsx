@@ -27,7 +27,7 @@ export default function PlayerLetterTile(
   return (
     <div 
       ref={tileRef}
-      className={`flex justify-center items-center text-white ${letter ? "bg-tile-texture" : "bg-orange-300"} border-2 border-yellow-700 rounded-sm`}
+      className={`flex justify-center items-center text-white ${letter ? "bg-tile-texture" : "bg-orange-300"} border-2 border-yellow-700 rounded-sm touch-none`}
       style={{ width: size + "px", height: size + "px", fontSize: (size * 0.6) + "px", boxShadow: letter && `inset 0 ${-size / 25}px ${size / 10}px rgba(255, 247, 237, 0.75)` }}
       onMouseDown={(e) => editPlayerLetter(e)}
       onTouchStart={(e) => editPlayerLetter(e)}
