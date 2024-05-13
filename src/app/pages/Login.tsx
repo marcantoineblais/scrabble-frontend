@@ -1,12 +1,13 @@
 "use client"
 
-import React from "react";
-import WoodenButton from "../components/WoodenButton";
-import { postRequest } from "../utilities/utilities";
-import { Player } from "../models/Player";
-import { LoginRequest } from "../models/LoginRequest";
-import CheetahLogo from "../components/CheetahLogo";
-import FormInput from "../components/FormInput";
+import React from "react"
+import WoodenButton from "../components/WoodenButton"
+import { postRequest } from "../utilities/utilities"
+import { Player } from "../models/Player"
+import { LoginRequest } from "../models/LoginRequest"
+import logo from "../../images/logo.svg"
+import FormInput from "../components/FormInput"
+import Image from "next/image"
 
 export default function Login({ setPlayer, setPage }: { setPlayer: Function, setPage: Function }) {
 
@@ -59,7 +60,7 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
     return (
         <div className="grow px-3 flex flex-col justify-between gap-7 overflow-hidden">
             <div className="flex flex-col gap-7 overflow-y-auto">
-                <CheetahLogo className="text-emerald-900 max-h-[30%]" />
+            <Image src={logo} alt="Cheetah vue de face" className="max-h-[25%]" />
 
                 <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
                     <FormInput name="Nom d'utilisateur">

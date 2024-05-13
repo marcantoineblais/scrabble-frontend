@@ -4,9 +4,9 @@ import WoodenButton from "../components/WoodenButton"
 import React from "react"
 import { getRequest } from "../utilities/utilities"
 import { Grid } from "../models/Grid"
-import ConditionalDiv from "../components/ConditionalDiv"
-import CheetahLogo from "../components/CheetahLogo"
+import logo from "../../images/logo.svg"
 import SavedGames from "../components/SavedGames"
+import Image from "next/image"
 
 export default function Landing(
   { grids, setCurrentGrid, setPlayer, setPage }:
@@ -35,7 +35,7 @@ export default function Landing(
   return (
     <div className="h-full px-3 flex flex-col justify-between gap-3 overflow-hidden">
       <div className="grow w-full max-h-full flex flex-col justify-start gap-3 overflow-hidden">
-        <CheetahLogo className="text-emerald-900 max-h-[25%]" />
+        <Image src={logo} alt="Cheetah vue de face" className="max-h-[25%]" />
         <SavedGames grids={grids} setCurrentGrid={setCurrentGrid} setPlayer={setPlayer} setPage={setPage} />
       </div>
       <div className="flex justify-between gap-1">

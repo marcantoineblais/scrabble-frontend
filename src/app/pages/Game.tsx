@@ -237,8 +237,8 @@ export default function Game(
     }
 
     return (
-        <div className="px-3 grow flex flex-col justify-between overflow-hidden">
-            <div ref={containerRef} className="pb-3 flex flex-col gap-3">
+        <div className="px-3 grow flex flex-col justify-between gap-3 min-h-[800px]">
+            <div ref={containerRef} className="flex flex-col gap-3 overflow-hidden">
                 <LoadingScreen visible={loadingScreen} />
                 <FloatingTile visible={selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />
 

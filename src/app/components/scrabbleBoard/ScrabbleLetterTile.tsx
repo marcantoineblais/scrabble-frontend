@@ -47,7 +47,7 @@ export default function ScrabbleLetterTile(
         if (solution)
             background = "bg-emerald-700 rounded-sm shadow-emerald-50/25"
         else if (letter && blur)
-            background = "bg-tile-texture brightness-50 rounded-sm border border-yellow-700 shadow-orange-50/25 grayscale-[0.1]"
+            background = "bg-tile-texture brightness-50 rounded-sm border border-yellow-700 shadow-orange-50/25"
         else if (blur)
             background = "bg-tile-blur brightness-50"
         else if (letter)

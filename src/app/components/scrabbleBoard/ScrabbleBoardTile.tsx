@@ -65,8 +65,7 @@ export default function ScrabbleBoardTile({ size, bonus, solution }: { size: num
                 `w-full h-full 
                 flex justify-center items-center duration-200
                 border text-center border-orange-100
-                bg- text-slate-100 overflow-hidden ${solution && "grayscale-[0.3]"} 
-                ${background}`}
+                bg- text-slate-100 overflow-hidden ${background}`}
         >
             { text }
         </div>
