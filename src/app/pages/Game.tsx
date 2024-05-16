@@ -19,7 +19,7 @@ import FloatingTile from "../components/scrabbleBoard/FloatingTile"
 
 export default function Game(
     { currentGrid, setPage, setPlayer }:
-        { currentGrid: Grid, setPage: Function, setPlayer: Function }
+    { currentGrid: Grid, setPage: Function, setPlayer: Function }
 ) {
     const [width, setWidth] = React.useState<number>(0)
     const [grid, setGrid] = React.useState<string[][]>(currentGrid.grid)
@@ -30,9 +30,9 @@ export default function Game(
     const [loadingScreen, setLoadingScreen] = React.useState<boolean>(false)
     const [blankTiles, setBlankTiles] = React.useState<number[][]>(currentGrid.blankTiles)
     const [bin, setBin] = React.useState<boolean>(false)
+
     const containerRef = React.useRef<HTMLDivElement | null>(null)
     const floatingTileRef = React.useRef<HTMLDivElement | null>(null)
-
 
     React.useEffect(() => {
         if (!currentGrid.playerLetters)
@@ -237,44 +237,47 @@ export default function Game(
     }
 
     return (
-        <div className="px-3 grow flex flex-col justify-between gap-3 min-h-[800px]">
-            <div ref={containerRef} className="flex flex-col gap-3 overflow-hidden">
+        <div className="w-full px-3 h-full flex flex-col justify-between gap-3">
+            <div ref={containerRef} className="h-full max-h-full flex flex-col gap-3 overflow-y-auto">
                 <LoadingScreen visible={loadingScreen} />
                 <FloatingTile visible={selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />
-
-                <div>
-                    <div className="flex justify-between">
-                        <h2 className="font-bold">{currentGrid.name}</h2>
-                        <h2 className="font-bold">{currentGrid.language.name}</h2>
-                    </div>
-
-                    <ScrabbleContainer interactable={solutions.length === 0} setWidth={setWidth}>
-                        <ScrabbleBoard solutions={solutions} width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
-                        <ScrabbleLetters grid={grid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width} updateGrid={updateGrid} moveLetter={moveLetter} />
-                    </ScrabbleContainer>
+                
+                <div className="flex justify-between border-b border-b-orange-300 lg:max-w-[60%]">
+                    <h2 className="font-bold">{currentGrid.name}</h2>
+                    <h2 className="font-bold">{currentGrid.language.name}</h2>
                 </div>
 
-                <ConditionalDiv className="flex flex-col gap-3" visible={!solutions.length}>
-                    <TilesInputSection bin={bin} size={width / 10} spawnFloatingTile={spawnFloatingTile} />
-                    <PlayerLettersSection letters={playerLetters} changePlayerLetter={changePlayerLetter} editPlayerLetter={editPlayerLetter} size={width / 10} />
-                </ConditionalDiv>
+                <div className="flex flex-col lg:flex-row gap-3">
+                    <div className="flex flex-col lg:basis-3/5 overflow-hidden">
+                        <ScrabbleContainer interactable={solutions.length === 0} setWidth={setWidth}>
+                            <ScrabbleBoard solutions={solutions} width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
+                            <ScrabbleLetters grid={grid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width} updateGrid={updateGrid} moveLetter={moveLetter} />
+                        </ScrabbleContainer>
+                    </div>
 
-                <ConditionalDiv visible={solutions.length > 1}>
-                    <SolutionsBrowser
-                        solutions={solutions}
-                        ignoreSolutions={ignoreSolutions}
-                        setSelectedSolution={setSelectedSolution}
-                        acceptSolution={acceptSolution}
-                    />
-                </ConditionalDiv>
+                    <ConditionalDiv className="flex flex-col justify-evenly gap-3 lg:flex-row lg:basis-2/5" visible={!solutions.length}>
+                        <TilesInputSection bin={bin} size={width / 10} spawnFloatingTile={spawnFloatingTile} />
+                        <PlayerLettersSection letters={playerLetters} changePlayerLetter={changePlayerLetter} editPlayerLetter={editPlayerLetter} size={width / 10} />
+                    </ConditionalDiv>
+
+                    <ConditionalDiv visible={solutions.length > 1} className="lg:basis-2/5">
+                        <SolutionsBrowser
+                            solutions={solutions}
+                            ignoreSolutions={ignoreSolutions}
+                            setSelectedSolution={setSelectedSolution}
+                            acceptSolution={acceptSolution}
+                        />
+                    </ConditionalDiv>
+                </div>
             </div>
+
             {solutions.length ? 
-                <div className="flex gap-1">
+                <div className="flex justify-center gap-1">
                     <WoodenButton small={true} text="Refuser" action={() => ignoreSolutions()} />
                     <WoodenButton small={true} text="Accepter" action={() => acceptSolution()} />
                 </div>
             :
-                <div className="flex justify-between gap-1">
+                <div className="flex justify-center gap-1">
                     <WoodenButton small={true} text="Retour" action={() => setPage("landing")} />
                     <WoodenButton small={true} text="Solutions" action={submitGrid} />
                 </div>

@@ -14,7 +14,7 @@
   user-select: none;
 }
 
-input {
+input, select, option, textarea {
     user-select: all;
 }
 

@@ -7,7 +7,7 @@ import { Player } from "../models/Player"
 import { LoginRequest } from "../models/LoginRequest"
 import logo from "../../images/logo.svg"
 import FormInput from "../components/FormInput"
-import Image from "next/image"
+import CheetahLogo from "../components/CheetahLogo"
 
 export default function Login({ setPlayer, setPage }: { setPlayer: Function, setPage: Function }) {
 
@@ -58,9 +58,9 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
     }
 
     return (
-        <div className="grow px-3 flex flex-col justify-between gap-7 overflow-hidden">
-            <div className="flex flex-col gap-7 overflow-y-auto">
-            <Image src={logo} alt="Cheetah vue de face" className="max-h-[25%]" />
+        <div className="w-full max-w-screen-md mx-auto px-3 grow flex flex-col justify-between gap-7 overflow-hidden">
+            <div className="flex flex-col gap-3 overflow-y-auto">
+                <CheetahLogo />
 
                 <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
                     <FormInput name="Nom d'utilisateur">
@@ -82,10 +82,13 @@ export default function Login({ setPlayer, setPage }: { setPlayer: Function, set
                         Se souvenir de moi
                     </label>
                 </form>
-                <WoodenButton text="Se connecter" action={login}/>
+                
+                <div className="flex justify-center">
+                    <WoodenButton text="Se connecter" action={login}/>
+                </div>
             </div>
 
-            <div className="w-full flex flex-col">
+            <div className="w-full flex flex-col items-center">
                 <p>Vous n&apos;avez pas de compte?</p>
                 <WoodenButton text="S'inscrire" action={() => signIn()}/>
             </div>

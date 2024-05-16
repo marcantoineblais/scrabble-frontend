@@ -16,7 +16,7 @@ import { Player } from "../models/Player"
 
 export default function GridSelection(
     { setCurrentGrid, setPage, setPlayer }:
-        { setCurrentGrid: Function, setPage: Function, setPlayer: Function }
+    { setCurrentGrid: Function, setPage: Function, setPlayer: Function }
 ) {
 
     const [gameOptions, setGameOptions] = React.useState<GameOptions>(new GameOptions([], []))
@@ -133,8 +133,8 @@ export default function GridSelection(
     }
 
     return (
-        <div className="px-3 w-full grow flex flex-col gap-3">
-            <div>
+        <div className="px-3 w-full max-w-screen-md mx-auto grow flex flex-col gap-3">
+            <div className="flex flex-col">
                 <h2 className="font-bold">Choisir le type de grille de jeu :</h2>
                 <ScrabbleContainer setWidth={setWidth}>
                     {gridType && <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType} />}
@@ -146,7 +146,7 @@ export default function GridSelection(
                 </div>
             </div>
 
-            <div className="h-full flex flex-col gap-3">
+            <form className="h-full flex flex-col gap-3">
                 <FormInput name="Choisir la langue de jeu :">
                     <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
                         {options}
@@ -156,8 +156,7 @@ export default function GridSelection(
                 <FormInput name="Donner un nom à votre grille de jeu :">
                     <input onChange={(e) => changeName(e)} className="w-full py-1 px-3" />
                 </FormInput>
-
-            </div>
+            </form>
 
             <div className="flex justify-between gap-1">
                 <WoodenButton small={true} text="Retour" action={() => setPage("landing")} />

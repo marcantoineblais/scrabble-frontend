@@ -73,12 +73,14 @@ export default function SignIn({ setPage }: { setPage: Function }) {
 
 
     return (
-        <div className="px-5 grow flex flex-col justify-between gap-7 overflow-hidden">
+        <div className="px-5 w-full grow flex flex-col justify-between gap-7 overflow-hidden">
             <LoadingScreen visible={loading} />
-            <div className="flex flex-col gap-5 overflow-y-auto">
-                <CheetahLogo className="text-emerald-800 max-h-[25%]" />
-                <p className="pb-3 text-justify border-b">Veuillez remplir les champs ci-dessous. Vous recevrez un courriel une fois que votre demande sera acceptée.</p>
-                <form ref={formRef} className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
+
+            <div className="w-full max-w-screen-md mx-auto flex flex-col gap-3 overflow-y-auto">
+                <CheetahLogo />
+                
+                <form ref={formRef} className="w-full flex flex-col items-center gap-3" onSubmit={(e) => e.preventDefault()}>
+                    <p className="pb-3 text-justify border-b">Veuillez remplir les champs ci-dessous. Vous recevrez un courriel une fois que votre demande sera acceptée.</p>
                     <FormInput name="Nom d'utilisateur">
                         <input name="username" className="py-1 px-3 rounded" type="text" maxLength={30} />
                     </FormInput>
@@ -100,11 +102,14 @@ export default function SignIn({ setPage }: { setPage: Function }) {
                     <FormInput name="Qui êtes-vous ?">
                         <textarea name="info" className="py-1 px-3 rounded" maxLength={300} rows={3} />
                     </FormInput>
+                    
+                    <WoodenButton text="Envoyer" action={() => submitForm()} />
                 </form>
-                <WoodenButton text="Envoyer" action={() => submitForm()} />
             </div>
 
-            <WoodenButton text="Retour" action={() => setPage("")} />
+            <div className="flex justify-center">
+                <WoodenButton text="Retour" action={() => setPage("")} />
+            </div>
         </div>
     )
 }
