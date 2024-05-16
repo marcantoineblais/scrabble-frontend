@@ -3,33 +3,17 @@
 import React, { ReactNode } from "react"
 
 export default function TilesInputSection(
-    { size, spawnFloatingTile, bin }:
-    { size: number, spawnFloatingTile: Function, bin: boolean }
+    { size, spawnFloatingTile, bin, orientation }:
+    { size: number, spawnFloatingTile: Function, bin: boolean, orientation: string }
 ) {
 
     const [letters, setLetters] = React.useState<ReactNode[]>([])
-    const [isLargeScreen, setIsLargeScreen] = React.useState<boolean>(false)
-
-
-    React.useEffect(() => {
-        const onResize = () => {
-            const width = window.innerWidth
-            setIsLargeScreen(width >= 1024)
-        }
-
-        window.addEventListener("resize", onResize)
-        onResize()
-
-        return () => {
-            window.removeEventListener("resize", onResize)
-        }
-    }, [])
 
     React.useEffect(() => {
         let lettersDiv: ReactNode[] = []
         const cols: ReactNode[] = []
         const value = "A".charCodeAt(0)
-        const colLength = isLargeScreen ? 3 : 9
+        const colLength = orientation === "landscape" ? 3 : 9
 
         for (let i = 0; i < 26; i++) {
             const letter = String.fromCharCode(value + i)
@@ -65,13 +49,13 @@ export default function TilesInputSection(
         cols.push(<div key={cols.length} className="flex justify-between gap-1">{ lettersDiv }</div>)
                 
         setLetters(cols)
-    }, [size, spawnFloatingTile, isLargeScreen])
+    }, [size, spawnFloatingTile, orientation])
 
 
     return (
         <div
             style={{ fontSize: (size * 0.6) + "px" }}
-            className="relative max-h-full flex flex-col justify-between gap-1 text-white"
+            className="w-full relative h-full flex flex-col justify-between gap-1 text-white"
         >
             { letters }
             {

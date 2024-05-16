@@ -3,8 +3,8 @@
 import React, { ReactNode } from "react"
 
 export default function ScrabbleContainer(
-    { children, setWidth, interactable, limitedHeight }:
-    { children: ReactNode, setWidth: Function, interactable?: boolean, limitedHeight?: boolean }
+    { children, interactable, width }:
+    { children: ReactNode, interactable?: boolean, width: number }
 ) {
 
     const [zoomedIn, setZoomedIn] = React.useState<boolean>(false)
@@ -35,32 +35,7 @@ export default function ScrabbleContainer(
             window.removeEventListener("touchmove", zoomAndMoveGrid)
             window.removeEventListener("touchend", zoomOut)
         }
-    }, [zoomedIn, interactable, zoomInCallBack])
-
-    React.useEffect(() => {
-        function resize() {
-            const container = containerRef.current
-            const parent = container?.parentElement
-
-            if (!container || !parent)
-                return
-
-            const width = parent.clientWidth
-            const side = limitedHeight && width > 184 ? 184 : width
-            
-            container.style.width = side + "px"
-            container.style.height = side + "px"
-            
-            setWidth(width)
-        }
-
-        resize()
-        window.addEventListener("resize", resize)
-
-        return () => {
-            window.removeEventListener("resize", resize)
-        }
-    }, [setWidth, limitedHeight])
+    }, [interactable, zoomInCallBack])
 
     function zoomIn() {
         if (zoomedIn || !containerRef.current)
@@ -109,7 +84,8 @@ export default function ScrabbleContainer(
 
     return (
         <div
-            className="w-full h-full overflow-hidden"
+            style={{ height: width + "px", width: width + "px"}}
+            className="overflow-hidden"
             onMouseLeave={interactable ? () => zoomOut() : undefined}
             onMouseEnter={interactable ? () => zoomIn() : undefined}
             onMouseMove={interactable ? (e) => moveGridWithMouse(e) : undefined}

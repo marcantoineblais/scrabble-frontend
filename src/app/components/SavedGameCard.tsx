@@ -8,25 +8,16 @@ import ScrabbleLetters from "./scrabbleBoard/ScrabbleLetters"
 import WoodenButton from "./WoodenButton"
 
 export default function SavedGameCard(
-    { grid, selectGame, deleteGame = () => false }:
-    { grid: Grid, selectGame: Function, deleteGame?: Function }
+    { grid, selectGame, deleteGame, width }:
+    { grid: Grid, selectGame: Function, deleteGame: Function, width: number }
 ) {
 
-    const [width, setWidth] = React.useState<number>(0)
     const containerRef = React.useRef<HTMLDivElement | null>(null)
-
-    React.useEffect(() => {
-        if (!containerRef.current)
-            return
-
-        const container = containerRef.current
-        container.style.flexBasis = width + "px"
-    }, [width])
-
+    
     return (
-        <div className="w-full h-full max-h-48 flex justify-between gap-3 p-1 border border-neutral-900 rounded bg-orange-100">
-            <div ref={containerRef} className="basis-2/5 h-full">
-                <ScrabbleContainer setWidth={setWidth} limitedHeight={true}>
+        <div className="w-full flex justify-between gap-3 p-1 border border-neutral-900 rounded bg-orange-100">
+            <div style={{ width: width }} ref={containerRef} className="h-full">
+                <ScrabbleContainer width={width}>
                     <ScrabbleBoard grid={grid.grid} gridType={grid.gridType} width={width} />
                     <ScrabbleLetters grid={grid.grid} width={width} blankTiles={grid.blankTiles} />
                 </ScrabbleContainer>

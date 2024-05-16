@@ -28,6 +28,30 @@ export default function GridSelection(
     const [width, setWidth] = React.useState<number>(0)
     const [emptyGrid] = React.useState<string[][]>(emptyRow(() => emptyRow(() => "")))
 
+    const containerRef = React.useRef<HTMLDivElement | null>(null)
+
+    React.useEffect(() => {
+        const onResize = () => {
+            const container = containerRef.current
+
+            if (!container)
+                return
+
+            const height = window.innerHeight
+            const width = window.innerWidth - 24
+
+            const maxHeight = height / 2 > width ? width : height / 2
+            setWidth(maxHeight)         
+        }
+
+        window.addEventListener("resize", onResize)
+        onResize()
+
+        return () => {
+            window.removeEventListener("resize", onResize)
+        }
+    }, [])
+
     React.useEffect(() => {
         async function getGameOptions() {
             try {
@@ -133,32 +157,34 @@ export default function GridSelection(
     }
 
     return (
-        <div className="px-3 w-full max-w-screen-md mx-auto grow flex flex-col gap-3">
-            <div className="flex flex-col">
+        <div className="px-3 w-full h-full max-w-screen-md mx-auto flex flex-col justify-between gap-3">
+            <div className="w-full h-full flex flex-col overflow-y-auto">
                 <h2 className="font-bold">Choisir le type de grille de jeu :</h2>
-                <ScrabbleContainer setWidth={setWidth}>
-                    {gridType && <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType} />}
-                </ScrabbleContainer>
+                <div ref={containerRef} className="w-full h-full flex flex-col items-center">
+                    <ScrabbleContainer width={width}>
+                        {gridType && <ScrabbleBoard width={width} grid={emptyGrid} gridType={gridType} />}
+                    </ScrabbleContainer>
 
-                <div className="flex justify-between">
-                    <Arrow action={() => previousGridType()} reversed={true} className="w-[2rem]" visible={gridTypeIndex > 0} />
-                    <Arrow action={() => nextGridType()} reversed={false} className="w-[2rem]" visible={gridTypeIndex < gameOptions?.gridTypes.length - 1} />
+                    <div className="w-full flex justify-between">
+                        <Arrow action={() => previousGridType()} reversed={true} className="w-[2rem]" visible={gridTypeIndex > 0} />
+                        <Arrow action={() => nextGridType()} reversed={false} className="w-[2rem]" visible={gridTypeIndex < gameOptions?.gridTypes.length - 1} />
+                    </div>
                 </div>
+
+                <form className="h-full flex flex-col gap-3">
+                    <FormInput name="Choisir la langue de jeu :">
+                        <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
+                            {options}
+                        </select>
+                    </FormInput>
+
+                    <FormInput name="Donner un nom à votre grille de jeu :">
+                        <input onChange={(e) => changeName(e)} className="w-full py-1 px-3" />
+                    </FormInput>
+                </form>
             </div>
 
-            <form className="h-full flex flex-col gap-3">
-                <FormInput name="Choisir la langue de jeu :">
-                    <select onChange={(e) => changeLanguageId(e)} className="w-full px-1.5 py-1">
-                        {options}
-                    </select>
-                </FormInput>
-
-                <FormInput name="Donner un nom à votre grille de jeu :">
-                    <input onChange={(e) => changeName(e)} className="w-full py-1 px-3" />
-                </FormInput>
-            </form>
-
-            <div className="flex justify-between gap-1">
+            <div className="w-full flex justify-between gap-1">
                 <WoodenButton small={true} text="Retour" action={() => setPage("landing")} />
                 <WoodenButton small={true} text="Débuter la partie" action={submitGrid} />
             </div>

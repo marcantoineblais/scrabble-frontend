@@ -21,7 +21,6 @@ export default function Game(
     { currentGrid, setPage, setPlayer }:
     { currentGrid: Grid, setPage: Function, setPlayer: Function }
 ) {
-    const [width, setWidth] = React.useState<number>(0)
     const [grid, setGrid] = React.useState<string[][]>(currentGrid.grid)
     const [selectedLetter, setSelectedLetter] = React.useState<string | null>(null)
     const [selectedSolution, setSelectedSolution] = React.useState<Solution | null>(null)
@@ -30,9 +29,46 @@ export default function Game(
     const [loadingScreen, setLoadingScreen] = React.useState<boolean>(false)
     const [blankTiles, setBlankTiles] = React.useState<number[][]>(currentGrid.blankTiles)
     const [bin, setBin] = React.useState<boolean>(false)
+    const [orientation, setOrientation] = React.useState<string>("portrait")
+    const [scrabbleWidth, setScrabbleWidth] = React.useState<number>(0)
 
     const containerRef = React.useRef<HTMLDivElement | null>(null)
+    const scrabbleRef = React.useRef<HTMLDivElement | null>(null)
     const floatingTileRef = React.useRef<HTMLDivElement | null>(null)
+
+    React.useEffect(() => {
+        const onResize = () => {
+            const container = containerRef.current
+            const scrabble = scrabbleRef.current
+
+            if (!container || !scrabble)
+                return
+
+            const height = window.innerHeight
+            const width = window.innerWidth - 24
+
+            if (height > width) {
+                const maxHeight = height / 2 > width ? width : height / 2
+                container.style.width = maxHeight + "px"
+                scrabble.style.height = ""
+                setOrientation("portrait")
+                setScrabbleWidth(maxHeight)
+            } else {
+                const maxHeight = width / 2
+                scrabble.style.height = maxHeight + "px"
+                container.style.width = ""
+                setOrientation("landscape")
+                setScrabbleWidth(maxHeight)
+            }
+        }
+
+        window.addEventListener("resize", onResize)
+        onResize()
+
+        return () => {
+            window.removeEventListener("resize", onResize)
+        }
+    }, [])
 
     React.useEffect(() => {
         if (!currentGrid.playerLetters)
@@ -237,35 +273,33 @@ export default function Game(
     }
 
     return (
-        <div className="w-full px-3 h-full flex flex-col justify-between gap-3">
-            <div ref={containerRef} className="h-full max-h-full flex flex-col gap-3 overflow-y-auto">
+        <div ref={containerRef} className="w-full mx-auto h-full flex flex-col justify-between gap-3">
+            <div className="w-full h-full flex flex-col gap-3 overflow-y-auto">
                 <LoadingScreen visible={loadingScreen} />
-                <FloatingTile visible={selectedLetter !== null} size={width / 10} letter={selectedLetter} containerRef={floatingTileRef} />
+                <FloatingTile visible={selectedLetter !== null} size={scrabbleWidth / 10} letter={selectedLetter} containerRef={floatingTileRef} />
                 
-                <div className="flex justify-between border-b border-b-orange-300 lg:max-w-[60%]">
+                <div className="px-3 w-full flex justify-between border-b border-b-orange-300">
                     <h2 className="font-bold">{currentGrid.name}</h2>
                     <h2 className="font-bold">{currentGrid.language.name}</h2>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-3">
-                    <div className="flex flex-col lg:basis-3/5 overflow-hidden">
-                        <ScrabbleContainer interactable={solutions.length === 0} setWidth={setWidth}>
-                            <ScrabbleBoard solutions={solutions} width={width} grid={currentGrid.grid} gridType={currentGrid.gridType} />
-                            <ScrabbleLetters grid={grid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={width} updateGrid={updateGrid} moveLetter={moveLetter} />
+                <div ref={scrabbleRef} className={`w-full h-full flex gap-3 ${orientation === "portrait" ? "flex-col items-center" : "justify-center"}`}>
+                    <div className="flex flex-col overflow-hidden">
+                        <ScrabbleContainer interactable={solutions.length === 0} width={scrabbleWidth}>
+                            <ScrabbleBoard solutions={solutions} width={scrabbleWidth} grid={currentGrid.grid} gridType={currentGrid.gridType} />
+                            <ScrabbleLetters grid={grid} selectedSolution={selectedSolution} blankTiles={blankTiles} width={scrabbleWidth} updateGrid={updateGrid} moveLetter={moveLetter} />
                         </ScrabbleContainer>
                     </div>
 
-                    <ConditionalDiv className="flex flex-col justify-evenly gap-3 lg:flex-row lg:basis-2/5" visible={!solutions.length}>
-                        <TilesInputSection bin={bin} size={width / 10} spawnFloatingTile={spawnFloatingTile} />
-                        <PlayerLettersSection letters={playerLetters} changePlayerLetter={changePlayerLetter} editPlayerLetter={editPlayerLetter} size={width / 10} />
+                    <ConditionalDiv className={`flex justify-evenly gap-3 ${orientation === "portrait" ? "w-full flex-col" : null}`} visible={!solutions.length}>
+                        <TilesInputSection bin={bin} size={scrabbleWidth / 10} spawnFloatingTile={spawnFloatingTile} orientation={orientation} />
+                        <PlayerLettersSection letters={playerLetters} changePlayerLetter={changePlayerLetter} editPlayerLetter={editPlayerLetter} size={scrabbleWidth / 10} orientation={orientation}/>
                     </ConditionalDiv>
 
-                    <ConditionalDiv visible={solutions.length > 1} className="lg:basis-2/5">
+                    <ConditionalDiv visible={solutions.length > 1}>
                         <SolutionsBrowser
                             solutions={solutions}
-                            ignoreSolutions={ignoreSolutions}
                             setSelectedSolution={setSelectedSolution}
-                            acceptSolution={acceptSolution}
                         />
                     </ConditionalDiv>
                 </div>
